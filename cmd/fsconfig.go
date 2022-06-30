@@ -13,7 +13,7 @@ import (
 // fsconfigCmd represents the fsconfig command
 var fsconfigCmd = &cobra.Command{
 	Use:   "fsconfig",
-	Short: "A brief description of your command",
+	Short: "fs configuration, default dir is /etc/freeswitch",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -37,4 +37,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// fsconfigCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	fsconfigCmd.Flags().StringP("init", "i", "", "")
+	fsconfigCmd.Flags().StringP("reset", "r", "", "")
+	fsconfigCmd.MarkFlagsMutuallyExclusive("init", "reset")
 }

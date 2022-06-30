@@ -22,6 +22,9 @@ cobra-cli add server
 
 git init
 git add --all
+git commit -m "init fs"
+git remote add origin git@github.com:bob1118/fs.git
+git push -u origin master
 
 ```
 
