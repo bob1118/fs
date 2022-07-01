@@ -7,7 +7,10 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
+	"runtime"
 
+	"github.com/bob1118/fs/fsconf"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -38,24 +41,44 @@ func init() {
 	// fsconfigCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	fsconfigCmd.Flags().BoolP("init", "i", false, "init bootable configurations")
 	fsconfigCmd.Flags().BoolP("reset", "r", false, "reset bootable configurations to default")
-	fsconfigCmd.MarkFlagsMutuallyExclusive("init", "reset")
+	//fsconfigCmd.MarkFlagsMutuallyExclusive("init", "reset")
 }
 
 func fsconfigCmdRun(cmd *cobra.Command, args []string) {
+	var dir string
+
 	fmt.Println("fsconfig called")
-	confdir := viper.GetViper().GetString(`switch.conf`)
+	v := viper.GetViper()
+	conf := v.GetString(`switch.conf`)
+	if _, err := os.Stat(conf); err != nil { //conf from .fs switch.conf not exist.
+		runos := runtime.GOOS
+		switch runos {
+		case `linux`:
+			dir = `/etc/freeswitch`
+		case `windows`:
+			dir = `C:/Program Files/FreeSWITCH/conf`
+		//...
+		default:
+		}
+		if _, e := os.Stat(dir); e == nil { //default conf dir exist.
+			v.Set(`switch.conf`, dir)
+			v.WriteConfig()
+		}
+	} else {
+		dir = conf
+	}
 
 	//--init
 	if isInit, _ := cmd.Flags().GetBool(`init`); isInit {
-		log.Println(fsconfigCmdInit(confdir))
+		log.Println(fsconfigCmdInit(dir))
 	}
 
 	//--reset
 	if isReset, _ := cmd.Flags().GetBool(`reset`); isReset {
-		log.Println(fsconfigCmdReset(confdir))
+		log.Println(fsconfigCmdReset(dir))
 	}
 }
 
-func fsconfigCmdInit(dir string) error { return nil }
+func fsconfigCmdInit(dir string) error { return fsconf.Newconf(dir).Init() }
 
-func fsconfigCmdReset(dir string) error { return nil }
+func fsconfigCmdReset(dir string) error { return fsconf.Newconf(dir).Reset() }

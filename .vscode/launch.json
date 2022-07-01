@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${fileDirname}",
-            "args": ["config","fsconfig","--init"]
+            "args": ["config", "--get", "gateway.bindings"]
         }
     ]
 }

@@ -54,19 +54,19 @@ func configCmdRun(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	//flag --get;
-	//--get switch.db.host
-	if get, err := cmd.Flags().GetString(`get`); err == nil {
-		if len(get) > 0 {
-			fmt.Println(get, "=>", configCmdGetVar(get))
-		}
-	}
-
 	//flag --set
 	//--set switch.db.host=127.0.0.1
 	if set, err := cmd.Flags().GetString(`set`); err == nil {
 		if len(set) > 0 {
 			configCmdSetVar(set)
+		}
+	}
+
+	//flag --get;
+	//--get switch.db.host
+	if get, err := cmd.Flags().GetString(`get`); err == nil {
+		if len(get) > 0 {
+			fmt.Println(get, "=>", configCmdGetVar(get))
 		}
 	}
 }

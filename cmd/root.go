@@ -21,20 +21,21 @@ gateway:
     boot:
     modules:
     db:
-        host: localhost
+        host: 127.0.0.1
         name: freeswitch
         password: fsdba
         user: fsdba
     enablea1hash: false
     url: http://localhost/fsapi
-rootdb:
-    host: localhost
+    bindings: dialplan|configuration|directory|phrases
+postgres:
+    host: 127.0.0.1
     name: postgres
     password: postgres
     user: postgres
 server:
     db:
-        host: localhost
+        host: 127.0.0.1
         name: freeswitch
         password: fsdba
         user: fsdba
@@ -50,7 +51,7 @@ server:
 switch:
     conf: /etc/freeswitch
     db:
-        host: localhost
+        host: 127.0.0.1
         name: freeswitch
         password: fsdba
         user: fsdba
