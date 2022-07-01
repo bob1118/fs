@@ -6,8 +6,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // fsconfigCmd represents the fsconfig command
@@ -17,12 +19,9 @@ var fsconfigCmd = &cobra.Command{
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("fsconfig called")
-	},
+fs config fsconfig --init
+fs config fsconfig --reset`,
+	Run: fsconfigCmdRun,
 }
 
 func init() {
@@ -37,7 +36,26 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// fsconfigCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	fsconfigCmd.Flags().StringP("init", "i", "", "")
-	fsconfigCmd.Flags().StringP("reset", "r", "", "")
+	fsconfigCmd.Flags().BoolP("init", "i", false, "init bootable configurations")
+	fsconfigCmd.Flags().BoolP("reset", "r", false, "reset bootable configurations to default")
 	fsconfigCmd.MarkFlagsMutuallyExclusive("init", "reset")
 }
+
+func fsconfigCmdRun(cmd *cobra.Command, args []string) {
+	fmt.Println("fsconfig called")
+	confdir := viper.GetViper().GetString(`switch.conf`)
+
+	//--init
+	if isInit, _ := cmd.Flags().GetBool(`init`); isInit {
+		log.Println(fsconfigCmdInit(confdir))
+	}
+
+	//--reset
+	if isReset, _ := cmd.Flags().GetBool(`reset`); isReset {
+		log.Println(fsconfigCmdReset(confdir))
+	}
+}
+
+func fsconfigCmdInit(dir string) error { return nil }
+
+func fsconfigCmdReset(dir string) error { return nil }
