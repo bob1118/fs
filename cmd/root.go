@@ -18,16 +18,18 @@ var cfgFile string
 
 const defaultFsContent = `#default is $HOME/.fs, format yaml.
 gateway:
-    boot:
-    modules:
     db:
         host: 127.0.0.1
         name: freeswitch
         password: fsdba
+        tableprefix: cc
         user: fsdba
     enablea1hash: false
-    url: http://localhost/fsapi
-    bindings: dialplan|configuration|directory|phrases
+    http:
+        addr: localhost
+    xml_curl:
+        url: http://localhost/fsapi
+        bindings: dialplan|configuration|directory|phrases
 postgres:
     host: 127.0.0.1
     name: postgres
@@ -62,11 +64,22 @@ var rootCmd = &cobra.Command{
 	Use:   "fs",
 	Short: "switch command line toolset",
 	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+examples and usage of using your application. 
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+For example:
+where is app configuration file ?
+global flag "--config=where/file.format" set fs configuration file. 
+if no flag "--config", fs search $HOME/.fs as a default.
+how to set?
+fs config --set switch.conf=/etc/freeswitch
+how to get?
+fs config --get switch.conf
+//////fs config fsconfg --reset --init//////
+how to run switch gateway?
+fs gateway
+hot to run switch server?
+fs server
+`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -128,7 +141,7 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	} else {
-		log.Println(err)
+		log.Println("viper.ReadInConfig()", err)
 	}
 }
 

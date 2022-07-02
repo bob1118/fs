@@ -294,7 +294,7 @@ func (p *Fsconf) buildAutoloadXmlcurl(in string) error {
 			//<param name="gateway-url" value="http://localhost/fsapi" bindings="dialplan|configuration|directory|phrases"/>
 			old := `<!-- <param name="gateway-url" value="http://www.freeswitch.org/gateway.xml" bindings="dialplan"/> -->`
 			new := fmt.Sprintf(`<param name="gateway-url" value="%s" bindings="%s"/>`,
-				viper.GetViper().GetString(`gateway.url`), viper.GetViper().GetString(`gateway.bindings`))
+				viper.GetViper().GetString(`gateway.xml_curl.url`), viper.GetViper().GetString(`gateway.xml_curl.bindings`))
 			p.Update(file, []byte(old), []byte(new))
 		}
 	}

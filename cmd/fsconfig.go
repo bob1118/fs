@@ -68,14 +68,13 @@ func fsconfigCmdRun(cmd *cobra.Command, args []string) {
 		dir = conf
 	}
 
-	//--init
-	if isInit, _ := cmd.Flags().GetBool(`init`); isInit {
-		log.Println(fsconfigCmdInit(dir))
-	}
-
 	//--reset
 	if isReset, _ := cmd.Flags().GetBool(`reset`); isReset {
 		log.Println(fsconfigCmdReset(dir))
+	}
+	//--init
+	if isInit, _ := cmd.Flags().GetBool(`init`); isInit {
+		log.Println(fsconfigCmdInit(dir))
 	}
 }
 

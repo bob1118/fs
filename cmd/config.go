@@ -71,9 +71,7 @@ func configCmdRun(cmd *cobra.Command, args []string) {
 	}
 }
 
-func configCmdList() {
-	fmt.Println(viper.GetViper().AllSettings())
-}
+func configCmdList() { viper.GetViper().Debug() }
 
 func configCmdGetVar(key string) string { return viper.GetString(key) }
 
