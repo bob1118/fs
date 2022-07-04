@@ -1,3 +1,4 @@
+.vscode/launch.json
 go.sum
 fs.exe
-.vscode/launch.json
+fs

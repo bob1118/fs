@@ -57,7 +57,8 @@ func fsconfigCmdRun(cmd *cobra.Command, args []string) {
 			dir = `/etc/freeswitch`
 		case `windows`:
 			dir = `C:/Program Files/FreeSWITCH/conf`
-		//...
+		case `darwin`: //homebrew apple silinc
+			dir = `/opt/homebrew/Cellar/freeswitch/1.10.7_4/etc/freeswitch`
 		default:
 		}
 		if _, e := os.Stat(dir); e == nil { //default conf dir exist.

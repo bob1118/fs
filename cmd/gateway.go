@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/bob1118/fs/db"
 	"github.com/bob1118/fs/routers"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -54,10 +55,10 @@ func gatewayCmdRun(cmd *cobra.Command, args []string) {
 }
 
 func gatewayHttp() {
-	v := viper.GetViper()
+	db.Initdb()
 	h := routers.NewRouter()
 	s := &http.Server{
-		Addr:           v.GetString(`gateway.http.addr`),
+		Addr:           viper.GetString(`gateway.http.addr`),
 		Handler:        h,
 		MaxHeaderBytes: 1 << 20,
 	}

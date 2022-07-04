@@ -17,6 +17,7 @@ type Fsconf struct {
 	confDir      string   //conf direcotry.
 	defaultExt   string   //old conf files named file.defaultExt,eg: vars.xml.default
 	changedFiles []string //new conf files who changed by function buildBootableConf()
+	v            *viper.Viper
 }
 
 func New(conf string, ext string) *Fsconf {
@@ -41,7 +42,7 @@ func New(conf string, ext string) *Fsconf {
 	if errWalk != nil {
 		return nil
 	} else {
-		return &Fsconf{confDir: dir, defaultExt: ext, changedFiles: changedfiles}
+		return &Fsconf{confDir: dir, defaultExt: ext, changedFiles: changedfiles, v: viper.GetViper()}
 	}
 }
 
@@ -136,6 +137,7 @@ func (p *Fsconf) Reset() error {
 	return err
 }
 
+// buildBootableConf function.
 func (p *Fsconf) buildBootableConf() error {
 	var allerrors string
 
@@ -146,12 +148,12 @@ func (p *Fsconf) buildBootableConf() error {
 		allerrors += fmt.Sprintf("%s: %s\n", vars, err.Error())
 	}
 
-	////////////////////////////p.dir/autoload_configs/*.conf.xml/////////////////
-	//p.dir()/autoload_configs/switch.conf.xml
-	autoloadSwitch := fmt.Sprintf(`%s/autoload_configs/switch.conf.xml`, p.Dir())
-	if err := p.buildAutoloadSwitch(autoloadSwitch); err != nil {
-		allerrors += fmt.Sprintf("%s: %s\n", autoloadSwitch, err.Error())
-	}
+	// ////////////////////////////p.dir/autoload_configs/*.conf.xml/////////////////
+	// //p.dir()/autoload_configs/switch.conf.xml
+	// autoloadSwitch := fmt.Sprintf(`%s/autoload_configs/switch.conf.xml`, p.Dir())
+	// if err := p.buildAutoloadSwitch(autoloadSwitch); err != nil {
+	// 	allerrors += fmt.Sprintf("%s: %s\n", autoloadSwitch, err.Error())
+	// }
 	//p.dir()/autoload_configs/modules.conf.xml
 	autoloadModules := fmt.Sprintf(`%s/autoload_configs/modules.conf.xml`, p.Dir())
 	if err := p.buildAutoloadModules(autoloadModules); err != nil {
@@ -163,27 +165,27 @@ func (p *Fsconf) buildBootableConf() error {
 		allerrors += fmt.Sprintf("%s: %s\n", autoloadXmlcurl, err.Error())
 	}
 
-	/////////////////////////////p.dir/sip_profiles/*.xml//////////////////////////
-	//p.dir()/sip_profiles/internal.xml
-	sipInternal := fmt.Sprintf(`%s/sip_profiles/internal.xml`, p.Dir())
-	if err := p.buildInternal(sipInternal); err != nil {
-		allerrors += fmt.Sprintf("%s: %s\n", sipInternal, err.Error())
-	}
-	//p.dir()/sip_profiles/internal-ipv6.xml
-	sipInternalv6 := fmt.Sprintf(`%s/sip_profiles/internal-ipv6.xml`, p.Dir())
-	if err := p.buildInternalv6(sipInternalv6); err != nil {
-		allerrors += fmt.Sprintf("%s: %s\n", sipInternalv6, err.Error())
-	}
-	//p.dir()/sip_profiles/external.xml
-	sipExternal := fmt.Sprintf(`%s/sip_profiles/external.xml`, p.Dir())
-	if err := p.buildExternal(sipExternal); err != nil {
-		allerrors += fmt.Sprintf("%s: %s\n", sipExternal, err.Error())
-	}
-	//p.dir()/sip_profiles/external-ipv6.xml
-	sipExternalv6 := fmt.Sprintf(`%s/sip_profiles/external-ipv6.xml`, p.Dir())
-	if err := p.buildExternalv6(sipExternalv6); err != nil {
-		allerrors += fmt.Sprintf("%s: %s\n", sipExternalv6, err.Error())
-	}
+	// /////////////////////////////p.dir/sip_profiles/*.xml//////////////////////////
+	// //p.dir()/sip_profiles/internal.xml
+	// sipInternal := fmt.Sprintf(`%s/sip_profiles/internal.xml`, p.Dir())
+	// if err := p.buildInternal(sipInternal); err != nil {
+	// 	allerrors += fmt.Sprintf("%s: %s\n", sipInternal, err.Error())
+	// }
+	// //p.dir()/sip_profiles/internal-ipv6.xml
+	// sipInternalv6 := fmt.Sprintf(`%s/sip_profiles/internal-ipv6.xml`, p.Dir())
+	// if err := p.buildInternalv6(sipInternalv6); err != nil {
+	// 	allerrors += fmt.Sprintf("%s: %s\n", sipInternalv6, err.Error())
+	// }
+	// //p.dir()/sip_profiles/external.xml
+	// sipExternal := fmt.Sprintf(`%s/sip_profiles/external.xml`, p.Dir())
+	// if err := p.buildExternal(sipExternal); err != nil {
+	// 	allerrors += fmt.Sprintf("%s: %s\n", sipExternal, err.Error())
+	// }
+	// //p.dir()/sip_profiles/external-ipv6.xml
+	// sipExternalv6 := fmt.Sprintf(`%s/sip_profiles/external-ipv6.xml`, p.Dir())
+	// if err := p.buildExternalv6(sipExternalv6); err != nil {
+	// 	allerrors += fmt.Sprintf("%s: %s\n", sipExternalv6, err.Error())
+	// }
 
 	if len(allerrors) > 0 {
 		return errors.New(allerrors)
@@ -193,6 +195,7 @@ func (p *Fsconf) buildBootableConf() error {
 
 func (p *Fsconf) buildVars(in string) error {
 	var err error
+	var old, new string
 	var file = in
 	defaultfile := fmt.Sprintf("%s%s", file, p.defaultExt)
 	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
@@ -203,21 +206,23 @@ func (p *Fsconf) buildVars(in string) error {
 			//`  <X-PRE-PROCESS cmd="set" data="default_password=1234"/>`
 			//`  <X-PRE-PROCESS cmd="set" data="pg_handle=pgsql://hostaddr=127.0.0.1 dbname=freeswitch user=fsdba password=fsdba"/>`
 			//`  <X-PRE-PROCESS cmd="set" data="json_db_handle=$${pg_handle}"/>`
-			old := `  <X-PRE-PROCESS cmd="set" data="default_password=1234"/>`
+			old = `  <X-PRE-PROCESS cmd="set" data="default_password=1234"/>`
 			new_content := `  <X-PRE-PROCESS cmd="set" data="default_password=D_e_f_a_u_l_t_P_a_s_s_w_o_r_d"/>
   <X-PRE-PROCESS cmd="set" data="pg_handle=%s"/>
   <X-PRE-PROCESS cmd="set" data="json_db_handle=$${pg_handle}"/>`
-			pghandle := fmt.Sprintf("pgsql://hostaddr=%s dbname=%s user=%s password=%s",
-				viper.GetViper().GetString(`switch.db.host`),
-				viper.GetViper().GetString(`switch.db.name`),
-				viper.GetViper().GetString(`switch.db.user`),
-				viper.GetViper().GetString(`switch.db.password`))
-			new := fmt.Sprintf(new_content, pghandle)
+			pghandle := fmt.Sprintf("pgsql://hostaddr=%s dbname=%s user=%s password=%s", p.v.GetString(`switch.db.host`), p.v.GetString(`switch.db.name`), p.v.GetString(`switch.db.user`), p.v.GetString(`switch.db.password`))
+			new = fmt.Sprintf(new_content, pghandle)
 			p.Update(file, []byte(old), []byte(new))
 			//`  <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=stun:stun.freeswitch.org"/>`
-			p.Update(file, []byte(`external_sip_ip=stun:stun.freeswitch.org`), []byte(`external_sip_ip=$${local_ip_v4}`))
+			old = `  <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=stun:stun.freeswitch.org"/>`
+			external_sip_ip := `  <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=%s"/>`
+			new = fmt.Sprintf(external_sip_ip, p.v.GetString(`switch.vars.external_sip_ip`))
+			p.Update(file, []byte(old), []byte(new))
 			//`  <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=stun:stun.freeswitch.org"/>`
-			p.Update(file, []byte(`external_rtp_ip=stun:stun.freeswitch.org`), []byte(`external_rtp_ip=$${local_ip_v4}`))
+			old = `  <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=stun:stun.freeswitch.org"/>`
+			external_rtp_ip := `  <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=%s"/>`
+			new = fmt.Sprintf(external_rtp_ip, p.v.GetString(`switch.vars.external_rtp_ip`))
+			p.Update(file, []byte(old), []byte(new))
 		}
 	}
 	return err
@@ -255,7 +260,12 @@ func (p *Fsconf) buildAutoloadModules(in string) error {
 			//<!-- <load module="mod_xml_curl"/> -->
 			p.Uncomment(file, []byte(`<!-- <load module="mod_xml_curl"/> -->`))
 			//<load module="mod_cdr_csv"/>
-			p.Update(file, []byte(`<load module="mod_cdr_csv"/>`), []byte(`<load module="mod_odbc_cdr"/>`))
+			modname := p.v.GetString(`switch.cdr.modname`)
+			if strings.EqualFold(modname, `mod_odbc_cdr`) {
+				p.Update(file, []byte(`<load module="mod_cdr_csv"/>`), []byte(`<load module="mod_odbc_cdr"/>`))
+			} else {
+				p.Comment(file, []byte(`<load module="mod_cdr_csv"/>`))
+			}
 			//<load module="mod_loopback"/>
 			//p.Comment(file, []byte(`<load module="mod_loopback"/>`))
 			//<load module="mod_rtc"/>
@@ -294,7 +304,7 @@ func (p *Fsconf) buildAutoloadXmlcurl(in string) error {
 			//<param name="gateway-url" value="http://localhost/fsapi" bindings="dialplan|configuration|directory|phrases"/>
 			old := `<!-- <param name="gateway-url" value="http://www.freeswitch.org/gateway.xml" bindings="dialplan"/> -->`
 			new := fmt.Sprintf(`<param name="gateway-url" value="%s" bindings="%s"/>`,
-				viper.GetViper().GetString(`gateway.xml_curl.url`), viper.GetViper().GetString(`gateway.xml_curl.bindings`))
+				p.v.GetString(`switch.xml_curl.url`), p.v.GetString(`switch.xml_curl.bindings`))
 			p.Update(file, []byte(old), []byte(new))
 		}
 	}

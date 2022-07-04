@@ -22,14 +22,11 @@ gateway:
         host: 127.0.0.1
         name: freeswitch
         password: fsdba
-        tableprefix: cc
+        tableprefix: g
         user: fsdba
     enablea1hash: false
     http:
         addr: localhost
-    xml_curl:
-        url: http://localhost/fsapi
-        bindings: dialplan|configuration|directory|phrases
 postgres:
     host: 127.0.0.1
     name: postgres
@@ -52,11 +49,20 @@ server:
         addr: 127.0.0.1:12345
 switch:
     conf: /etc/freeswitch
+    cdr:
+        modname: mod_odbc_cdr
+        tables: cdr_table_a_leg, cdr_table_b_leg
     db:
         host: 127.0.0.1
         name: freeswitch
         password: fsdba
         user: fsdba
+    vars:
+        external_sip_ip: $${local_ip_v4}
+        external_rtp_ip: $${local_ip_v4}
+    xml_curl:
+        url: http://localhost/fsapi
+        bindings: dialplan|configuration|directory|phrases
 `
 
 // rootCmd represents the base command when called without any subcommands
@@ -67,18 +73,15 @@ var rootCmd = &cobra.Command{
 examples and usage of using your application. 
 
 For example:
-where is app configuration file ?
-global flag "--config=where/file.format" set fs configuration file. 
-if no flag "--config", fs search $HOME/.fs as a default.
-how to set?
 fs config --set switch.conf=/etc/freeswitch
-how to get?
-fs config --get switch.conf
-//////fs config fsconfg --reset --init//////
-how to run switch gateway?
-fs gateway
-hot to run switch server?
-fs server
+fs config --get switch.xml_curl.url
+http://localhost/fsapi
+
+fs config fsconfig --reset --init
+
+fs gateway --run
+fs server --run
+systemctl restart freeswitch
 `,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
