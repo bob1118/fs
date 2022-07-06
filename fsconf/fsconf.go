@@ -208,10 +208,11 @@ func (p *Fsconf) buildVars(in string) error {
 			//`  <X-PRE-PROCESS cmd="set" data="json_db_handle=$${pg_handle}"/>`
 			old = `  <X-PRE-PROCESS cmd="set" data="default_password=1234"/>`
 			new_content := `  <X-PRE-PROCESS cmd="set" data="default_password=D_e_f_a_u_l_t_P_a_s_s_w_o_r_d"/>
+  <X-PRE-PROCESS cmd="set" data="local_ip_v4=%s"/>
   <X-PRE-PROCESS cmd="set" data="pg_handle=%s"/>
   <X-PRE-PROCESS cmd="set" data="json_db_handle=$${pg_handle}"/>`
 			pghandle := fmt.Sprintf("pgsql://hostaddr=%s dbname=%s user=%s password=%s", p.v.GetString(`switch.db.host`), p.v.GetString(`switch.db.name`), p.v.GetString(`switch.db.user`), p.v.GetString(`switch.db.password`))
-			new = fmt.Sprintf(new_content, pghandle)
+			new = fmt.Sprintf(new_content, p.v.GetString(`switch.vars.ipv4`), pghandle)
 			p.Update(file, []byte(old), []byte(new))
 			//`  <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=stun:stun.freeswitch.org"/>`
 			old = `  <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=stun:stun.freeswitch.org"/>`

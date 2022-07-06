@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -38,14 +39,13 @@ func init() {
 	// is called directly, e.g.:
 	// configCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	configCmd.Flags().BoolP("list", "l", false, "list all config options.")
-	configCmd.Flags().String("set", "", "set config value, --set key=value")
-	configCmd.Flags().String("get", "", "get config value, --get key return value")
+	configCmd.Flags().StringP("set", "s", "", "set config value, --set key=value")
+	configCmd.Flags().StringP("get", "g", "", "get config value, --get key return value")
 	configCmd.MarkFlagsMutuallyExclusive("list", "set", "get")
 }
 
 func configCmdRun(cmd *cobra.Command, args []string) {
 	fmt.Println("config called")
-	//cmd.Flags().VisitAll(func(f *pflag.Flag) { fmt.Println(f.Name, f.Value) })
 
 	//flag --list
 	if isList, err := cmd.Flags().GetBool(`list`); err == nil {
@@ -66,12 +66,19 @@ func configCmdRun(cmd *cobra.Command, args []string) {
 	//--get switch.db.host
 	if get, err := cmd.Flags().GetString(`get`); err == nil {
 		if len(get) > 0 {
-			fmt.Println(get, "=>", configCmdGetVar(get))
+			log.Println(get, "=>", configCmdGetVar(get))
 		}
 	}
 }
 
-func configCmdList() { viper.GetViper().Debug() }
+func configCmdList() {
+	var list string
+	allkeys := viper.GetViper().AllKeys()
+	for _, key := range allkeys {
+		list = fmt.Sprintf("%s\n%-30s=>%s", list, key, viper.GetString(key))
+	}
+	log.Println(list)
+}
 
 func configCmdGetVar(key string) string { return viper.GetString(key) }
 

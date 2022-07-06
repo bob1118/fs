@@ -46,7 +46,6 @@ func init() {
 
 func fsconfigCmdRun(cmd *cobra.Command, args []string) {
 	var dir string
-
 	fmt.Println("fsconfig called")
 	v := viper.GetViper()
 	conf := v.GetString(`switch.conf`)

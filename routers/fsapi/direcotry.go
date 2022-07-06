@@ -1,9 +1,12 @@
 package fsapi
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/bob1118/fs/fsconf"
+	"github.com/gin-gonic/gin"
+)
 
 func doPhrases(c *gin.Context) string {
-	var body string
+	body := fsconf.NOT_FOUND
 
 	return body
 }

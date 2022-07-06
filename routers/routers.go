@@ -6,6 +6,8 @@ import (
 )
 
 func NewRouter() *gin.Engine {
+	//for debug
+	if true {gin.SetMode(gin.DebugMode)}
 	r := gin.Default()
 
 	//receive mod_xml_curl request

@@ -26,7 +26,7 @@ gateway:
         user: fsdba
     enablea1hash: false
     http:
-        addr: localhost
+        addr: localhost:80
 postgres:
     host: 127.0.0.1
     name: postgres
@@ -37,6 +37,7 @@ server:
         host: 127.0.0.1
         name: freeswitch
         password: fsdba
+        tableprefix: s
         user: fsdba
     http:
         addr: 10.10.10.10:80
@@ -51,13 +52,14 @@ switch:
     conf: /etc/freeswitch
     cdr:
         modname: mod_odbc_cdr
-        tables: cdr_table_a_leg, cdr_table_b_leg
+        tables: [cdr_table_a_leg, cdr_table_b_leg]
     db:
         host: 127.0.0.1
         name: freeswitch
         password: fsdba
         user: fsdba
     vars:
+        ipv4: 10.10.10.10
         external_sip_ip: $${local_ip_v4}
         external_rtp_ip: $${local_ip_v4}
     xml_curl:
@@ -149,6 +151,5 @@ func initConfig() {
 }
 
 func rootCmdRun(cmd *cobra.Command, args []string) {
-	//cmd.Flags().VisitAll(func(f *pflag.Flag) {log.Println(f.Name, f.Value)})
 	fmt.Println(`rootCmd called`)
 }
