@@ -15,12 +15,13 @@ import (
 
 type Fsconf struct {
 	confDir      string   //conf direcotry.
-	defaultExt   string   //old conf files named file.defaultExt,eg: vars.xml.default
 	changedFiles []string //new conf files who changed by function buildBootableConf()
+	fileExt      string   //switch config file extend, default extend=`xml`, eg: vars.xml
+	bakfileExt   string   //bak conf file extend, default extend=`bak`, eg: vars.xml.bak
 	v            *viper.Viper
 }
 
-func New(conf string, ext string) *Fsconf {
+func New(conf string, bakext string) *Fsconf {
 	var dir = conf
 	var changedfiles = make([]string, 0, 10)
 
@@ -28,8 +29,8 @@ func New(conf string, ext string) *Fsconf {
 	errWalk := filepath.WalkDir(dir,
 		func(path string, d fs.DirEntry, e error) error {
 			if e == nil {
-				if filepath.Ext(path) == ext {
-					changedfile := strings.TrimSuffix(path, ext)
+				if filepath.Ext(path) == bakext {
+					changedfile := strings.TrimSuffix(path, bakext)
 					if _, e := os.Stat(changedfile); e == nil {
 						changedfiles = append(changedfiles, changedfile)
 					}
@@ -42,12 +43,12 @@ func New(conf string, ext string) *Fsconf {
 	if errWalk != nil {
 		return nil
 	} else {
-		return &Fsconf{confDir: dir, defaultExt: ext, changedFiles: changedfiles, v: viper.GetViper()}
+		return &Fsconf{confDir: dir, changedFiles: changedfiles, fileExt: `.xml`, bakfileExt: bakext, v: viper.GetViper()}
 	}
 }
 
 func Newconf(conf string) *Fsconf {
-	return New(conf, `.default`)
+	return New(conf, `.bak`)
 }
 
 func (p *Fsconf) Dir() string { return p.confDir }
@@ -124,7 +125,7 @@ func (p *Fsconf) Reset() error {
 		if p.IsInited() {
 			//do reset
 			for _, filechanged := range p.changedFiles {
-				defaultFile := fmt.Sprintf("%s%s", filechanged, p.defaultExt)
+				defaultFile := fmt.Sprintf("%s%s", filechanged, p.bakfileExt)
 				if data, errRead := os.ReadFile(defaultFile); errRead == nil {
 					os.WriteFile(filechanged, data, 0664)
 					os.Remove(defaultFile)
@@ -197,7 +198,7 @@ func (p *Fsconf) buildVars(in string) error {
 	var err error
 	var old, new string
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.defaultExt)
+	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
 	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
@@ -232,7 +233,7 @@ func (p *Fsconf) buildVars(in string) error {
 func (p *Fsconf) buildAutoloadSwitch(in string) error {
 	var err error
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.defaultExt)
+	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
 	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
@@ -250,7 +251,7 @@ func (p *Fsconf) buildAutoloadSwitch(in string) error {
 func (p *Fsconf) buildAutoloadModules(in string) error {
 	var err error
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.defaultExt)
+	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
 	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
@@ -295,7 +296,7 @@ func (p *Fsconf) buildAutoloadModules(in string) error {
 func (p *Fsconf) buildAutoloadXmlcurl(in string) error {
 	var err error
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.defaultExt)
+	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
 	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
@@ -315,7 +316,7 @@ func (p *Fsconf) buildAutoloadXmlcurl(in string) error {
 func (p *Fsconf) buildInternal(in string) error {
 	var err error
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.defaultExt)
+	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
 	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
@@ -341,7 +342,7 @@ func (p *Fsconf) buildInternalv6(in string) error { return p.buildInternal(in) }
 func (p *Fsconf) buildExternal(in string) error {
 	var err error
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.defaultExt)
+	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
 	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e

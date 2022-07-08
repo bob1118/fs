@@ -17,6 +17,12 @@ func init() {}
 
 func Initdb() { pgsqlInitdb() }
 
+func GetGatewaydb() *sqlx.DB { return gatewaydb }
+
+func GetSwitchdb() *sqlx.DB { return switchdb }
+
+func GetServerdb() *sqlx.DB { return serverdb }
+
 func pgsqlOpen(strcon string) (*sqlx.DB, error) { return sqlx.Connect(`postgres`, strcon) }
 
 func pgsqlClose(db *sqlx.DB) { db.Close() }

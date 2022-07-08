@@ -2,6 +2,7 @@ package fsapi
 
 import (
 	"github.com/bob1118/fs/fsconf"
+	"github.com/bob1118/fs/fsconf/autoload"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,14 +13,14 @@ func doConfiguration(c *gin.Context) (b string) {
 	value := c.PostForm(`key_value`)
 	switch value {
 	//switch boot order.
-	// case "console.conf":
-	// case "logfile.conf":
-	// case "enum.conf":
-	// case "xml_curl.conf":
+	// case "console.conf": //?
+	// case "logfile.conf": //?
+	// case "enum.conf": //?
+	// case "xml_curl.conf": //?
 	case "odbc_cdr.conf": //1th request.
-	// if conf, e := odbc_cdr.ReadConfiguration(); e == nil {
-	// 	body = fmt.Sprintf(fsconfig.CONFIGURATION, conf)
-	// }
+		if conf, err := autoload.GetConfiguration(value); err == nil {
+			body = conf
+		}
 	case "sofia.conf": //2th request(a request per profile).
 	case "loopback.conf": //3th
 	case "verto.conf": //4th
@@ -42,7 +43,6 @@ func doConfiguration(c *gin.Context) (b string) {
 	case "acl.conf": //21th
 	case "post_load_switch.conf": //22th
 	case "switch.conf": //23th? switch version v1.10.7 missing.
-
 	}
 	return body
 }
