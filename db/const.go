@@ -45,6 +45,18 @@ CREATE TABLE IF NOT EXISTS %s (
 `
 
 //fs gateway -run table define
+const CONFS = `
+CREATE TABLE IF NOT EXISTS %s (
+	conf_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
+	conf_filename varchar NOT NULL,
+	conf_content varchar NOT NULL,
+	conf_newcontent varchar NULL,
+	CONSTRAINT confs_pkey PRIMARY KEY (conf_uuid),
+	CONSTRAINT confs_un UNIQUE (conf_filename)
+);
+COMMENT ON TABLE %s IS 'switch config files which mod_xml_curl requested';
+`
+
 const ACCOUNTS = `
 CREATE TABLE IF NOT EXISTS %s (
 	account_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -104,7 +116,8 @@ CREATE TABLE IF NOT EXISTS %s (
 	account_domain varchar NOT NULL,
 	gateway_name varchar NOT NULL,
 	e164_number varchar NOT NULL,
-	acce164_isdefault bool NOT NULL DEFAULT false
+	acce164_isdefault bool NOT NULL DEFAULT false,
+	CONSTRAINT acce164_pkey PRIMARY KEY (acce164_uuid)
 );
 COMMENT ON TABLE %s IS 'account e164 number for outgoing call';
 ALTER TABLE %s ADD CONSTRAINT acce164_fk FOREIGN KEY (account_id,account_domain) REFERENCES %s(account_id,account_domain) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -118,6 +131,7 @@ CREATE TABLE IF NOT EXISTS %s (
 	fifo_importance varchar NULL DEFAULT 0,
 	fifo_announce varchar NULL DEFAULT '',
 	fifo_holdmusic varchar NULL DEFAULT '',
+	CONSTRAINT fifos_pkey PRIMARY KEY (fifo_uuid),
 	CONSTRAINT fifos_un UNIQUE (fifo_name)
 );
 COMMENT ON TABLE %s IS 'mod_fifo fifos';
@@ -129,7 +143,8 @@ CREATE TABLE IF NOT EXISTS %s (
 	member_string varchar NOT NULL,
 	member_simo varchar NULL DEFAULT 1,
 	member_timeout varchar NULL DEFAULT 10,
-	member_lag varchar NULL DEFAULT 10
+	member_lag varchar NULL DEFAULT 10,
+	CONSTRAINT fifomembers_pkey PRIMARY KEY (fifomember_uuid)
 );
 COMMENT ON TABLE %s IS 'mod_fifo fifo members';
 ALTER TABLE %s ADD CONSTRAINT fifomember_fk FOREIGN KEY (fifo_name) REFERENCES %s(fifo_name) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -140,7 +155,8 @@ const BLACKLISTS = `
 CREATE TABLE IF NOT EXISTS %s (
 	blacklist_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
 	blacklist_caller varchar NOT NULL,
-	blacklist_callee varchar NOT NULL
+	blacklist_callee varchar NOT NULL,
+	CONSTRAINT blacklists_pkey PRIMARY KEY (blacklist_uuid)
 );
 COMMENT ON TABLE %s IS 'call filter blacklist include caller and callee';
 `
@@ -149,7 +165,8 @@ CREATE TABLE IF NOT EXISTS %s (
 	job_uuid uuid NOT NULL,
 	job_cmd varchar,
 	job_cmdarg varchar,
-	job_content varchar
+	job_content varchar,
+	CONSTRAINT bgjobs_pkey PRIMARY KEY (job_uuid)
 );
 COMMENT ON TABLE %s IS 'eslclient execute bgapi command then receive EVENT BACKGROUND_JOB ';
 `

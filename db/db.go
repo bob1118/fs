@@ -158,6 +158,16 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 	ip := viper.GetString(`switch.vars.ipv4`)
 	tablePrefix := viper.GetString(`gateway.db.tableprefix`)
 
+	//table confs
+	tableConfs := fmt.Sprintf(`%s_confs`, tablePrefix)
+	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableConfs); err != nil {
+		log.Println(err)
+	} else {
+		if !isFound {
+			sql := fmt.Sprintf(CONFS, tableConfs, tableConfs)
+			db.MustExec(sql)
+		}
+	}
 	//table accounts
 	tableAccounts := fmt.Sprintf(`%s_accounts`, tablePrefix)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableAccounts); err != nil {
@@ -169,9 +179,9 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 			//insert DEFAULT_ACCOUNTS
 			for i := 8000; i < 8010; i++ {
 				s := strconv.Itoa(i)
-				ipisdomainsql := fmt.Sprintf(DEFAULT_ACCOUNTS, tableAccounts, s, s, s, s, ip, ip)
+				ip_domain_sql := fmt.Sprintf(DEFAULT_ACCOUNTS, tableAccounts, s, s, s, s, ip, ip)
 				my_domain_sql := fmt.Sprintf(DEFAULT_ACCOUNTS, tableAccounts, s, s, s, s, `mydomain`, ip)
-				db.MustExec(ipisdomainsql) //8000-8009 @ip
+				db.MustExec(ip_domain_sql) //8000-8009 @ip
 				db.MustExec(my_domain_sql) //8000-8009 @mydomain
 			}
 		}

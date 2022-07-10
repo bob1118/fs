@@ -47,8 +47,12 @@ func New(conf string, bakext string) *Fsconf {
 	}
 }
 
-func Newconf(conf string) *Fsconf {
+func NewConf(conf string) *Fsconf {
 	return New(conf, `.bak`)
+}
+
+func DefaultConf() *Fsconf {
+	return NewConf(viper.GetString(`switch.conf`))
 }
 
 func (p *Fsconf) Dir() string { return p.confDir }

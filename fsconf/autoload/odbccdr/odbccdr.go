@@ -1,3 +1,0 @@
-package odbccdr
-
-func init() {}

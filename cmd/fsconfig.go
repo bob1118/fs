@@ -50,6 +50,7 @@ func fsconfigCmdRun(cmd *cobra.Command, args []string) {
 	v := viper.GetViper()
 	conf := v.GetString(`switch.conf`)
 	if _, err := os.Stat(conf); err != nil { //conf from .fs switch.conf not exist.
+		log.Println("switch.conf:", conf, "can not accessed")
 		runos := runtime.GOOS
 		switch runos {
 		case `linux`:
@@ -63,6 +64,7 @@ func fsconfigCmdRun(cmd *cobra.Command, args []string) {
 		if _, e := os.Stat(dir); e == nil { //default conf dir exist.
 			v.Set(`switch.conf`, dir)
 			v.WriteConfig()
+			log.Println("set switch.conf to default:", dir)
 		}
 	} else {
 		dir = conf
@@ -78,6 +80,6 @@ func fsconfigCmdRun(cmd *cobra.Command, args []string) {
 	}
 }
 
-func fsconfigCmdInit(dir string) error { return fsconf.Newconf(dir).Init() }
+func fsconfigCmdInit(dir string) error { return fsconf.NewConf(dir).Init() }
 
-func fsconfigCmdReset(dir string) error { return fsconf.Newconf(dir).Reset() }
+func fsconfigCmdReset(dir string) error { return fsconf.NewConf(dir).Reset() }

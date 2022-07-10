@@ -1,8 +1,10 @@
 package fsapi
 
 import (
+	"fmt"
+
 	"github.com/bob1118/fs/fsconf"
-	"github.com/bob1118/fs/fsconf/autoload"
+	"github.com/bob1118/fs/fsconf/modules"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,8 +20,8 @@ func doConfiguration(c *gin.Context) (b string) {
 	// case "enum.conf": //?
 	// case "xml_curl.conf": //?
 	case "odbc_cdr.conf": //1th request.
-		if conf, err := autoload.GetConfiguration(value); err == nil {
-			body = conf
+		if odbc_cdr, err := modules.GetConfiguration(value); err == nil {
+			body = fmt.Sprintf(fsconf.CONFIGURATION, odbc_cdr)
 		}
 	case "sofia.conf": //2th request(a request per profile).
 	case "loopback.conf": //3th
