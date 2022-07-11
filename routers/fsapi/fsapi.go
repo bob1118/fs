@@ -10,11 +10,13 @@ import (
 
 /////////////////////////////////// request when switch boot ...////////////////////////////////////
 // http://localhost/fsapi
+//
 // HEADER:
 // Content-Length [97]
 // Content-Type [application/x-www-form-urlencoded]
 // User-Agent [freeswitch-xml/1.0]
 // Accept [*/*]
+//
 // BODY:
 // hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=odbc_cdr.conf
 //
@@ -84,6 +86,6 @@ func PostFromXmlCurl(c *gin.Context) {
 	case "phrases":
 		responseBody = doPhrases(c)
 	}
-	log.Println(responseBody)
+	//log.Println(responseBody)
 	c.String(http.StatusOK, responseBody)
 }

@@ -17,19 +17,27 @@
 
 package odbc_cdr
 
-import "errors"
+import (
+	"errors"
+	"strings"
+
+	"github.com/gin-gonic/gin"
+)
 
 func init() {}
 
-func Default() (string, error) { return CONFXML_MOD_ODBC_CDR, nil }
+func Default() (string, error) { return ODBC_CDR_CONF_XML, nil }
 
-func Read(file string) (string, error) {
+func Read(c *gin.Context) (string, error) {
+	//file := fmt.Sprintf("%s/autoload_configs/odbc_cdr.conf.xml", viper.GetString(`switch.conf`))
 	//content, err := os.ReadFile(file)
 	//return string(content), err
-	return "", errors.New("odbc_cdr.Read nothing")
+	return "", errors.New("odbc_cdr.Read(c) nothing")
 }
 
-func Build(old string) (string, error) {
-	//nothing todo.
-	return "", errors.New("content build nothing")
+func Build(c *gin.Context, content string) (string, error) {
+	//<param name="odbc-dsn" value="$${pg_handle}"/>
+	newOdbcdsn := `<param name="odbc-dsn" value="$${pg_handle}"/>`
+	newcontent := strings.ReplaceAll(content, ODBC_DSN, newOdbcdsn)
+	return newcontent, nil
 }

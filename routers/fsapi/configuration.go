@@ -20,10 +20,13 @@ func doConfiguration(c *gin.Context) (b string) {
 	// case "enum.conf": //?
 	// case "xml_curl.conf": //?
 	case "odbc_cdr.conf": //1th request.
-		if odbc_cdr, err := modules.GetConfiguration(value); err == nil {
+		if odbc_cdr, err := modules.GetConfiguration(c); err == nil {
 			body = fmt.Sprintf(fsconf.CONFIGURATION, odbc_cdr)
 		}
 	case "sofia.conf": //2th request(a request per profile).
+		if sofia, err := modules.GetConfiguration(c); err == nil {
+			body = fmt.Sprintf(fsconf.CONFIGURATION, sofia)
+		}
 	case "loopback.conf": //3th
 	case "verto.conf": //4th
 	case "conference.conf": //5th

@@ -1,17 +1,18 @@
 package odbc_cdr
 
-const CONFXML_MOD_ODBC_CDR = `<configuration name="odbc_cdr.conf" description="ODBC CDR Configuration">
+const ODBC_DSN = `<param name="odbc-dsn" value="pgsql://hostaddr=192.168.0.100 dbname=freeswitch user=freeswitch password='freeswitch' options='-c client_min_messages=NOTICE'"/>`
+const ODBC_CDR_CONF_XML = `<configuration name="odbc_cdr.conf" description="ODBC CDR Configuration">
 <settings>
   <!-- <param name="odbc-dsn" value="database:username:password"/> -->
   <param name="odbc-dsn" value="pgsql://hostaddr=192.168.0.100 dbname=freeswitch user=freeswitch password='freeswitch' options='-c client_min_messages=NOTICE'"/>
   <!-- global value can be "a-leg", "b-leg", "both" (default is "both") -->
   <param name="log-leg" value="both"/>
   <!-- value can be "always", "never", "on-db-fail" -->
-  <param name="write-csv" value="on-db-fail"/>
+  <!-- <param name="write-csv" value="on-db-fail"/> -->
   <!-- location to store csv copy of CDR -->
-  <param name="csv-path" value="/usr/local/freeswitch/log/odbc_cdr"/>
+  <!-- <param name="csv-path" value="/usr/local/freeswitch/log/odbc_cdr"/> -->
   <!-- if "csv-path-on-fail" is set, failed INSERTs will be placed here as CSV files otherwise they will be placed in "csv-path" -->
-  <param name="csv-path-on-fail" value="/usr/local/freeswitch/log/odbc_cdr/failed"/>
+  <!-- <param name="csv-path-on-fail" value="/usr/local/freeswitch/log/odbc_cdr/failed"/> -->
   <!-- dump SQL statement after leg ends -->
   <param name="debug-sql" value="true"/>
 </settings>
