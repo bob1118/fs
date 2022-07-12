@@ -35,6 +35,10 @@ func pgsqlInitdb() {
 	if err != nil {
 		log.Println(err)
 	} else {
+		// for debug
+		if true {
+			pgsqlDestroySwitchdb(pgdb)
+		}
 		// initSwitchdb
 		if switchdb, err = pgsqlInitSwitchdb(pgdb); err != nil {
 			log.Println(err)
@@ -88,16 +92,16 @@ func pgsqlInitSwitchdb(db *sqlx.DB) (*sqlx.DB, error) {
 	return pgsqlOpen(switchstr)
 }
 
-// func pgsqlDestroySwitchdb(db *sqlx.DB) {
-// 	switchDbUser := viper.GetString(`switch.db.user`)
-// 	switchDbName := viper.GetString(`switch.db.name`)
-// 	if db.Stats().InUse > 0 {
-// 		log.Println(db.Stats())
-// 	} else {
-// 		dropsql := fmt.Sprintf(DATABASE_USER_DROP, switchDbName, switchDbUser)
-// 		db.MustExec(dropsql)
-// 	}
-// }
+func pgsqlDestroySwitchdb(db *sqlx.DB) {
+	switchDbUser := viper.GetString(`switch.db.user`)
+	switchDbName := viper.GetString(`switch.db.name`)
+	if db.Stats().InUse > 0 {
+		log.Println(db.Stats())
+	} else {
+		dropsql := fmt.Sprintf(DATABASE_USER_DROP, switchDbName, switchDbUser)
+		db.MustExec(dropsql)
+	}
+}
 
 func pgsqlInitSwitchMododbccdrTables(db *sqlx.DB) {
 	var err error

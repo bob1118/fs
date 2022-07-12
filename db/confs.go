@@ -32,7 +32,8 @@ func InsertGatewayConfsConf(c *Conf) error {
 	var err error
 	var conf = c
 	if len(conf.Cfilename) > 0 && len(conf.Ccontent) > 0 {
-		insertsql := fmt.Sprintf("insert into %s_confs(conf_filename, conf_content, conf_newcontent) values(:conf_filename,:conf_content,:conf_newcontent)", viper.GetString(`gateway.db.tableprefix`))
+		insertsql := fmt.Sprintf("insert into %s_confs(conf_filename, conf_function, conf_profile, conf_content, conf_newcontent) values(:conf_filename,:conf_function,:conf_profile,:conf_content,:conf_newcontent)",
+			viper.GetString(`gateway.db.tableprefix`))
 		_, err = GetGatewaydb().NamedExec(insertsql, conf)
 	} else {
 		err = errors.New("InsertGatewayConfsConf in param null")

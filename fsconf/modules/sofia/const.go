@@ -30,3 +30,12 @@ const SOFIA_CONF_XML = `<configuration name="sofia.conf" description="sofia Endp
 
 </configuration>
 `
+const SOFIA_CONF_XML_WITH_PROFILE = `
+<configuration name="sofia.conf" description="sofia Endpoint">
+  <global_settings>
+  </global_settings>
+  <profiles>
+%s
+  </profiles>
+</configuration>
+`

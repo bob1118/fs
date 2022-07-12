@@ -1,5 +1,6 @@
 // mod_sofia
-// switch.conf/autoload_configs/sofia.conf.xml
+// `switch.conf`/autoload_configs/sofia.conf.xml
+// `switch.conf`/sip_profiles/*.xml
 
 // request:
 // hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=sofia.conf&Event-Name=REQUEST_PARAMS&Core-UUID=297f80ae-fee7-4a80-87a4-32625cafb18d&FreeSWITCH-Hostname=D1130&FreeSWITCH-Switchname=D1130&FreeSWITCH-IPv4=10.10.10.10&FreeSWITCH-IPv6=%3A%3A1&Event-Date-Local=2022-07-06%2018%3A25%3A12&Event-Date-GMT=Wed,%2006%20Jul%202022%2010%3A25%3A12%20GMT&Event-Date-Timestamp=1657103112943844&Event-Calling-File=sofia.c&Event-Calling-Function=config_sofia&Event-Calling-Line-Number=4489&Event-Sequence=30
@@ -52,6 +53,7 @@ package sofia
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -64,42 +66,116 @@ func init() {}
 func Default() (string, error) { return SOFIA_CONF_XML, nil }
 
 func Read(c *gin.Context) (string, error) {
+	var err error
 	var file string
-	function := c.PostForm(`Event-Calling-Function`)
+	var content string
+	dir := viper.GetString(`switch.conf`)
 	profile := c.PostForm(`profile`)
-	switch function {
-	case "config_sofia":
-		switch profile {
-		case "": //sofia.conf.xml
-			file = fmt.Sprintf("%s/autoload_configs/sofia.conf.xml", viper.GetString(`switch.conf`))
-		case "internal": //sofia profile internal xxx
-		case "internal-ipv6": //sofia profile internal-ipv6 xxx
-		case "external": //sofia profile external xxx
-		case "external-ipv6": //sofia profile external-ipv6 xxx
+	//reconfig := c.PostForm(`reconfig`)
+	//function := c.PostForm(`Event-Calling-Function`)
+
+	// switch function {
+	// case "config_sofia":
+	// 	switch profile {
+	// 	case "": //sofia.conf.xml
+	// 		file = fmt.Sprintf("%s/autoload_configs/sofia.conf.xml", dir)
+	// 	case "internal": //sofia profile internal xxx
+	// 		file = fmt.Sprintf("%s/sip_profiles/internal.xml", dir)
+	// 	case "internal-ipv6": //sofia profile internal-ipv6 xxx
+	// 		file = fmt.Sprintf("%s/sip_profiles/internal-ipv6.xml", dir)
+	// 	case "external": //sofia profile external xxx
+	// 		file = fmt.Sprintf("%s/sip_profiles/external.xml", dir)
+	// 	case "external-ipv6": //sofia profile external-ipv6 xxx
+	// 		file = fmt.Sprintf("%s/sip_profiles/external-ipv6.xml", dir)
+	// 	}
+	// case "launch_sofia_worker_thread":
+	// 	switch profile {
+	// 	case "internal":
+	// 		file = fmt.Sprintf("%s/sip_profiles/internal.xml", dir)
+	// 	case "internal-ipv6":
+	// 		file = fmt.Sprintf("%s/sip_profiles/internal-ipv6.xml", dir)
+	// 	case "external":
+	// 		file = fmt.Sprintf("%s/sip_profiles/external.xml", dir)
+	// 	case "external-ipv6":
+	// 		file = fmt.Sprintf("%s/sip_profiles/external-ipv6.xml", dir)
+	// 	}
+
+	switch profile {
+	case "": //sofia.conf.xml
+		file = fmt.Sprintf("%s/autoload_configs/sofia.conf.xml", dir)
+		if data, e := os.ReadFile(file); e != nil {
+			err = e
+			log.Println(e)
+		} else {
+			content = string(data)
 		}
-	case "launch_sofia_worker_thread":
-		switch profile {
-		case "internal":
-			file = fmt.Sprintf("%s/sip_profiles/internal.xml", viper.GetString(`switch.conf`))
-		case "internal-ipv6":
-			file = fmt.Sprintf("%s/sip_profiles/internal-ipv6.xml", viper.GetString(`switch.conf`))
-		case "external":
-			file = fmt.Sprintf("%s/sip_profiles/external.xml", viper.GetString(`switch.conf`))
-		case "external-ipv6":
-			file = fmt.Sprintf("%s/sip_profiles/external-ipv6.xml", viper.GetString(`switch.conf`))
+	case "internal": //sofia.conf.xml with profile internal
+		file = fmt.Sprintf("%s/sip_profiles/internal.xml", dir)
+		if data, e := os.ReadFile(file); e != nil {
+			err = e
+			log.Println(e)
+		} else {
+			content = fmt.Sprintf(SOFIA_CONF_XML_WITH_PROFILE, string(data))
+		}
+	case "internal-ipv6": //sofia.conf.xml with profile internal-ipv6
+		file = fmt.Sprintf("%s/sip_profiles/internal-ipv6.xml", dir)
+		if data, e := os.ReadFile(file); e != nil {
+			err = e
+			log.Println(e)
+		} else {
+			content = fmt.Sprintf(SOFIA_CONF_XML_WITH_PROFILE, string(data))
+		}
+	case "external": //sofia.conf.xml with profile external
+		file = fmt.Sprintf("%s/sip_profiles/external.xml", dir)
+		if data, e := os.ReadFile(file); e != nil {
+			err = e
+			log.Println(e)
+		} else {
+			content = fmt.Sprintf(SOFIA_CONF_XML_WITH_PROFILE, string(data))
+		}
+	case "external-ipv6": //sofia.conf.xml with profile external-ipv6
+		file = fmt.Sprintf("%s/sip_profiles/external-ipv6.xml", dir)
+		if data, e := os.ReadFile(file); e != nil {
+			err = e
+			log.Println(e)
+		} else {
+			content = fmt.Sprintf(SOFIA_CONF_XML_WITH_PROFILE, string(data))
 		}
 	}
-	content, err := os.ReadFile(file)
-	return string(content), err
+	return content, err
 }
 
 func Build(c *gin.Context, content string) (string, error) {
-	//<X-PRE-PROCESS cmd="include" data="../sip_profiles/*.xml"/>
-	newprofiles := ``
-	oldprofiles := `    <X-PRE-PROCESS cmd="include" data="../sip_profiles/*.xml"/>`
-	newcontent := strings.ReplaceAll(content, oldprofiles, newprofiles)
-
-	//external
-	//
+	var old, new, newcontent string
+	profile := c.PostForm(`profile`)
+	switch profile {
+	case "": //sofia.conf.xml
+		//<X-PRE-PROCESS cmd="include" data="../sip_profiles/*.xml"/>
+		new = `<X-PRE-PROCESS cmd="include" data="./sip_profiles/*.xml"/>`
+		old = `<X-PRE-PROCESS cmd="include" data="../sip_profiles/*.xml"/>`
+		newcontent = strings.ReplaceAll(content, old, new)
+	case "internal", "internal-ipv6":
+		//<!--<param name="odbc-dsn" value="dsn:user:pass"/>-->
+		old = `<!--<param name="odbc-dsn" value="dsn:user:pass"/>-->`
+		new = `<param name="odbc-dsn" value="$${pg_handle}"/>`
+		newcontent = strings.ReplaceAll(newcontent, old, new)
+		//<param name="force-register-domain" value="$${domain}"/>
+		old = `<param name="force-register-domain" value="$${domain}"/>`
+		new = `<!--<param name="force-register-domain" value="$${domain}"/>-->`
+		newcontent = strings.ReplaceAll(newcontent, old, new)
+		//<param name="force-subscription-domain" value="$${domain}"/>
+		old = `<param name="force-subscription-domain" value="$${domain}"/>`
+		new = `<!--<param name="force-subscription-domain" value="$${domain}"/>-->`
+		newcontent = strings.ReplaceAll(newcontent, old, new)
+		//<param name="force-register-db-domain" value="$${domain}"/>
+		old = `<param name="force-register-db-domain" value="$${domain}"/>`
+		new = `<!--<param name="force-register-db-domain" value="$${domain}"/>-->`
+		newcontent = strings.ReplaceAll(newcontent, old, new)
+	case "external", "external-ipv6":
+		//<!-- ************************************************* -->
+		old = `<!-- ************************************************* -->`
+		new = `<param name="odbc-dsn" value="$${pg_handle}"/>`
+		newcontent = strings.ReplaceAll(newcontent, old, new)
+	}
 	return newcontent, nil
 }

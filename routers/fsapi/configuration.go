@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//doConfiguration function return xml config.
+//doConfiguration function return mod_xxx xml config.
 func doConfiguration(c *gin.Context) (b string) {
 
 	body := fsconf.NOT_FOUND

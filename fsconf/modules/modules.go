@@ -1,5 +1,15 @@
 // switch configuration modules
 // p.Dir()+`autoload_configs`+`xxx.conf.xml`
+
+// request:
+// hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=xxx.conf ...
+// response:
+// <document type="freeswitch/xml">
+//   <section name="configuration">
+//      <!-- xxx.conf.xml -->
+//   </section>
+// </document>
+
 package modules
 
 import (
@@ -49,7 +59,7 @@ func readConfFromDatabase(c *gin.Context) (string, error) {
 				content = conf.Ccontent
 			}
 		} else {
-			err = errors.New("db.Conf.Ccontent null")
+			err = errors.New("db confs conf.Ccontent null")
 		}
 	}
 	return content, err
@@ -61,10 +71,8 @@ func readConfFromFile(c *gin.Context) (string, error) {
 	filename := c.PostForm(`key_value`)
 	switch filename {
 	case "odbc_cdr.conf":
-		//file := fmt.Sprintf("%s/autoload_configs/odbc_cdr.conf.xml", viper.GetString(`switch.conf`))
 		content, err = odbc_cdr.Read(c)
 	case "sofia.conf":
-		//file := fmt.Sprintf("%s/autoload_configs/sofia.conf.xml", viper.GetString(`switch.conf`))
 		content, err = sofia.Read(c)
 	}
 	return content, err
@@ -100,8 +108,12 @@ func buildConf(c *gin.Context, old string) (string, error) {
 
 func writeConfToDatabase(c *gin.Context, content string, newcontent string) error {
 	filename := c.PostForm(`key_value`)
+	function := c.PostForm(`Event-Calling-Function`)
+	profile := c.PostForm(`profile`)
 	conf := &db.Conf{
 		Cfilename:   filename,
+		Cfunction:   function,
+		Cprofile:    profile,
 		Ccontent:    content,
 		Cnewcontent: newcontent,
 	}

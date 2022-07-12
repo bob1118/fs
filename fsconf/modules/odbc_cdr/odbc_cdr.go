@@ -1,6 +1,6 @@
 // mod_odbc_cdr
 // apt-get install freeswitch-mod-odbc-cdr
-// default install without configuration file "odbc_cdr.conf.xml"
+// default install without configuration file "odbc_cdr.conf.xml", so read return error.
 
 // request:
 // hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=odbc_cdr.conf
