@@ -59,7 +59,7 @@ switch:
         password: fsdba
         user: fsdba
     vars:
-        ipv4: 10.10.10.10
+        ipv4: 10.10.10.25
         external_sip_ip: $${local_ip_v4}
         external_rtp_ip: $${local_ip_v4}
     xml_curl:

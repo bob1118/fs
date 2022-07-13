@@ -98,8 +98,10 @@ func pgsqlDestroySwitchdb(db *sqlx.DB) {
 	if db.Stats().InUse > 0 {
 		log.Println(db.Stats())
 	} else {
-		dropsql := fmt.Sprintf(DATABASE_USER_DROP, switchDbName, switchDbUser)
-		db.MustExec(dropsql)
+		dropdb := fmt.Sprintf(DATABASE_DROP, switchDbName)
+		dropuser := fmt.Sprintf(USER_DROP, switchDbUser)
+		db.MustExec(dropdb)
+		db.MustExec(dropuser)
 	}
 }
 

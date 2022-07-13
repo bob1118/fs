@@ -7,7 +7,8 @@ package db
 const USER_CREATE = "create user %s with password '%s'"
 const DB_CREATE = "create database %s with owner %s"
 const DBUSER_AUTH = "grant all privileges on database %s to %s"
-const DATABASE_USER_DROP = `drop database if exists %s; drop user if exists %s;`
+const DATABASE_DROP = `drop database if exists %s;`
+const USER_DROP = `drop user if exists %s;`
 
 //CREATE TABLE if not exists table_name(...)
 
