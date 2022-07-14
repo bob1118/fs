@@ -92,11 +92,21 @@ func pgsqlInitSwitchdb(db *sqlx.DB) (*sqlx.DB, error) {
 	return pgsqlOpen(switchstr)
 }
 
+func pgsqlGetDatabaseOpenConnections(pgdb *sqlx.DB, dbname string) int {
+	var connections int
+	query := fmt.Sprintf(`select count(*) as connections from pg_stat_activity where datname = '%s';`, dbname)
+	if err := pgdb.Get(&connections, query); err != nil {
+		log.Println(err)
+	}
+	return connections
+}
+
 func pgsqlDestroySwitchdb(db *sqlx.DB) {
 	switchDbUser := viper.GetString(`switch.db.user`)
 	switchDbName := viper.GetString(`switch.db.name`)
-	if db.Stats().InUse > 0 {
-		log.Println(db.Stats())
+	connections := pgsqlGetDatabaseOpenConnections(db, switchDbName)
+	if connections > 0 {
+		log.Printf("pgsqlGetDatabaseOpenConnections database:%s connections:%d\n", switchDbName, connections)
 	} else {
 		dropdb := fmt.Sprintf(DATABASE_DROP, switchDbName)
 		dropuser := fmt.Sprintf(USER_DROP, switchDbUser)
@@ -108,8 +118,21 @@ func pgsqlDestroySwitchdb(db *sqlx.DB) {
 func pgsqlInitSwitchMododbccdrTables(db *sqlx.DB) {
 	var err error
 	var isFound bool
+	var tables = make([]string, 0, 10)
 	modname := viper.GetString(`switch.cdr.modname`)
-	tables := viper.GetStringSlice(`switch.cdr.tables`)
+	alegname := viper.GetString(`switch.cdr.a-leg`)
+	blegname := viper.GetString(`switch.cdr.b-leg`)
+	bothname := viper.GetString(`switch.cdr.both`)
+
+	if len(alegname) > 0 {
+		tables = append(tables, alegname)
+	}
+	if len(blegname) > 0 {
+		tables = append(tables, blegname)
+	}
+	if len(bothname) > 0 {
+		tables = append(tables, bothname)
+	}
 
 	if strings.EqualFold(modname, `mod_odbc_cdr`) {
 		for _, table := range tables {
@@ -164,7 +187,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 	ip := viper.GetString(`switch.vars.ipv4`)
 	tablePrefix := viper.GetString(`gateway.db.tableprefix`)
 
-	//table confs
+	//table confs define gateway response content.
 	tableConfs := fmt.Sprintf(`%s_confs`, tablePrefix)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableConfs); err != nil {
 		log.Println(err)
@@ -172,6 +195,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 		if !isFound {
 			sql := fmt.Sprintf(CONFS, tableConfs, tableConfs)
 			db.MustExec(sql)
+			//insert DEFAULT_CONFS 
 		}
 	}
 	//table accounts

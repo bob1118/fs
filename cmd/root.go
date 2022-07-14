@@ -52,7 +52,9 @@ switch:
     conf: /etc/freeswitch
     cdr:
         modname: mod_odbc_cdr
-        tables: [cdr_table_a_leg, cdr_table_b_leg]
+        a-leg: cdr_table_a_leg
+        b-leg: cdr_table_b_leg
+        both: 
     db:
         host: 127.0.0.1
         name: freeswitch

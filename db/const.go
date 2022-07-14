@@ -54,8 +54,7 @@ CREATE TABLE IF NOT EXISTS %s (
 	conf_profile varchar NULL,
 	conf_content varchar NOT NULL,
 	conf_newcontent varchar NULL,
-	CONSTRAINT confs_pkey PRIMARY KEY (conf_uuid),
-	CONSTRAINT confs_un UNIQUE (conf_filename)
+	CONSTRAINT confs_pkey PRIMARY KEY (conf_uuid)
 );
 COMMENT ON TABLE %s IS 'switch config files which mod_xml_curl requested';
 `

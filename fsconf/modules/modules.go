@@ -19,6 +19,7 @@ import (
 	"github.com/bob1118/fs/db"
 	"github.com/bob1118/fs/fsconf/modules/odbc_cdr"
 	"github.com/bob1118/fs/fsconf/modules/sofia"
+	"github.com/bob1118/fs/fsconf/modules/switch_db"
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,6 +40,14 @@ func GetConfiguration(c *gin.Context) (string, error) {
 			writeConfToDatabase(c, content, newcontent)
 			content = newcontent
 		}
+	}
+	//for debug
+	if false {
+		filename := c.PostForm(`key_value`)
+		function := c.PostForm(`Event-Calling-Function`)
+		profile := c.PostForm(`profile`)
+		log.Println("Request:", filename, function, profile)
+		log.Println("Response:\n", content)
 	}
 	return content, err
 }
@@ -74,6 +83,8 @@ func readConfFromFile(c *gin.Context) (string, error) {
 		content, err = odbc_cdr.Read(c)
 	case "sofia.conf":
 		content, err = sofia.Read(c)
+	case "db.conf":
+		content, err = switch_db.Read(c)
 	}
 	return content, err
 }
@@ -87,6 +98,8 @@ func constConfiguration(c *gin.Context) (string, error) {
 		content, err = odbc_cdr.Default()
 	case "sofia.conf":
 		content, err = sofia.Default()
+	case "db.conf":
+		content, err = switch_db.Default()
 	}
 	return content, err
 }
@@ -102,6 +115,8 @@ func buildConf(c *gin.Context, old string) (string, error) {
 		new, err = odbc_cdr.Build(c, old)
 	case "sofia.conf":
 		new, err = sofia.Build(c, old)
+	case "db.conf":
+		new, err = switch_db.Build(c, old)
 	}
 	return new, err
 }

@@ -3,6 +3,8 @@
 // CREATE TABLE IF NOT EXISTS %s (
 // 	conf_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
 // 	conf_filename varchar NOT NULL,
+// 	conf_function varchar NULL,
+// 	conf_profile varchar NULL,
 // 	conf_content varchar NOT NULL,
 // 	conf_newcontent varchar NULL,
 // 	CONSTRAINT confs_pkey PRIMARY KEY (conf_uuid),
@@ -15,6 +17,7 @@ package db
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/spf13/viper"
 )
@@ -34,7 +37,9 @@ func InsertGatewayConfsConf(c *Conf) error {
 	if len(conf.Cfilename) > 0 && len(conf.Ccontent) > 0 {
 		insertsql := fmt.Sprintf("insert into %s_confs(conf_filename, conf_function, conf_profile, conf_content, conf_newcontent) values(:conf_filename,:conf_function,:conf_profile,:conf_content,:conf_newcontent)",
 			viper.GetString(`gateway.db.tableprefix`))
-		_, err = GetGatewaydb().NamedExec(insertsql, conf)
+		if _, err = GetGatewaydb().NamedExec(insertsql, conf); err != nil {
+			log.Println(err)
+		}
 	} else {
 		err = errors.New("InsertGatewayConfsConf in param null")
 	}
@@ -46,7 +51,9 @@ func GetGatewayConfsConf(filename, function, profile string) (*Conf, error) {
 	var conf = Conf{}
 	query := fmt.Sprintf("select * from %s_confs where conf_filename = '%s' and conf_function='%s' and conf_profile='%s'", viper.GetString(`gateway.db.tableprefix`), filename, function, profile)
 	if len(filename) > 0 {
-		err = GetGatewaydb().Get(&conf, query)
+		if err = GetGatewaydb().Get(&conf, query); err != nil {
+			log.Println(err)
+		}
 	} else {
 		err = errors.New("GetGatewayConfsConf filename null")
 	}

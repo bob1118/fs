@@ -1,5 +1,9 @@
 package sofia
 
+const MOD_NAME = `mod_sofia`
+
+const MOD_CONF_NAME = `sofia.conf.xml`
+
 const SOFIA_CONF_XML = `<configuration name="sofia.conf" description="sofia Endpoint">
 
   <global_settings>
@@ -30,8 +34,7 @@ const SOFIA_CONF_XML = `<configuration name="sofia.conf" description="sofia Endp
 
 </configuration>
 `
-const SOFIA_CONF_XML_WITH_PROFILE = `
-<configuration name="sofia.conf" description="sofia Endpoint">
+const SOFIA_CONF_XML_WITH_PROFILE = `<configuration name="sofia.conf" description="sofia Endpoint">
   <global_settings>
   </global_settings>
   <profiles>

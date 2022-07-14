@@ -102,7 +102,7 @@ func Read(c *gin.Context) (string, error) {
 
 	switch profile {
 	case "": //sofia.conf.xml
-		file = fmt.Sprintf("%s/autoload_configs/sofia.conf.xml", dir)
+		file = fmt.Sprintf("%s/autoload_configs/%s", dir, MOD_CONF_NAME)
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
 			log.Println(e)
@@ -158,7 +158,7 @@ func Build(c *gin.Context, content string) (string, error) {
 		//<!--<param name="odbc-dsn" value="dsn:user:pass"/>-->
 		old = `<!--<param name="odbc-dsn" value="dsn:user:pass"/>-->`
 		new = `<param name="odbc-dsn" value="$${pg_handle}"/>`
-		newcontent = strings.ReplaceAll(newcontent, old, new)
+		newcontent = strings.ReplaceAll(content, old, new)
 		//<param name="force-register-domain" value="$${domain}"/>
 		old = `<param name="force-register-domain" value="$${domain}"/>`
 		new = `<!--<param name="force-register-domain" value="$${domain}"/>-->`
@@ -175,7 +175,7 @@ func Build(c *gin.Context, content string) (string, error) {
 		//<!-- ************************************************* -->
 		old = `<!-- ************************************************* -->`
 		new = `<param name="odbc-dsn" value="$${pg_handle}"/>`
-		newcontent = strings.ReplaceAll(newcontent, old, new)
+		newcontent = strings.ReplaceAll(content, old, new)
 	}
 	return newcontent, nil
 }

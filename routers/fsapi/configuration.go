@@ -31,6 +31,9 @@ func doConfiguration(c *gin.Context) (b string) {
 	case "verto.conf": //4th
 	case "conference.conf": //5th
 	case "db.conf": //6th
+		if switchdb, err := modules.GetConfiguration(c); err == nil {
+			body = fmt.Sprintf(fsconf.CONFIGURATION, switchdb)
+		}
 	case "fifo.conf": //7th
 	case "hash.conf": //8th
 	case "voicemail.conf": //9th
