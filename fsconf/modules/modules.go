@@ -14,13 +14,17 @@ package modules
 
 import (
 	"errors"
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/bob1118/fs/db"
+	"github.com/bob1118/fs/fsconf/modules/fifo"
 	"github.com/bob1118/fs/fsconf/modules/odbc_cdr"
 	"github.com/bob1118/fs/fsconf/modules/sofia"
 	"github.com/bob1118/fs/fsconf/modules/switch_db"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 func GetConfiguration(c *gin.Context) (string, error) {
@@ -30,6 +34,7 @@ func GetConfiguration(c *gin.Context) (string, error) {
 		if content, err = readConfFromFile(c); err != nil {
 			if content, err = constConfiguration(c); err != nil {
 				log.Println(err)
+				return "", err
 			} else {
 				writeConfToFile(c, content)
 			}
@@ -42,7 +47,7 @@ func GetConfiguration(c *gin.Context) (string, error) {
 		}
 	}
 	//for debug
-	if false {
+	if true {
 		filename := c.PostForm(`key_value`)
 		function := c.PostForm(`Event-Calling-Function`)
 		profile := c.PostForm(`profile`)
@@ -58,7 +63,7 @@ func readConfFromDatabase(c *gin.Context) (string, error) {
 	filename := c.PostForm(`key_value`)
 	function := c.PostForm(`Event-Calling-Function`)
 	profile := c.PostForm(`profile`)
-	if conf, e := db.GetGatewayConfsConf(filename, function, profile); e != nil {
+	if conf, e := db.GetConfsConf(filename, function, profile); e != nil {
 		err = e
 	} else {
 		if len(conf.Ccontent) > 0 {
@@ -85,6 +90,15 @@ func readConfFromFile(c *gin.Context) (string, error) {
 		content, err = sofia.Read(c)
 	case "db.conf":
 		content, err = switch_db.Read(c)
+	case "fifo.conf":
+		content, err = fifo.Read(c)
+
+	//readModule DefaultConf
+	case "verto.conf", "conference.conf":
+		content, err = readModuleDefaultConf(filename)
+	default:
+		errtext := fmt.Sprintf(`readConfFromFile filename:%s unsupport!`, filename)
+		err = errors.New(errtext)
 	}
 	return content, err
 }
@@ -100,6 +114,11 @@ func constConfiguration(c *gin.Context) (string, error) {
 		content, err = sofia.Default()
 	case "db.conf":
 		content, err = switch_db.Default()
+	case "fifo.conf":
+		content, err = fifo.Default()
+	default:
+		errtext := fmt.Sprintf(`constConfiguration, filename:%s unsupport!`, filename)
+		err = errors.New(errtext)
 	}
 	return content, err
 }
@@ -117,20 +136,30 @@ func buildConf(c *gin.Context, old string) (string, error) {
 		new, err = sofia.Build(c, old)
 	case "db.conf":
 		new, err = switch_db.Build(c, old)
+	case "fifo.conf":
+		new, err = fifo.Build(c, old)
+	default:
+		errtext := fmt.Sprintf(`buildConf, filename:%s unsupport!`, filename)
+		err = errors.New(errtext)
 	}
 	return new, err
 }
 
 func writeConfToDatabase(c *gin.Context, content string, newcontent string) error {
 	filename := c.PostForm(`key_value`)
-	function := c.PostForm(`Event-Calling-Function`)
+	//function := c.PostForm(`Event-Calling-Function`)
 	profile := c.PostForm(`profile`)
 	conf := &db.Conf{
 		Cfilename:   filename,
-		Cfunction:   function,
 		Cprofile:    profile,
 		Ccontent:    content,
 		Cnewcontent: newcontent,
 	}
-	return db.InsertGatewayConfsConf(conf)
+	return db.InsertConfsConf(conf)
+}
+
+func readModuleDefaultConf(filename string) (string, error) {
+	file := fmt.Sprintf("%s/autoload_configs/%s%s", viper.GetString(`switch.conf`), filename, `.xml`)
+	data, err := os.ReadFile(file)
+	return string(data), err
 }

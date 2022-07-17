@@ -151,8 +151,8 @@ func Build(c *gin.Context, content string) (string, error) {
 	switch profile {
 	case "": //sofia.conf.xml
 		//<X-PRE-PROCESS cmd="include" data="../sip_profiles/*.xml"/>
-		new = `<X-PRE-PROCESS cmd="include" data="./sip_profiles/*.xml"/>`
 		old = `<X-PRE-PROCESS cmd="include" data="../sip_profiles/*.xml"/>`
+		new = `<X-PRE-PROCESS cmd="include" data="./sip_profiles/*.xml"/>`
 		newcontent = strings.ReplaceAll(content, old, new)
 	case "internal", "internal-ipv6":
 		//<!--<param name="odbc-dsn" value="dsn:user:pass"/>-->
@@ -172,10 +172,14 @@ func Build(c *gin.Context, content string) (string, error) {
 		new = `<!--<param name="force-register-db-domain" value="$${domain}"/>-->`
 		newcontent = strings.ReplaceAll(newcontent, old, new)
 	case "external", "external-ipv6":
+		//<X-PRE-PROCESS cmd="include" data="external/*.xml"/>
+		old = fmt.Sprintf(`<X-PRE-PROCESS cmd="include" data="%s/*.xml"/>`, profile)
+		new = fmt.Sprintf(`<X-PRE-PROCESS cmd="include" data="./sip_profiles/%s/*.xml"/>`, profile)
+		newcontent = strings.ReplaceAll(content, old, new)
 		//<!-- ************************************************* -->
 		old = `<!-- ************************************************* -->`
 		new = `<param name="odbc-dsn" value="$${pg_handle}"/>`
-		newcontent = strings.ReplaceAll(content, old, new)
+		newcontent = strings.ReplaceAll(newcontent, old, new)
 	}
 	return newcontent, nil
 }

@@ -25,18 +25,23 @@ import (
 type Conf struct {
 	Cuuid       string `db:"conf_uuid" json:"uuid"`
 	Cfilename   string `db:"conf_filename" json:"filename"`
-	Cfunction   string `db:"conf_function" json:"function"`
 	Cprofile    string `db:"conf_profile" json:"profile"`
 	Ccontent    string `db:"conf_content" json:"content"`
 	Cnewcontent string `db:"conf_newcontent" json:"newcontent"`
 }
 
-func InsertGatewayConfsConf(c *Conf) error {
+func InsertConfsConf(c *Conf) error {
 	var err error
 	var conf = c
+	var realtableprefix string
+	tableprefix := viper.GetString(`gateway.db.tableprefix`)
+	if len(tableprefix) > 0 {
+		realtableprefix = fmt.Sprintf(`%s_`, tableprefix)
+	} else {
+		realtableprefix = tableprefix
+	}
 	if len(conf.Cfilename) > 0 && len(conf.Ccontent) > 0 {
-		insertsql := fmt.Sprintf("insert into %s_confs(conf_filename, conf_function, conf_profile, conf_content, conf_newcontent) values(:conf_filename,:conf_function,:conf_profile,:conf_content,:conf_newcontent)",
-			viper.GetString(`gateway.db.tableprefix`))
+		insertsql := fmt.Sprintf("insert into %sconfs(conf_filename, conf_profile, conf_content, conf_newcontent) values(:conf_filename,:conf_profile,:conf_content,:conf_newcontent)", realtableprefix)
 		if _, err = GetGatewaydb().NamedExec(insertsql, conf); err != nil {
 			log.Println(err)
 		}
@@ -46,10 +51,17 @@ func InsertGatewayConfsConf(c *Conf) error {
 	return err
 }
 
-func GetGatewayConfsConf(filename, function, profile string) (*Conf, error) {
+func GetConfsConf(filename, function, profile string) (*Conf, error) {
 	var err error
-	var conf = Conf{}
-	query := fmt.Sprintf("select * from %s_confs where conf_filename = '%s' and conf_function='%s' and conf_profile='%s'", viper.GetString(`gateway.db.tableprefix`), filename, function, profile)
+	var conf Conf
+	var realtableprefix string
+	tableprefix := viper.GetString(`gateway.db.tableprefix`)
+	if len(tableprefix) > 0 {
+		realtableprefix = fmt.Sprintf(`%s_`, tableprefix)
+	} else {
+		realtableprefix = tableprefix
+	}
+	query := fmt.Sprintf("select * from %sconfs where conf_filename = '%s'and conf_profile='%s'", realtableprefix, filename, profile)
 	if len(filename) > 0 {
 		if err = GetGatewaydb().Get(&conf, query); err != nil {
 			log.Println(err)
@@ -59,3 +71,5 @@ func GetGatewayConfsConf(filename, function, profile string) (*Conf, error) {
 	}
 	return &conf, err
 }
+
+func SelectGatewayConfs() {}

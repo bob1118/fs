@@ -29,12 +29,21 @@ func doConfiguration(c *gin.Context) (b string) {
 		}
 	case "loopback.conf": //3th
 	case "verto.conf": //4th
+		if verto, err := modules.GetConfiguration(c); err == nil {
+			body = fmt.Sprintf(fsconf.CONFIGURATION, verto)
+		}
 	case "conference.conf": //5th
+		if conference, err := modules.GetConfiguration(c); err == nil {
+			body = fmt.Sprintf(fsconf.CONFIGURATION, conference)
+		}
 	case "db.conf": //6th
 		if switchdb, err := modules.GetConfiguration(c); err == nil {
 			body = fmt.Sprintf(fsconf.CONFIGURATION, switchdb)
 		}
 	case "fifo.conf": //7th
+		if fifo, err := modules.GetConfiguration(c); err == nil {
+			body = fmt.Sprintf(fsconf.CONFIGURATION, fifo)
+		}
 	case "hash.conf": //8th
 	case "voicemail.conf": //9th
 	case "httapi.conf": //10th

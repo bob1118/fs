@@ -50,7 +50,6 @@ const CONFS = `
 CREATE TABLE IF NOT EXISTS %s (
 	conf_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
 	conf_filename varchar NOT NULL,
-	conf_function varchar NULL,
 	conf_profile varchar NULL,
 	conf_content varchar NOT NULL,
 	conf_newcontent varchar NULL,
