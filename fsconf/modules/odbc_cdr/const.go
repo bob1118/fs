@@ -5,7 +5,8 @@ const MOD_CONF_NAME = `odbc_cdr.conf.xml`
 
 const ODBC_DSN = `<param name="odbc-dsn" value="pgsql://hostaddr=192.168.0.100 dbname=freeswitch user=freeswitch password='freeswitch' options='-c client_min_messages=NOTICE'"/>`
 
-const ODBC_CDR_CONF_XML = `<configuration name="odbc_cdr.conf" description="ODBC CDR Configuration">
+const ODBC_CDR_CONF_XML = `
+<configuration name="odbc_cdr.conf" description="ODBC CDR Configuration">
 <settings>
   <!-- <param name="odbc-dsn" value="database:username:password"/> -->
   <param name="odbc-dsn" value="pgsql://hostaddr=192.168.0.100 dbname=freeswitch user=freeswitch password='freeswitch' options='-c client_min_messages=NOTICE'"/>

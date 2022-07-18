@@ -153,12 +153,12 @@ func (p *Fsconf) buildBootableConf() error {
 		allerrors += fmt.Sprintf("%s: %s\n", vars, err.Error())
 	}
 
-	// ////////////////////////////p.dir/autoload_configs/*.conf.xml/////////////////
-	// //p.dir()/autoload_configs/switch.conf.xml
-	// autoloadSwitch := fmt.Sprintf(`%s/autoload_configs/switch.conf.xml`, p.Dir())
-	// if err := p.buildAutoloadSwitch(autoloadSwitch); err != nil {
-	// 	allerrors += fmt.Sprintf("%s: %s\n", autoloadSwitch, err.Error())
-	// }
+	////////////////////////////p.dir/autoload_configs/*.conf.xml/////////////////
+	//p.dir()/autoload_configs/switch.conf.xml
+	autoloadSwitch := fmt.Sprintf(`%s/autoload_configs/switch.conf.xml`, p.Dir())
+	if err := p.buildAutoloadSwitch(autoloadSwitch); err != nil {
+		allerrors += fmt.Sprintf("%s: %s\n", autoloadSwitch, err.Error())
+	}
 	//p.dir()/autoload_configs/modules.conf.xml
 	autoloadModules := fmt.Sprintf(`%s/autoload_configs/modules.conf.xml`, p.Dir())
 	if err := p.buildAutoloadModules(autoloadModules); err != nil {
@@ -169,28 +169,6 @@ func (p *Fsconf) buildBootableConf() error {
 	if err := p.buildAutoloadXmlcurl(autoloadXmlcurl); err != nil {
 		allerrors += fmt.Sprintf("%s: %s\n", autoloadXmlcurl, err.Error())
 	}
-
-	// /////////////////////////////p.dir/sip_profiles/*.xml//////////////////////////
-	// //p.dir()/sip_profiles/internal.xml
-	// sipInternal := fmt.Sprintf(`%s/sip_profiles/internal.xml`, p.Dir())
-	// if err := p.buildInternal(sipInternal); err != nil {
-	// 	allerrors += fmt.Sprintf("%s: %s\n", sipInternal, err.Error())
-	// }
-	// //p.dir()/sip_profiles/internal-ipv6.xml
-	// sipInternalv6 := fmt.Sprintf(`%s/sip_profiles/internal-ipv6.xml`, p.Dir())
-	// if err := p.buildInternalv6(sipInternalv6); err != nil {
-	// 	allerrors += fmt.Sprintf("%s: %s\n", sipInternalv6, err.Error())
-	// }
-	// //p.dir()/sip_profiles/external.xml
-	// sipExternal := fmt.Sprintf(`%s/sip_profiles/external.xml`, p.Dir())
-	// if err := p.buildExternal(sipExternal); err != nil {
-	// 	allerrors += fmt.Sprintf("%s: %s\n", sipExternal, err.Error())
-	// }
-	// //p.dir()/sip_profiles/external-ipv6.xml
-	// sipExternalv6 := fmt.Sprintf(`%s/sip_profiles/external-ipv6.xml`, p.Dir())
-	// if err := p.buildExternalv6(sipExternalv6); err != nil {
-	// 	allerrors += fmt.Sprintf("%s: %s\n", sipExternalv6, err.Error())
-	// }
 
 	if len(allerrors) > 0 {
 		return errors.New(allerrors)

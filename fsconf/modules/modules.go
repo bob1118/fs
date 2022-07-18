@@ -19,10 +19,16 @@ import (
 	"os"
 
 	"github.com/bob1118/fs/db"
+	"github.com/bob1118/fs/fsconf/modules/acl"
+	"github.com/bob1118/fs/fsconf/modules/av"
+	"github.com/bob1118/fs/fsconf/modules/event_socket"
 	"github.com/bob1118/fs/fsconf/modules/fifo"
 	"github.com/bob1118/fs/fsconf/modules/odbc_cdr"
 	"github.com/bob1118/fs/fsconf/modules/sofia"
 	"github.com/bob1118/fs/fsconf/modules/switch_db"
+	"github.com/bob1118/fs/fsconf/modules/switch_main"
+	"github.com/bob1118/fs/fsconf/modules/switch_modules"
+	"github.com/bob1118/fs/fsconf/modules/voicemail"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -52,7 +58,7 @@ func GetConfiguration(c *gin.Context) (string, error) {
 		function := c.PostForm(`Event-Calling-Function`)
 		profile := c.PostForm(`profile`)
 		log.Println("Request:", filename, function, profile)
-		log.Println("Response:\n", content)
+		log.Println("Response:", content)
 	}
 	return content, err
 }
@@ -92,9 +98,29 @@ func readConfFromFile(c *gin.Context) (string, error) {
 		content, err = switch_db.Read(c)
 	case "fifo.conf":
 		content, err = fifo.Read(c)
-
+	case "voicemail.conf":
+		content, err = voicemail.Read(c)
+	case "avformat.conf", "avcodec.conf":
+		content, err = av.Read(c)
+	case "pre_load_modules.conf", "modules.conf", "post_load_modules.conf":
+		content, err = switch_modules.Read(c)
+	case "event_socket.conf":
+		content, err = event_socket.Read(c)
+	case "acl.conf":
+		content, err = acl.Read(c)
+	case "pre_load_switch.conf", "switch.conf", "post_load_switch.conf":
+		content, err = switch_main.Read(c)
 	//readModule DefaultConf
-	case "verto.conf", "conference.conf":
+	case "verto.conf",
+		"conference.conf",
+		"hash.conf",
+		"httapi.conf",
+		"spandsp.conf",
+		"amr.conf",
+		"opus.conf",
+		"sndfile.conf",
+		"local_stream.conf",
+		"lua.conf":
 		content, err = readModuleDefaultConf(filename)
 	default:
 		errtext := fmt.Sprintf(`readConfFromFile filename:%s unsupport!`, filename)
@@ -116,6 +142,14 @@ func constConfiguration(c *gin.Context) (string, error) {
 		content, err = switch_db.Default()
 	case "fifo.conf":
 		content, err = fifo.Default()
+	case "pre_load_modules.conf", "modules.conf", "post_load_modules.conf":
+		content, err = switch_modules.Default()
+	case "eventsocket.conf":
+		content, err = event_socket.Default()
+	case "acl.conf":
+		content, err = acl.Default()
+	case "pre_load_switch.conf", "switch.conf", "post_load_switch.conf":
+		content, err = switch_main.Default()
 	default:
 		errtext := fmt.Sprintf(`constConfiguration, filename:%s unsupport!`, filename)
 		err = errors.New(errtext)
@@ -138,6 +172,16 @@ func buildConf(c *gin.Context, old string) (string, error) {
 		new, err = switch_db.Build(c, old)
 	case "fifo.conf":
 		new, err = fifo.Build(c, old)
+	case "voicemail.conf":
+		new, err = voicemail.Build(c, old)
+	case "pre_load_modules.conf", "modules.conf", "post_load_modules.conf":
+		new, err = switch_modules.Build(c, old)
+	case "event_socket.conf":
+		new, err = event_socket.Build(c, old)
+	case "acl.conf":
+		new, err = acl.Build(c, old)
+	case "pre_load_switch.conf", "switch.conf", "post_load_switch.conf":
+		new, err = switch_main.Build(c, old)
 	default:
 		errtext := fmt.Sprintf(`buildConf, filename:%s unsupport!`, filename)
 		err = errors.New(errtext)

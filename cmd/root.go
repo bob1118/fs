@@ -40,12 +40,9 @@ server:
         tableprefix: s
         user: fsdba
     http:
-        addr: 10.10.10.10:80
+        addr: 10.10.10.25:80
         readtimeout: 4
         writetimeout: 4
-    inbound:
-        addr: 127.0.0.1:8021
-        password: ClueCon
     outbound:
         addr: 127.0.0.1:12345
 switch:
@@ -60,6 +57,10 @@ switch:
         name: freeswitch
         password: fsdba
         user: fsdba
+    eventsocket:
+        ipaddr: 127.0.0.1
+        port: 8021
+        password: ClueCon
     vars:
         ipv4: 10.10.10.25
         external_sip_ip: $${local_ip_v4}
