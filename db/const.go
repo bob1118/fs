@@ -78,6 +78,7 @@ COMMENT ON TABLE %s IS 'sofia internal useragent account';
 const GATEWAYS = `
 CREATE TABLE IF NOT EXISTS %s (
 	gateway_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
+	profile_name varchar NOT NULL DEFAULT 'external',
 	gateway_name varchar NOT NULL,
 	gateway_username varchar NULL,
 	gateway_realm varchar NULL,

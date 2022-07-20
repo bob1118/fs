@@ -43,8 +43,8 @@ server:
         addr: 10.10.10.25:80
         readtimeout: 4
         writetimeout: 4
-    outbound:
-        addr: 127.0.0.1:12345
+    eventsocket:
+        serveraddr: 127.0.0.1:12345
 switch:
     conf: /etc/freeswitch
     cdr:

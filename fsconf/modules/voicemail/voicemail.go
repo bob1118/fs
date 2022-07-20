@@ -27,7 +27,7 @@ func Read(c *gin.Context) (string, error) {
 	return string(content), err
 }
 
-func Default() (string, error) { return ``, nil }
+func Default() (string, error) { return MOD_CONF_XML, nil }
 
 func Build(c *gin.Context, content string) (string, error) {
 	//<param name="odbc-dsn" value="$${pg_handle}"/>

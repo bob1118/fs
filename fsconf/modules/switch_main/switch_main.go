@@ -1,5 +1,5 @@
 // switch define
-// pre_load_switch.conf.xml	`switch.conf`/autoload_configs/pre_load_switch.conf.xml
+// pre_load_switch.conf.xml		`switch.conf`/autoload_configs/pre_load_switch.conf.xml
 // switch.conf.xml				`switch.conf`/autoload_configs/switch.conf.xml
 // post_load_switch.conf.xml	`switch.conf`/autoload_configs/post_load_switch.conf.xml
 //
@@ -18,6 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -30,12 +31,22 @@ func Read(c *gin.Context) (string, error) {
 	return string(content), err
 }
 
-func Default() (string, error) { return MOD_CONF_XML, nil }
+func Default(filename string) (string, error) {
+	var content string
+	if strings.EqualFold(filename, `pre_load_switch.conf`) {
+		content = PRE_LOAD_SWITCH_CONF
+	}
+	if strings.EqualFold(filename, `post_load_switch.conf`) {
+		content = POST_LOAD_SWITCH_CONF
+	}
+	return content, nil
+}
 
 func Build(c *gin.Context, content string) (string, error) {
-	// //<param name="odbc-dsn" value="$${pg_handle}"/>
-	// old := `<!-- <param name="core-db-dsn" value="dsn:username:password" /> -->`
-	// newcontent := strings.ReplaceAll(content, old, ODBC_DSN)
-	//<param name="odbc-dsn" value="$${pg_handle}"/>
+	////////////////////////NOTICE!!! change switch.conf param, but no effact!!!////////////////////////////////
+	//<param name="sessions-per-second" value="30"/>
+	//<param name="max-sessions" value="1000"/>
+	//newcontent := strings.ReplaceAll(content, `<param name="max-sessions" value="1000"/>`, `<param name="max-sessions" value="999"/>`)
+	//return newcontent, nil
 	return ``, errors.New("switch_main.Build() nothing")
 }

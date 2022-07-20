@@ -57,6 +57,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/bob1118/fs/db"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -174,7 +175,8 @@ func Build(c *gin.Context, content string) (string, error) {
 	case "external", "external-ipv6":
 		//<X-PRE-PROCESS cmd="include" data="external/*.xml"/>
 		old = fmt.Sprintf(`<X-PRE-PROCESS cmd="include" data="%s/*.xml"/>`, profile)
-		new = fmt.Sprintf(`<X-PRE-PROCESS cmd="include" data="./sip_profiles/%s/*.xml"/>`, profile)
+		//new = fmt.Sprintf(`<X-PRE-PROCESS cmd="include" data="./sip_profiles/%s/*.xml"/>`, profile)
+		new, _ = getProfileGateways(profile)
 		newcontent = strings.ReplaceAll(content, old, new)
 		//<!-- ************************************************* -->
 		old = `<!-- ************************************************* -->`
@@ -182,4 +184,36 @@ func Build(c *gin.Context, content string) (string, error) {
 		newcontent = strings.ReplaceAll(newcontent, old, new)
 	}
 	return newcontent, nil
+}
+
+func getProfileGateways(s string) (string, error) {
+	var e error
+	var gatewaysConf string
+	profile := s
+	if len(profile) > 0 {
+		condition := fmt.Sprintf(`and profile_name='%s'`, profile)
+		if gateways, err := db.SelectGateways(condition); err != nil {
+			e = err
+			log.Println(err)
+		} else {
+			for _, gateway := range gateways {
+				gatewayConf := fmt.Sprintf(SOFIA_PROFILE_GATEWAY, gateway.Gname,
+					gateway.Gusername,
+					gateway.Grealm,
+					gateway.Gfromuser,
+					gateway.Gfromdomain,
+					gateway.Gpassword,
+					gateway.Gextension,
+					gateway.Gproxy,
+					gateway.Gregisterproxy,
+					gateway.Gexpire,
+					gateway.Gregister,
+					gateway.Gcalleridinfrom,
+					gateway.Gextensionincontact,
+					gateway.Goptionping)
+				gatewaysConf = fmt.Sprintf("%s%s", gatewaysConf, gatewayConf)
+			}
+		}
+	}
+	return gatewaysConf, e
 }

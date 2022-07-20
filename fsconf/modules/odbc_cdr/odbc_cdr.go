@@ -20,7 +20,6 @@ package odbc_cdr
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -30,10 +29,10 @@ import (
 func init() {}
 
 func Read(c *gin.Context) (string, error) {
-	file := fmt.Sprintf("%s/autoload_configs/%s", viper.GetString(`switch.conf`), MOD_CONF_NAME)
-	content, err := os.ReadFile(file)
-	return string(content), err
-	//return "", errors.New("odbc_cdr.Read(c) nothing")
+	// file := fmt.Sprintf("%s/autoload_configs/%s", viper.GetString(`switch.conf`), MOD_CONF_NAME)
+	// content, err := os.ReadFile(file)
+	// return string(content), err
+	return "", errors.New("odbc_cdr.Read(c) nothing, default odbc_cdr.conf.xml not found")
 }
 
 func Default() (string, error) {

@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func doDirectory(c *gin.Context) string {
+func doPhrases(c *gin.Context) string {
 	body := fsconf.NOT_FOUND
 
 	return body

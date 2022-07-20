@@ -4,8 +4,8 @@
 // 	fifo_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
 // 	fifo_name varchar NOT NULL,
 // 	fifo_importance varchar NULL DEFAULT 0,
-// 	fifo_announce varchar NULL DEFAULT ''::character varying,
-// 	fifo_holdmusic varchar NULL DEFAULT ''::character varying,
+// 	fifo_announce varchar NULL DEFAULT '',
+// 	fifo_holdmusic varchar NULL DEFAULT '',
 // 	CONSTRAINT fifos_pkey PRIMARY KEY (fifo_uuid),
 // 	CONSTRAINT fifos_un UNIQUE (fifo_name)
 // );

@@ -30,7 +30,7 @@ func Read(c *gin.Context) (string, error) {
 func Default() (string, error) { return DB_CONF_XML, nil }
 
 func Build(c *gin.Context, content string) (string, error) {
-	//<param name="odbc-dsn" value="$${pg_handle}"/>
+	//<!--<param name="odbc-dsn" value="dsn:user:pass"/>-->
 	newOdbcdsn := `<param name="odbc-dsn" value="$${pg_handle}"/>`
 	newcontent := strings.ReplaceAll(content, ODBC_DSN, newOdbcdsn)
 	return newcontent, nil

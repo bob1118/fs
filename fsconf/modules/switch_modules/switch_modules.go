@@ -18,6 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -30,7 +31,12 @@ func Read(c *gin.Context) (string, error) {
 	return string(content), err
 }
 
-func Default() (string, error) { return MODULES_CONF_XML, nil }
+func Default(filename string) (string, error) {
+	var content string
+	if strings.EqualFold(filename, `pre_load_modules.conf`) { content = PRE_LOAD_MODULES_CONF }
+	if strings.EqualFold(filename, `post_load_modules.conf`) { content = POST_LOAD_MODULES_CONF }
+	return content, nil
+}
 
 func Build(c *gin.Context, content string) (string, error) {
 	return ``, errors.New("switch_modules Build() nothing")

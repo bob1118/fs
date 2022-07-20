@@ -52,6 +52,7 @@ import (
 // hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=acl.conf
 // hostname=D1130&section=directory&tag_name=domain&key_name=name&key_value=10.10.10.10&Event-Name=GENERAL&Core-UUID=297f80ae-fee7-4a80-87a4-32625cafb18d&FreeSWITCH-Hostname=D1130&FreeSWITCH-Switchname=D1130&FreeSWITCH-IPv4=10.10.10.10&FreeSWITCH-IPv6=%3A%3A1&Event-Date-Local=2022-07-06%2018%3A25%3A15&Event-Date-GMT=Wed,%2006%20Jul%202022%2010%3A25%3A15%20GMT&Event-Date-Timestamp=1657103115428365&Event-Calling-File=switch_core.c&Event-Calling-Function=switch_load_network_lists&Event-Calling-Line-Number=1637&Event-Sequence=570&domain=10.10.10.10&purpose=network-list
 // hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=post_load_switch.conf
+// hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=switch.conf
 // 2 reload mod_xxx
 // hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=spandsp.conf
 // hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=loopback.conf

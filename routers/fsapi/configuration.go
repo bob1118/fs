@@ -104,7 +104,10 @@ func doConfiguration(c *gin.Context) (b string) {
 		if post_load_switch, err := modules.GetConfiguration(c); err == nil {
 			body = fmt.Sprintf(fsconf.CONFIGURATION, post_load_switch)
 		}
-	case "switch.conf": //23th? switch version v1.10.7 before, here request missing.
+	case "switch.conf": //23th.
+		if switch_main, err := modules.GetConfiguration(c); err == nil {
+			body = fmt.Sprintf(fsconf.CONFIGURATION, switch_main)
+		}
 	}
 	return body
 }

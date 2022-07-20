@@ -72,4 +72,4 @@ func GetConfsConf(filename, function, profile string) (*Conf, error) {
 	return &conf, err
 }
 
-func SelectGatewayConfs() {}
+func SelectConfs() {}
