@@ -1,10 +1,14 @@
 package fsapi
 
 import (
+	"fmt"
+	"log"
 	"strings"
 
+	"github.com/bob1118/fs/db"
 	"github.com/bob1118/fs/fsconf"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 // request:
@@ -31,7 +35,8 @@ import (
 //
 func doDirectory(c *gin.Context) string {
 	body := fsconf.NOT_FOUND
-
+	uaid := c.PostForm(`user`)
+	uadomain := c.PostForm(`domain`)
 	eventname := c.PostForm("Event-Name")
 	action := c.PostForm("action")
 	authmethod := c.PostForm("sip_auth_method")
@@ -40,6 +45,16 @@ func doDirectory(c *gin.Context) string {
 
 	// multi tenant, sofia profile internal rescan/restart.
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(purpose, `gateways`) && strings.Contains(profile, `internal`) {
+		if domains, err := db.SelectAccountsDistinctDomain(); err != nil {
+			log.Println(err)
+		} else {
+			var domainsconf string
+			for _, domain := range domains {
+				domainconf := fmt.Sprintf(fsconf.DOMAIN, domain)
+				domainsconf = fmt.Sprintf("%s%s", domainsconf, domainconf)
+			}
+			body = fmt.Sprintf(fsconf.DIRECTORY, domainsconf)
+		}
 	}
 	// user's gateways ?? like conf/direcotry/default/brian.xml or conf/direcotry/default/example.com.xml
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(purpose, `gateways`) && strings.Contains(profile, `external`) {
@@ -53,16 +68,53 @@ func doDirectory(c *gin.Context) string {
 		(strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) && strings.EqualFold(authmethod, `REGISTER`)) ||
 		(strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) && strings.EqualFold(authmethod, `SUBSCRIBE`)) ||
 		(strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) && strings.EqualFold(authmethod, `INVITE`)) {
+		if len(uaid) > 0 && len(uadomain) > 0 {
+			body = useragentAuthConf(action, uaid, uadomain)
+		}
 	}
 	// voicemail need lookup a user id, response like auth
 	if strings.EqualFold(eventname, `GENERAL`) && strings.EqualFold(action, `message-count`) {
+		if len(uaid) > 0 && len(uadomain) > 0 {
+			body = useragentAuthConf(action, uaid, uadomain)
+		}
 	}
 	// endpoint requests reverse authentication for a request, using reverse-auth-lookup
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `reverse-auth-lookup`) {
+		if len(uaid) > 0 && len(uadomain) > 0 {
+			body = useragentAuthConf(action, uaid, uadomain)
+		}
 	}
 
 	// voicemail ?
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(purpose, `publish-vm`) {
 	}
 	return body
+}
+
+func useragentAuthConf(action, id, domain string) string {
+	var uaconf string
+	enableA1Hash := viper.GetString(`gateway.enablea1hash`)
+	if ua, err := db.GetAccountsAccount(id, domain); err != nil {
+		log.Println(err)
+	} else {
+		if strings.EqualFold(action, `sip_auth`) {
+			if false ||
+				strings.EqualFold(enableA1Hash, `1`) ||
+				strings.EqualFold(enableA1Hash, `t`) ||
+				strings.EqualFold(enableA1Hash, `T`) ||
+				strings.EqualFold(enableA1Hash, `true`) ||
+				strings.EqualFold(enableA1Hash, `TRUE`) {
+				uaconf = fmt.Sprintf(fsconf.USERAGENT_A1HASH, ua.Adomain, ua.Agroup, ua.Aid, ua.Acacheable, ua.Aa1hash)
+			} else {
+				uaconf = fmt.Sprintf(fsconf.USERAGENT, ua.Adomain, ua.Agroup, ua.Aid, ua.Acacheable, ua.Apassword)
+			}
+		}
+		if strings.EqualFold(action, `message-count`) {
+			uaconf = fmt.Sprintf(fsconf.USERAGENT, ua.Adomain, ua.Agroup, ua.Aid, ua.Acacheable, ua.Apassword)
+		}
+		if strings.EqualFold(action, `reverse-auth-lookup`) {
+			uaconf = fmt.Sprintf(fsconf.USERAGENT_REVERSE, ua.Adomain, ua.Agroup, ua.Aid, ua.Acacheable, ua.Aid, ua.Apassword)
+		}
+	}
+	return uaconf
 }

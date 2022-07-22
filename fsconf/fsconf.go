@@ -187,13 +187,8 @@ func (p *Fsconf) buildVars(in string) error {
 		} else {
 			os.WriteFile(defaultfile, data, 0644)
 			//`  <X-PRE-PROCESS cmd="set" data="default_password=1234"/>`
-			//`  <X-PRE-PROCESS cmd="set" data="pg_handle=pgsql://hostaddr=127.0.0.1 dbname=freeswitch user=fsdba password=fsdba"/>`
-			//`  <X-PRE-PROCESS cmd="set" data="json_db_handle=$${pg_handle}"/>`
 			old = `  <X-PRE-PROCESS cmd="set" data="default_password=1234"/>`
-			new_content := `  <X-PRE-PROCESS cmd="set" data="default_password=D_e_f_a_u_l_t_P_a_s_s_w_o_r_d"/>
-  <X-PRE-PROCESS cmd="set" data="local_ip_v4=%s"/>
-  <X-PRE-PROCESS cmd="set" data="pg_handle=%s"/>
-  <X-PRE-PROCESS cmd="set" data="json_db_handle=$${pg_handle}"/>`
+			new_content := VARS_NEW_PASSWORD_WITHPGHANDLE
 			pghandle := fmt.Sprintf("pgsql://hostaddr=%s dbname=%s user=%s password=%s", p.v.GetString(`switch.db.host`), p.v.GetString(`switch.db.name`), p.v.GetString(`switch.db.user`), p.v.GetString(`switch.db.password`))
 			new = fmt.Sprintf(new_content, p.v.GetString(`switch.vars.ipv4`), pghandle)
 			p.Update(file, []byte(old), []byte(new))
@@ -206,6 +201,14 @@ func (p *Fsconf) buildVars(in string) error {
 			old = `  <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=stun:stun.freeswitch.org"/>`
 			external_rtp_ip := `  <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=%s"/>`
 			new = fmt.Sprintf(external_rtp_ip, p.v.GetString(`switch.vars.external_rtp_ip`))
+			p.Update(file, []byte(old), []byte(new))
+			//`  <X-PRE-PROCESS cmd="set" data="default_areacode=918"/>`
+			old = `  <X-PRE-PROCESS cmd="set" data="default_areacode=918"/>`
+			new = `  <X-PRE-PROCESS cmd="set" data="default_areacode=10"/>`
+			p.Update(file, []byte(old), []byte(new))
+			//`  <X-PRE-PROCESS cmd="set" data="default_country=US"/>`
+			old = `  <X-PRE-PROCESS cmd="set" data="default_country=US"/>`
+			new = `  <X-PRE-PROCESS cmd="set" data="default_country=CN"/>`
 			p.Update(file, []byte(old), []byte(new))
 		}
 	}
