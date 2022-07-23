@@ -159,6 +159,27 @@ func (p *Fsconf) buildBootableConf() error {
 	if err := p.buildAutoloadSwitch(autoloadSwitch); err != nil {
 		allerrors += fmt.Sprintf("%s: %s\n", autoloadSwitch, err.Error())
 	}
+	//p.dir()/sip_profiles/internal.xml
+	internal := fmt.Sprintf(`%s/sip_profiles/internal.xml`, p.Dir())
+	if err := p.buildInternal(internal); err != nil {
+		allerrors += fmt.Sprintf("%s: %s\n", internal, err.Error())
+	}
+	//p.dir()/sip_profiles/internal-ipv6.xml
+	internalv6 := fmt.Sprintf(`%s/sip_profiles/internal-ipv6.xml`, p.Dir())
+	if err := p.buildInternalv6(internalv6); err != nil {
+		allerrors += fmt.Sprintf("%s: %s\n", internalv6, err.Error())
+	}
+	//p.dir()/sip_profiles/external.xml
+	external := fmt.Sprintf(`%s/sip_profiles/external.xml`, p.Dir())
+	if err := p.buildExternal(external); err != nil {
+		allerrors += fmt.Sprintf("%s: %s\n", external, err.Error())
+	}
+	//p.dir()/sip_profiles/external-ipv6.xml
+	externalv6 := fmt.Sprintf(`%s/sip_profiles/external-ipv6.xml`, p.Dir())
+	if err := p.buildExternalv6(externalv6); err != nil {
+		allerrors += fmt.Sprintf("%s: %s\n", externalv6, err.Error())
+	}
+
 	//p.dir()/autoload_configs/modules.conf.xml
 	autoloadModules := fmt.Sprintf(`%s/autoload_configs/modules.conf.xml`, p.Dir())
 	if err := p.buildAutoloadModules(autoloadModules); err != nil {
@@ -188,8 +209,9 @@ func (p *Fsconf) buildVars(in string) error {
 			os.WriteFile(defaultfile, data, 0644)
 			//`  <X-PRE-PROCESS cmd="set" data="default_password=1234"/>`
 			old = `  <X-PRE-PROCESS cmd="set" data="default_password=1234"/>`
-			new_content := VARS_NEW_PASSWORD_WITHPGHANDLE
-			pghandle := fmt.Sprintf("pgsql://hostaddr=%s dbname=%s user=%s password=%s", p.v.GetString(`switch.db.host`), p.v.GetString(`switch.db.name`), p.v.GetString(`switch.db.user`), p.v.GetString(`switch.db.password`))
+			new_content := VARS_NEW_PASSWORD_WITH_IPV4_AND_PGHANDLE
+			pghandle := fmt.Sprintf("pgsql://hostaddr=%s dbname=%s user=%s password='%s' options='-c client_min_messages=NOTICE' application_name='freeswitch'",
+				p.v.GetString(`switch.db.host`), p.v.GetString(`switch.db.name`), p.v.GetString(`switch.db.user`), p.v.GetString(`switch.db.password`))
 			new = fmt.Sprintf(new_content, p.v.GetString(`switch.vars.ipv4`), pghandle)
 			p.Update(file, []byte(old), []byte(new))
 			//`  <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=stun:stun.freeswitch.org"/>`
@@ -243,7 +265,7 @@ func (p *Fsconf) buildAutoloadModules(in string) error {
 		} else {
 			os.WriteFile(defaultfile, data, 0644)
 			//<load module="mod_enum"/>
-			//p.Comment(file, []byte(`<load module="mod_enum"/>`))
+			p.Comment(file, []byte(`<load module="mod_enum"/>`))
 			//<!-- <load module="mod_xml_curl"/> -->
 			p.Uncomment(file, []byte(`<!-- <load module="mod_xml_curl"/> -->`))
 			//<load module="mod_cdr_csv"/>
@@ -254,7 +276,7 @@ func (p *Fsconf) buildAutoloadModules(in string) error {
 				p.Comment(file, []byte(`<load module="mod_cdr_csv"/>`))
 			}
 			//<load module="mod_loopback"/>
-			//p.Comment(file, []byte(`<load module="mod_loopback"/>`))
+			p.Comment(file, []byte(`<load module="mod_loopback"/>`))
 			//<load module="mod_rtc"/>
 			//p.Comment(file, []byte(`<load module="mod_rtc"/>`))
 			//<load module="mod_verto"/>
@@ -266,11 +288,11 @@ func (p *Fsconf) buildAutoloadModules(in string) error {
 			//<load module="mod_dialplan_asterisk"/>
 			//p.Comment(file, []byte(`<load module="mod_dialplan_asterisk"/>`))
 			//<load module="mod_spandsp"/>
-			//p.Comment(file, []byte(`<load module="mod_spandsp"/>`))
+			p.Comment(file, []byte(`<load module="mod_spandsp"/>`))
 			//<load module="mod_b64"/>
 			p.Comment(file, []byte(`<load module="mod_b64"/>`))
 			//<load module="mod_lua"/>
-			//p.Comment(file, []byte(`<load module="mod_say_en"/>`))
+			//p.Comment(file, []byte(`<load module="mod_lua"/>`))
 			//<load module="mod_say_en"/>
 			//p.Comment(file, []byte(`<load module="mod_say_en"/>`))
 		}

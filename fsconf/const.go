@@ -195,7 +195,7 @@ const USERAGENT_REVERSE = `<document type="freeswitch/xml" encoding="UTF-8">
 
 ///////////////////////////////////vars.xml////////////////////////////////////////
 
-const VARS_NEW_PASSWORD_WITHPGHANDLE = `
+const VARS_NEW_PASSWORD_WITH_IPV4_AND_PGHANDLE = `
   <X-PRE-PROCESS cmd="set" data="default_password=D_e_f_a_u_l_t_P_a_s_s_w_o_r_d"/>
   <X-PRE-PROCESS cmd="set" data="local_ip_v4=%s"/>
   <X-PRE-PROCESS cmd="set" data="pg_handle=%s"/>

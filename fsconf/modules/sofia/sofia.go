@@ -147,6 +147,7 @@ func Read(c *gin.Context) (string, error) {
 }
 
 func Build(c *gin.Context, content string) (string, error) {
+	///////notice!!! param odbc-dsn not affect, set odbc-dsn before boot//////
 	var old, new, newcontent string
 	profile := c.PostForm(`profile`)
 	switch profile {
@@ -156,10 +157,6 @@ func Build(c *gin.Context, content string) (string, error) {
 		new = `<X-PRE-PROCESS cmd="include" data="./sip_profiles/*.xml"/>`
 		newcontent = strings.ReplaceAll(content, old, new)
 	case "internal", "internal-ipv6":
-		//<!--<param name="odbc-dsn" value="dsn:user:pass"/>-->
-		old = `<!--<param name="odbc-dsn" value="dsn:user:pass"/>-->`
-		new = `<param name="odbc-dsn" value="$${pg_handle}"/>`
-		newcontent = strings.ReplaceAll(content, old, new)
 		//<param name="force-register-domain" value="$${domain}"/>
 		old = `<param name="force-register-domain" value="$${domain}"/>`
 		new = `<!--<param name="force-register-domain" value="$${domain}"/>-->`
@@ -178,10 +175,6 @@ func Build(c *gin.Context, content string) (string, error) {
 		//new = fmt.Sprintf(`<X-PRE-PROCESS cmd="include" data="./sip_profiles/%s/*.xml"/>`, profile)
 		new, _ = getProfileGateways(profile)
 		newcontent = strings.ReplaceAll(content, old, new)
-		//<!-- ************************************************* -->
-		old = `<!-- ************************************************* -->`
-		new = `<param name="odbc-dsn" value="$${pg_handle}"/>`
-		newcontent = strings.ReplaceAll(newcontent, old, new)
 	}
 	return newcontent, nil
 }

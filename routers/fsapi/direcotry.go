@@ -35,13 +35,14 @@ import (
 //
 func doDirectory(c *gin.Context) string {
 	body := fsconf.NOT_FOUND
-	uaid := c.PostForm(`user`)
-	uadomain := c.PostForm(`domain`)
+	section := c.PostForm(`section`)
 	eventname := c.PostForm("Event-Name")
 	action := c.PostForm("action")
 	authmethod := c.PostForm("sip_auth_method")
 	purpose := c.PostForm("purpose")
 	profile := c.PostForm("profile")
+	uaid := c.PostForm(`user`)
+	uadomain := c.PostForm(`domain`)
 
 	// multi tenant, sofia profile internal rescan/restart.
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(purpose, `gateways`) && strings.Contains(profile, `internal`) {
@@ -87,6 +88,14 @@ func doDirectory(c *gin.Context) string {
 
 	// voicemail ?
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(purpose, `publish-vm`) {
+	}
+
+	//for debug
+	if true {
+		request := fmt.Sprintf(`section=%s, Event-Name=%s, action=%s, sip_auth_method=%s, purpose=%s profile=%s uaid=%s uadomain=%s`,
+			section, eventname, action, authmethod, purpose, profile, uaid, uadomain)
+		log.Println(request)
+		log.Println(body)
 	}
 	return body
 }
