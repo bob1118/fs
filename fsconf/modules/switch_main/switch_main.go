@@ -39,11 +39,14 @@ func Default(filename string) (string, error) {
 	if strings.EqualFold(filename, `post_load_switch.conf`) {
 		content = POST_LOAD_SWITCH_CONF
 	}
+	if strings.EqualFold(filename, `switch.conf`) {
+		content = SWITCH_CONF
+	}
 	return content, nil
 }
 
 func Build(c *gin.Context, content string) (string, error) {
-	////////////////////////NOTICE!!! change switch.conf param, but no effact!!!////////////////////////////////
+	////////NOTICE!!! change switch.conf param, but no effact!!!, set odbc-dsn before switch boot(fs config fsconfig --init)///////
 	//<param name="sessions-per-second" value="30"/>
 	//<param name="max-sessions" value="1000"/>
 	//newcontent := strings.ReplaceAll(content, `<param name="max-sessions" value="1000"/>`, `<param name="max-sessions" value="999"/>`)

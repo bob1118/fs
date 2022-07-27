@@ -147,7 +147,8 @@ func Read(c *gin.Context) (string, error) {
 }
 
 func Build(c *gin.Context, content string) (string, error) {
-	///////notice!!! param odbc-dsn not affect, set odbc-dsn before boot//////
+	///////notice!!! param odbc-dsn not affect, set odbc-dsn before switch boot(fs config fsconfig --init)//////
+	var err error
 	var old, new, newcontent string
 	profile := c.PostForm(`profile`)
 	switch profile {
@@ -173,10 +174,11 @@ func Build(c *gin.Context, content string) (string, error) {
 		//<X-PRE-PROCESS cmd="include" data="external/*.xml"/>
 		old = fmt.Sprintf(`<X-PRE-PROCESS cmd="include" data="%s/*.xml"/>`, profile)
 		//new = fmt.Sprintf(`<X-PRE-PROCESS cmd="include" data="./sip_profiles/%s/*.xml"/>`, profile)
-		new, _ = getProfileGateways(profile)
-		newcontent = strings.ReplaceAll(content, old, new)
+		if new, err = getProfileGateways(profile); err == nil {
+			newcontent = strings.ReplaceAll(content, old, new)
+		}
 	}
-	return newcontent, nil
+	return newcontent, err
 }
 
 func getProfileGateways(s string) (string, error) {
@@ -190,7 +192,8 @@ func getProfileGateways(s string) (string, error) {
 			log.Println(err)
 		} else {
 			for _, gateway := range gateways {
-				gatewayConf := fmt.Sprintf(SOFIA_PROFILE_GATEWAY, gateway.Gname,
+				gatewayConf := fmt.Sprintf(SOFIA_PROFILE_GATEWAY,
+					gateway.Gname,
 					gateway.Gusername,
 					gateway.Grealm,
 					gateway.Gfromuser,

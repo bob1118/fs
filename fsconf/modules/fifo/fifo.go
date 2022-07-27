@@ -32,21 +32,26 @@ func Read(c *gin.Context) (string, error) {
 func Default() (string, error) { return FIFO_CONF_XML, nil }
 
 func Build(c *gin.Context, content string) (string, error) {
-
+	var err error
 	//<param name="odbc-dsn" value="$${pg_handle}"/>
 	old := `<settings>`
 	new := fmt.Sprintf("%s\n%s", old, ODBC_DSN)
 	newcontent := strings.ReplaceAll(content, old, new)
 
 	//maybe buildfifos()
-	fifos := buildFifos()
-	newcontent = strings.ReplaceAll(newcontent, DEFAULT_FIFO, fifos)
-	return newcontent, nil
+	if fifos, e := buildFifos(); e != nil {
+		err = e
+	} else {
+		newcontent = strings.ReplaceAll(newcontent, DEFAULT_FIFO, fifos)
+	}
+	return newcontent, err
 }
 
-func buildFifos() string {
+func buildFifos() (string, error) {
+	var err error
 	var myFifos string
-	if fifos, err := db.SelectFifos(); err != nil {
+	if fifos, e := db.SelectFifos(); err != nil {
+		err = e
 		log.Println(err)
 	} else {
 		for _, fifo := range fifos {
@@ -54,5 +59,5 @@ func buildFifos() string {
 			myFifos = fmt.Sprintf("%s\n%s", myFifos, myfifo)
 		}
 	}
-	return myFifos
+	return myFifos, err
 }
