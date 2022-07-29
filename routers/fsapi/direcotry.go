@@ -44,6 +44,7 @@ func doDirectory(c *gin.Context) string {
 	uaid := c.PostForm(`user`)
 	uadomain := c.PostForm(`domain`)
 
+	// profile domains alias="true", parse the directory for domains
 	// multi tenant, sofia profile internal rescan/restart.
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(purpose, `gateways`) && strings.Contains(profile, `internal`) {
 		if domains, err := db.SelectAccountsDistinctDomain(); err != nil {
@@ -57,10 +58,12 @@ func doDirectory(c *gin.Context) string {
 			body = fmt.Sprintf(fsconf.DIRECTORY, domainsconf)
 		}
 	}
-	// user's gateways ?? like conf/direcotry/default/brian.xml or conf/direcotry/default/example.com.xml
+	// profile domains parse="true", get gateways
+	// user's gateways ?? eg: conf/direcotry/default/brian.xml, conf/direcotry/default/example.com.xml
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(purpose, `gateways`) && strings.Contains(profile, `external`) {
 	}
-	// network list
+	// network list for domain
+	// eg: directory/default/brian.xml:6:  <user id="brian" cidr="192.0.2.0/24">
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(purpose, `network-list`) {
 	}
 
@@ -73,7 +76,7 @@ func doDirectory(c *gin.Context) string {
 			body = useragentAuthConf(action, uaid, uadomain)
 		}
 	}
-	// voicemail need lookup a user id, response like auth
+	// voicemail need lookup a user's id, response like auth
 	if strings.EqualFold(eventname, `GENERAL`) && strings.EqualFold(action, `message-count`) {
 		if len(uaid) > 0 && len(uadomain) > 0 {
 			body = useragentAuthConf(action, uaid, uadomain)
@@ -101,7 +104,7 @@ func doDirectory(c *gin.Context) string {
 }
 
 func useragentAuthConf(action, id, domain string) string {
-	var uaconf string
+	uaconf := fsconf.NOT_FOUND
 	enableA1Hash := viper.GetString(`gateway.enablea1hash`)
 	if ua, err := db.GetAccountsAccount(id, domain); err != nil {
 		log.Println(err)
