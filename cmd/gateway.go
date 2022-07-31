@@ -50,10 +50,10 @@ func gatewayCmdRun(cmd *cobra.Command, args []string) {
 	if isRun, _ := cmd.Flags().GetBool(`run`); isRun {
 		gatewayHttp()
 	} else { //print config gateway
-		gateway := viper.Sub(`gateway`)
 		var list string
-		allkeys := gateway.AllKeys()
-		for _, key := range allkeys {
+		gateway := viper.Sub(`gateway`)
+		keys := gateway.AllKeys()
+		for _, key := range keys {
 			list = fmt.Sprintf("%s\n%-30s=>%s", list, key, gateway.GetString(key))
 		}
 		log.Println(`gateway config:`, list)
@@ -62,7 +62,7 @@ func gatewayCmdRun(cmd *cobra.Command, args []string) {
 
 func gatewayHttp() {
 	db.Initdb()
-	h := routers.NewRouter()
+	h := routers.NewRouter(routers.T_GATEWAY)
 	s := &http.Server{
 		Addr:           viper.GetString(`gateway.http.addr`),
 		Handler:        h,

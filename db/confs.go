@@ -72,4 +72,6 @@ func GetConfsConf(filename, function, profile string) (*Conf, error) {
 	return &conf, err
 }
 
-func SelectConfs() {}
+func SelectConfs(condistion string) ([]Conf, error) {
+	return nil, nil
+}

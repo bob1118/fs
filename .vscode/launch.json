@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${fileDirname}",
-            "args": ["gateway","--run"]
+            "args": ["server","--run"]
         }
     ]
 }

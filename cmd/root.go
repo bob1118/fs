@@ -61,6 +61,8 @@ switch:
         ipaddr: 127.0.0.1
         port: 8021
         password: ClueCon
+    record:
+        dir: /var/lib/freeswitch/recorddings
     vars:
         ipv4: 10.10.10.25
         external_sip_ip: $${local_ip_v4}

@@ -86,6 +86,8 @@ func PostFromXmlCurl(c *gin.Context) {
 		responseBody = doDirectory(c)
 	case "phrases":
 		responseBody = doPhrases(c)
+	default:
+		responseBody = `default bad request was ignored !!!`
 	}
 	//log.Println(responseBody)
 	c.String(http.StatusOK, responseBody)

@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS %s (
 	conf_newcontent varchar NULL,
 	CONSTRAINT confs_pkey PRIMARY KEY (conf_uuid)
 );
-COMMENT ON TABLE %s IS 'switch config files which mod_xml_curl requested';
+COMMENT ON TABLE %s IS 'switch config files that requested by xml_curl';
 `
 
 const ACCOUNTS = `
