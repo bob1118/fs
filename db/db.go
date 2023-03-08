@@ -29,7 +29,7 @@ func pgsqlClose(db *sqlx.DB) { db.Close() }
 
 func pgsqlInitdb() {
 	var err error
-	strcon := fmt.Sprintf(`user=%s password=%s host=%s dbname=%s`,
+	strcon := fmt.Sprintf(`user=%s password=%s host=%s dbname=%s sslmode=disable`,
 		viper.GetString(`postgres.user`), viper.GetString(`postgres.password`), viper.GetString(`postgres.host`), viper.GetString(`postgres.name`))
 	pgdb, err = pgsqlOpen(strcon)
 	if err != nil {
@@ -88,7 +88,7 @@ func pgsqlInitSwitchdb(db *sqlx.DB) (*sqlx.DB, error) {
 		}
 	}
 	//return switch db
-	switchstr := fmt.Sprintf(`user=%s password=%s host=%s dbname=%s`, switchDbUser, switchDbPassword, switchDbhost, switchDbName)
+	switchstr := fmt.Sprintf(`user=%s password=%s host=%s dbname=%s sslmode=disable`, switchDbUser, switchDbPassword, switchDbhost, switchDbName)
 	return pgsqlOpen(switchstr)
 }
 
@@ -177,7 +177,7 @@ func pgsqlInitGatewaydb(db *sqlx.DB) (*sqlx.DB, error) {
 		}
 	}
 	//return gateway db
-	gatewaystr := fmt.Sprintf(`user=%s password=%s host=%s dbname=%s`, gdbuser, gdbpassword, gdbhost, gdbname)
+	gatewaystr := fmt.Sprintf(`user=%s password=%s host=%s dbname=%s sslmode=disable`, gdbuser, gdbpassword, gdbhost, gdbname)
 	return pgsqlOpen(gatewaystr)
 }
 
@@ -312,7 +312,7 @@ func pgsqlInitServerdb(db *sqlx.DB) (*sqlx.DB, error) {
 		}
 	}
 	//return server db
-	serverstr := fmt.Sprintf(`user=%s password=%s host=%s dbname=%s`, sdbuser, sdbpassword, sdbhost, sdbname)
+	serverstr := fmt.Sprintf(`user=%s password=%s host=%s dbname=%s sslmode=disable`, sdbuser, sdbpassword, sdbhost, sdbname)
 	return pgsqlOpen(serverstr)
 }
 
