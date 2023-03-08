@@ -12,7 +12,7 @@ const USER_DROP = `drop user if exists %s;`
 
 //CREATE TABLE if not exists table_name(...)
 
-//CDR_LEG mod_odbc_cdr table define
+// CDR_LEG mod_odbc_cdr table define
 const CDR_LEG = `
 CREATE TABLE IF NOT EXISTS %s (
 	uuid varchar NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS %s (
 );
 `
 
-//fs gateway -run table define
+// fs gateway -run table define
 const CONFS = `
 CREATE TABLE IF NOT EXISTS %s (
 	conf_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS %s (
 );
 COMMENT ON TABLE %s IS 'phone numbers of external gateway';
 `
-const ACCE164 = `
+const ACCE164S = `
 CREATE TABLE IF NOT EXISTS %s (
 	acce164_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
 	account_id varchar NOT NULL,
@@ -152,7 +152,7 @@ COMMENT ON TABLE %s IS 'mod_fifo fifo members';
 ALTER TABLE %s ADD CONSTRAINT fifomember_fk FOREIGN KEY (fifo_name) REFERENCES %s(fifo_name) ON DELETE CASCADE ON UPDATE CASCADE;
 `
 
-//fs server --run table define
+// fs server --run table define
 const BLACKLISTS = `
 CREATE TABLE IF NOT EXISTS %s (
 	blacklist_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
