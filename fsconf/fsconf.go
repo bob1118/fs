@@ -190,6 +190,11 @@ func (p *Fsconf) buildBootableConf() error {
 	if err := p.buildAutoloadXmlcurl(autoloadXmlcurl); err != nil {
 		allerrors += fmt.Sprintf("%s: %s\n", autoloadXmlcurl, err.Error())
 	}
+	//p.dir()/autoload_configs/event_socket.conf.xml
+	autoloadEventsocket := fmt.Sprintf(`%s/autoload_configs/event_socket.conf.xml`, p.Dir())
+	if err := p.buildAutoloadEventsocket(autoloadEventsocket); err != nil {
+		allerrors += fmt.Sprintf("%s: %s\n", autoloadEventsocket, err.Error())
+	}
 
 	if len(allerrors) > 0 {
 		return errors.New(allerrors)
@@ -315,6 +320,32 @@ func (p *Fsconf) buildAutoloadXmlcurl(in string) error {
 			new := fmt.Sprintf(`<param name="gateway-url" value="%s" bindings="%s"/>`,
 				p.v.GetString(`switch.xml_curl.url`), p.v.GetString(`switch.xml_curl.bindings`))
 			p.Update(file, []byte(old), []byte(new))
+		}
+	}
+	return err
+}
+
+// buildAutoloadEventsocket
+func (p *Fsconf) buildAutoloadEventsocket(in string) error {
+	var err error
+	var old, new string
+	var file = in
+	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
+	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
+		if data, e := os.ReadFile(file); e != nil {
+			err = e
+		} else {
+			os.WriteFile(defaultfile, data, 0644)
+			old = `<param name="listen-ip" value="::"/>`
+			new = fmt.Sprintf(`<param name="listen-ip" value="%s"/>`, p.v.GetString(`switch.eventsocket.ipaddr`))
+			p.Update(file, []byte(old), []byte(new))
+			old = `<param name="listen-port" value="8021"/>`
+			new = fmt.Sprintf(`<param name="listen-port" value="%s"/>`, p.v.GetString(`switch.eventsocket.port`))
+			p.Update(file, []byte(old), []byte(new))
+			old = `<param name="password" value="ClueCon"/>`
+			new = fmt.Sprintf(`<param name="password" value="%s"/>`, p.v.GetString(`switch.eventsocket.password`))
+			p.Update(file, []byte(old), []byte(new))
+			p.Uncomment(file, []byte(`<!--<param name="apply-inbound-acl" value="loopback.auto"/>-->`))
 		}
 	}
 	return err

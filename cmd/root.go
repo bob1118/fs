@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 bob
-
 */
 package cmd
 

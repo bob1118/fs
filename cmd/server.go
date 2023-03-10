@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 bob
-
 */
 package cmd
 
@@ -10,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/bob1118/fs/db"
+	"github.com/bob1118/fs/esl"
 	"github.com/bob1118/fs/routers"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -46,6 +46,8 @@ func init() {
 func serverCmdRun(cmd *cobra.Command, args []string) {
 	fmt.Println("server called")
 	if isRun, _ := cmd.Flags().GetBool(`run`); isRun {
+		go esl.Run(`inbound`)
+		go esl.Run(`outbound`)
 		serverHttp()
 	} else { //print config gateway
 		var list string

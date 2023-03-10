@@ -2,6 +2,8 @@ package routers
 
 import (
 	"github.com/bob1118/fs/routers/api"
+	"github.com/bob1118/fs/routers/api/v1/apicmd"
+	"github.com/bob1118/fs/routers/api/v1/bgapicmd"
 	"github.com/bob1118/fs/routers/fsapi"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -39,6 +41,11 @@ func serverRouter(r *gin.Engine) {
 	{
 		//api/v1/recorddings
 		apiv1.Static("/recorddings", switchRecorddingDir)
+		//api/v1/api?cmd=xxx
+		apiv1.GET("/api", apicmd.Get)
+		//api/v1/bgapi?cmd=xxx
+		apiv1.GET("/bgapi", bgapicmd.Get)
+		
 		////gateway tables
 		//table confs
 		apiv1.GET("/confs")
@@ -50,7 +57,7 @@ func serverRouter(r *gin.Engine) {
 		//table accounts
 		//table gateways
 		//table e164s
-		//table acce164
+		//table acce164s
 		//table fifos
 		//table fifomembers
 		////server tables

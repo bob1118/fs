@@ -28,6 +28,10 @@ type FifoMember struct {
 	Mlag     string `db:"member_lag" json:"lag"`
 }
 
+func GetFifomembers(s string) ([]FifoMember, error) {
+	return nil, nil
+}
+
 func SelectFifoMembers() {}
 
 func SelectFifoMembersByFifoname(fifoname string) ([]FifoMember, error) {
