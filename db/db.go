@@ -11,17 +11,40 @@ import (
 	"github.com/spf13/viper"
 )
 
+var gatewayTableprifex, serverTablePrefix string
 var pgdb, switchdb, gatewaydb, serverdb *sqlx.DB
 
 func init() {}
 
-func Initdb() { pgsqlInitdb() }
+func Initdb() {
+
+	//gatewayTablesPrefix
+	g := viper.GetString(`gateway.db.tableprefix`)
+	if len(g) > 0 {
+		gatewayTableprifex = fmt.Sprintf(`%s_`, g)
+	} else {
+		gatewayTableprifex = g
+	}
+
+	//serverTablePrefix
+	s := viper.GetString(`server.db.tableprefix`)
+	if len(s) > 0 {
+		serverTablePrefix = fmt.Sprintf(`%s_`, s)
+	} else {
+		serverTablePrefix = s
+	}
+	pgsqlInitdb()
+}
 
 func GetGatewaydb() *sqlx.DB { return gatewaydb }
 
 func GetSwitchdb() *sqlx.DB { return switchdb }
 
 func GetServerdb() *sqlx.DB { return serverdb }
+
+func GetTablesGatewayPrifex() string { return gatewayTableprifex }
+
+func GetTablesServerPrifex() string { return serverTablePrefix }
 
 func pgsqlOpen(strcon string) (*sqlx.DB, error) { return sqlx.Connect(`postgres`, strcon) }
 
@@ -184,17 +207,10 @@ func pgsqlInitGatewaydb(db *sqlx.DB) (*sqlx.DB, error) {
 func pgsqlInitGatewayTables(db *sqlx.DB) {
 	var err error
 	var isFound bool
-	var realTablePrefix string
 	ip := viper.GetString(`switch.vars.ipv4`)
-	tablePrefix := viper.GetString(`gateway.db.tableprefix`)
-	if len(tablePrefix) > 0 {
-		realTablePrefix = fmt.Sprintf(`%s_`, tablePrefix)
-	} else {
-		realTablePrefix = tablePrefix
-	}
 
 	//table confs define gateway response content.
-	tableConfs := fmt.Sprintf(`%sconfs`, realTablePrefix)
+	tableConfs := fmt.Sprintf(`%sconfs`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableConfs); err != nil {
 		log.Println(err)
 	} else {
@@ -205,7 +221,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 		}
 	}
 	//table accounts
-	tableAccounts := fmt.Sprintf(`%saccounts`, realTablePrefix)
+	tableAccounts := fmt.Sprintf(`%saccounts`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableAccounts); err != nil {
 		log.Println(err)
 	} else {
@@ -223,7 +239,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 		}
 	}
 	//table gateways
-	tableGateways := fmt.Sprintf(`%sgateways`, realTablePrefix)
+	tableGateways := fmt.Sprintf(`%sgateways`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableGateways); err != nil {
 		log.Println(err)
 	} else {
@@ -235,7 +251,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 		}
 	}
 	//table e164s
-	tableE164s := fmt.Sprintf(`%se164s`, realTablePrefix)
+	tableE164s := fmt.Sprintf(`%se164s`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableE164s); err != nil {
 		log.Println(err)
 	} else {
@@ -247,7 +263,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 		}
 	}
 	//table acce164s
-	tableAcce164 := fmt.Sprintf(`%sacce164s`, realTablePrefix)
+	tableAcce164 := fmt.Sprintf(`%sacce164s`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableAcce164); err != nil {
 		log.Println(err)
 	} else {
@@ -259,7 +275,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 		}
 	}
 	//table fifos
-	tableFifo := fmt.Sprintf(`%sfifos`, realTablePrefix)
+	tableFifo := fmt.Sprintf(`%sfifos`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableFifo); err != nil {
 		log.Println(err)
 	} else {
@@ -271,7 +287,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 		}
 	}
 	//table fifomembers
-	tableFifomembers := fmt.Sprintf(`%sfifomembers`, realTablePrefix)
+	tableFifomembers := fmt.Sprintf(`%sfifomembers`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableFifomembers); err != nil {
 		log.Println(err)
 	} else {
@@ -319,15 +335,9 @@ func pgsqlInitServerdb(db *sqlx.DB) (*sqlx.DB, error) {
 func pgsqlInitServerTables(db *sqlx.DB) {
 	var err error
 	var isFound bool
-	var realTablePrefix string
-	tablePrefix := viper.GetString(`server.db.tableprefix`)
-	if len(tablePrefix) > 0 {
-		realTablePrefix = fmt.Sprintf(`%s_`, tablePrefix)
-	} else {
-		realTablePrefix = tablePrefix
-	}
+
 	//table backlists
-	tableBlacklists := fmt.Sprintf(`%sblacklists`, realTablePrefix)
+	tableBlacklists := fmt.Sprintf(`%sblacklists`, serverTablePrefix)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableBlacklists); err != nil {
 		log.Println(err)
 	} else {
@@ -338,8 +348,9 @@ func pgsqlInitServerTables(db *sqlx.DB) {
 			db.MustExec(insersql)
 		}
 	}
+
 	//table bgjobs
-	tableBgjobs := fmt.Sprintf(`%sbgjobs`, realTablePrefix)
+	tableBgjobs := fmt.Sprintf(`%sbgjobs`, serverTablePrefix)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableBgjobs); err != nil {
 		log.Println(err)
 	} else {

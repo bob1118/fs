@@ -13,8 +13,7 @@ func Get(c *gin.Context) {
 	var cmd, result string
 	cmd = c.Query("cmd")
 	if result, err = eslclient.ClientCon.SendApiCommand(cmd); err != nil {
-		c.String(200, err.Error())
-	} else {
-		c.String(200, result)
+		result = err.Error()
 	}
+	c.String(200, result)
 }

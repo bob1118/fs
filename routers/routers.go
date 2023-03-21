@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/bob1118/fs/routers/api"
+	v1 "github.com/bob1118/fs/routers/api/v1"
 	"github.com/bob1118/fs/routers/api/v1/apicmd"
 	"github.com/bob1118/fs/routers/api/v1/bgapicmd"
 	"github.com/bob1118/fs/routers/fsapi"
@@ -45,16 +46,20 @@ func serverRouter(r *gin.Engine) {
 		apiv1.GET("/api", apicmd.Get)
 		//api/v1/bgapi?cmd=xxx
 		apiv1.GET("/bgapi", bgapicmd.Get)
-		
+
 		////gateway tables
 		//table confs
 		apiv1.GET("/confs")
-		apiv1.GET("/confs/:conf")
 		apiv1.POST("/confs")
 		apiv1.PUT("/confs/:uuid")
-		apiv1.PATCH("/confs/:uuid")
+		//apiv1.PATCH("/confs/:uuid")
 		apiv1.DELETE("/confs/:uuid")
 		//table accounts
+		apiv1.GET("/accounts", v1.GetAccounts)
+		apiv1.POST("/account", v1.PostAccount)
+		apiv1.POST("/accounts", v1.PostAccounts)
+		apiv1.PUT("/account/:uuid", v1.PutAccount)
+		apiv1.DELETE("/account/:uuid", v1.DeleteAccount)
 		//table gateways
 		//table e164s
 		//table acce164s
