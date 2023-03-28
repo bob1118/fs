@@ -40,6 +40,8 @@ func serverRouter(r *gin.Engine) {
 	r.GET("/api", api.DefaultOK)
 	apiv1 := r.Group("/api/v1")
 	{
+		///
+		apiv1.GET("/", v1.DefaultOK)
 		//api/v1/recorddings
 		apiv1.Static("/recorddings", switchRecorddingDir)
 		//api/v1/api?cmd=xxx

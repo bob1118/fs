@@ -3,6 +3,8 @@
 package bgapicmd
 
 import (
+	"net/http"
+
 	"github.com/bob1118/fs/esl/eslclient"
 	"github.com/gin-gonic/gin"
 )
@@ -18,5 +20,5 @@ func Get(c *gin.Context) {
 	} else {
 		result = jobuuid
 	}
-	c.String(200, result)
+	c.String(http.StatusOK, result)
 }

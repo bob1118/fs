@@ -1,6 +1,8 @@
 package apicmd
 
 import (
+	"net/http"
+
 	"github.com/bob1118/fs/esl/eslclient"
 	"github.com/gin-gonic/gin"
 )
@@ -15,5 +17,5 @@ func Get(c *gin.Context) {
 	if result, err = eslclient.ClientCon.SendApiCommand(cmd); err != nil {
 		result = err.Error()
 	}
-	c.String(200, result)
+	c.String(http.StatusOK, result)
 }

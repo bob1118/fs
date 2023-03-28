@@ -112,7 +112,7 @@ func UpdateAccountsAccount(uuid string, in Account) (out Account, e error) {
 	q += (" return *;")
 
 	err := GetGatewaydb().Select(&ua, q)
-	return Account{}, err
+	return ua, err
 }
 
 func DeleteAccountsAccount(uuid string) (out Account, e error) {
