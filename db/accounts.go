@@ -119,6 +119,7 @@ func DeleteAccountsAccount(uuid string) (out Account, e error) {
 	var ua = Account{}
 	var q = fmt.Sprintf("delete from %saccounts ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf("where account_uuid='%s'", uuid)
+	q += (" return *;")
 	err := GetGatewaydb().Select(&ua, q)
 	return ua, err
 }
