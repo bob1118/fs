@@ -1,7 +1,7 @@
 package esl
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/bob1118/fs/esl/eslclient"
 	"github.com/bob1118/fs/esl/eslserver"
@@ -19,6 +19,6 @@ func Run(eslmode string) {
 	case "outbound", "Outbound", "OUTBOUND":
 		eslserver.ServerRun()
 	default:
-		log.Println("known esl mode")
+		fmt.Println("known esl mode")
 	}
 }

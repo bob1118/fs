@@ -1,8 +1,8 @@
 package fsapi
 
 import (
+	"fmt"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -67,12 +67,12 @@ import (
 // hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=enum.conf
 // hostname=D1130&section=configuration&tag_name=configuration&key_name=name&key_value=timezones.conf
 
-//PostFromXmlCurl
+// PostFromXmlCurl
 func PostFromXmlCurl(c *gin.Context) {
 	//for debug, notice!!! c.Request.Body can readed once only.
 	if false {
 		body, _ := io.ReadAll(c.Request.Body)
-		log.Println(string(body))
+		fmt.Println(string(body))
 	}
 
 	var responseBody string
@@ -89,6 +89,6 @@ func PostFromXmlCurl(c *gin.Context) {
 	default:
 		responseBody = `default bad request was ignored !!!`
 	}
-	//log.Println(responseBody)
+	//fmt.Println(responseBody)
 	c.String(http.StatusOK, responseBody)
 }

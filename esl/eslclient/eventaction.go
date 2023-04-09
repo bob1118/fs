@@ -2,7 +2,6 @@ package eslclient
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/bob1118/fs/db"
 	"github.com/bob1118/fs/esl/eventsocket"
@@ -79,7 +78,7 @@ func backgroundjobAction(e *eventsocket.Event) {
 		len(job.Juuid) == 0 ||
 		len(job.Jcmd) == 0 ||
 		len(job.Jcontent) == 0 {
-		log.Println(e)
+		fmt.Println(e)
 	} else {
 		db.CreateBgjob(job)
 	}

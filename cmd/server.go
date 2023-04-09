@@ -5,8 +5,8 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"time"
 
 	"github.com/bob1118/fs/db"
 	"github.com/bob1118/fs/esl"
@@ -56,7 +56,7 @@ func serverCmdRun(cmd *cobra.Command, args []string) {
 		for _, key := range keys {
 			list = fmt.Sprintf("%s\n%-30s=>%s", list, key, server.GetString(key))
 		}
-		log.Println(`server config:`, list)
+		fmt.Println(`server config:`, list)
 	}
 }
 
@@ -67,8 +67,10 @@ func serverHttp() {
 		Addr:           viper.GetString(`server.http.addr`),
 		Handler:        h,
 		MaxHeaderBytes: 1 << 20,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
 	}
 	if err := s.ListenAndServe(); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 }

@@ -2,7 +2,6 @@ package run_time
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/bob1118/fs/db"
 	"github.com/bob1118/fs/esl/eventsocket"
@@ -20,7 +19,7 @@ func FifoMemberManage(c *eventsocket.Connection, originate string, is bool) (e e
 
 	condition := fmt.Sprintf("member_string='%s'", originate)
 	if fifomembers, err := db.GetFifomembers(condition); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return err
 	} else {
 		for _, fifomember := range fifomembers {
@@ -31,7 +30,7 @@ func FifoMemberManage(c *eventsocket.Connection, originate string, is bool) (e e
 			}
 			apicmd = fmt.Sprintf("api %s %s %s %s %s %s", op, fifomember.Fname, fifomember.Mstring, fifomember.Msimo, fifomember.Mtimeout, fifomember.Mlag)
 			if _, err := c.Send(apicmd); err != nil {
-				log.Println(err)
+				fmt.Println(err)
 				myerr = err
 			}
 		}

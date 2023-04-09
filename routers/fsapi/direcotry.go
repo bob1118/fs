@@ -2,7 +2,6 @@ package fsapi
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/bob1118/fs/db"
@@ -32,7 +31,6 @@ import (
 // 4. ua invite auth
 // INVITE
 // data: [hostname=bob-office&section=directory&tag_name=domain&key_name=name&key_value=10.10.10.25&Event-Name=REQUEST_PARAMS&Core-UUID=3369c8b1-2336-4435-a13c-5516a745ed75&FreeSWITCH-Hostname=bob-office&FreeSWITCH-Switchname=bob-office&FreeSWITCH-IPv4=10.10.10.25&FreeSWITCH-IPv6=2001%3A0%3A2851%3Ab9f0%3Ac5a%3Ac6e1%3Afeaa%3A107d&Event-Date-Local=2021-03-29%2017%3A10%3A26&Event-Date-GMT=Mon,%2029%20Mar%202021%2009%3A10%3A26%20GMT&Event-Date-Timestamp=1617009026320999&Event-Calling-File=sofia_reg.c&Event-Calling-Function=sofia_reg_parse_auth&Event-Calling-Line-Number=2846&Event-Sequence=825&action=sip_auth&sip_profile=internal&sip_user_agent=eyeBeam%20AudioOnly%20release%203015c%20stamp%2027106&sip_auth_username=1000&sip_auth_realm=10.10.10.25&sip_auth_nonce=bafb3087-7896-4b82-bb87-5b84fe92759a&sip_auth_uri=sip%3A9664%4010.10.10.25&sip_contact_user=1000&sip_contact_host=10.10.10.25&sip_to_user=9664&sip_to_host=10.10.10.25&sip_via_protocol=udp&sip_from_user=1000&sip_from_host=10.10.10.25&sip_call_id=ef4eea5592213660%40Ym9iLW9mZmljZQ..&sip_request_user=9664&sip_request_host=10.10.10.25&sip_auth_qop=auth&sip_auth_cnonce=71da7875fcc4a6c3&sip_auth_nc=00000001&sip_auth_response=3a3f199a4493e6b1a3b336d8ed71b6f4&sip_auth_method=INVITE&client_port=10554&key=id&user=1000&domain=10.10.10.25&ip=10.10.10.25]
-//
 func doDirectory(c *gin.Context) string {
 	body := fsconf.NOT_FOUND
 	section := c.PostForm(`section`)
@@ -48,7 +46,7 @@ func doDirectory(c *gin.Context) string {
 	// multi tenant, sofia profile internal rescan/restart.
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(purpose, `gateways`) && strings.Contains(profile, `internal`) {
 		if domains, err := db.SelectAccountsDistinctDomain(); err != nil {
-			log.Println(err)
+			fmt.Println(err)
 		} else {
 			var domainsconf string
 			for _, domain := range domains {
@@ -97,8 +95,8 @@ func doDirectory(c *gin.Context) string {
 	if true {
 		request := fmt.Sprintf(`section=%s, Event-Name=%s, action=%s, sip_auth_method=%s, purpose=%s profile=%s uaid=%s uadomain=%s`,
 			section, eventname, action, authmethod, purpose, profile, uaid, uadomain)
-		log.Println(request)
-		log.Println(body)
+		fmt.Println(request)
+		fmt.Println(body)
 	}
 	return body
 }
@@ -107,7 +105,7 @@ func useragentAuthConf(action, id, domain string) string {
 	uaconf := fsconf.NOT_FOUND
 	enableA1Hash := viper.GetString(`gateway.enablea1hash`)
 	if ua, err := db.GetAccountsAccount(id, domain); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if strings.EqualFold(action, `sip_auth`) {
 			if false ||

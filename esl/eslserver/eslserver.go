@@ -4,7 +4,7 @@
 package eslserver
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/bob1118/fs/esl/eventsocket"
 	"github.com/spf13/viper"
@@ -14,7 +14,7 @@ import (
 func ServerRun() {
 	addr := viper.GetString(`server.eventsocket.serveraddr`)
 	if err := eventsocket.ListenAndServe(addr, handler); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 }
 
@@ -23,9 +23,9 @@ func ServerRestart() {}
 
 // handler function.
 func handler(c *eventsocket.Connection) {
-	log.Println("new client:", c, "from:", c.RemoteAddr())
+	fmt.Println("new client:", c, "from:", c.RemoteAddr())
 	if e, err := c.SendCommandEx("connect"); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		//incoming call CHANNEL_DATA event.
 		eventChannelDefaultAction(c, e)

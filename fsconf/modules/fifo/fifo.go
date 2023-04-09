@@ -14,7 +14,6 @@ package fifo
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -52,7 +51,7 @@ func buildFifos() (string, error) {
 	var myFifos string
 	if fifos, e := db.SelectFifos(); err != nil {
 		err = e
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		for _, fifo := range fifos {
 			myfifo := fmt.Sprintf(FIFO, fifo.Fname)

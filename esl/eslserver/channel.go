@@ -3,7 +3,6 @@ package eslserver
 import (
 	"errors"
 	"fmt"
-	"log"
 
 	"github.com/bob1118/fs/db"
 	"github.com/bob1118/fs/esl/eventsocket"
@@ -17,7 +16,7 @@ func ChannelDefaultAction(c *eventsocket.Connection, ev *eventsocket.Event) erro
 	var myerr error
 	if call, err := NewCall(ev); err != nil {
 		myerr = err
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		//send myevents
 		c.SendCommand("myevents")
@@ -102,7 +101,7 @@ func channelExternalExecuteFifo(c *eventsocket.Connection) error {
 	argv := `fifomember@fifos in`
 	c.APPSet(`hangup_after_bridge=true`, true)
 	if err = c.APPFifo(argv, true); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	return err
 }

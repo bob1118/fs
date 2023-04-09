@@ -1,12 +1,10 @@
 /*
 Copyright © 2022 bob
-
 */
 package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"runtime"
 
@@ -50,7 +48,7 @@ func fsconfigCmdRun(cmd *cobra.Command, args []string) {
 	v := viper.GetViper()
 	conf := v.GetString(`switch.conf`)
 	if _, err := os.Stat(conf); err != nil { //conf from .fs switch.conf not exist.
-		log.Println("switch.conf:", conf, "can not accessed")
+		fmt.Println("switch.conf:", conf, "can not accessed")
 		runos := runtime.GOOS
 		switch runos {
 		case `linux`:
@@ -58,13 +56,13 @@ func fsconfigCmdRun(cmd *cobra.Command, args []string) {
 		case `windows`:
 			dir = `C:/Program Files/FreeSWITCH/conf`
 		case `darwin`: //homebrew apple silinc
-			dir = `/opt/homebrew/Cellar/freeswitch/1.10.7_4/etc/freeswitch`
+			dir = `/opt/homebrew/opt/freeswitch/etc/freeswitch`
 		default:
 		}
 		if _, e := os.Stat(dir); e == nil { //default conf dir exist.
 			v.Set(`switch.conf`, dir)
 			v.WriteConfig()
-			log.Println("set switch.conf to default:", dir)
+			fmt.Println("set switch.conf to default:", dir)
 		}
 	} else {
 		dir = conf
@@ -72,11 +70,11 @@ func fsconfigCmdRun(cmd *cobra.Command, args []string) {
 
 	//--reset
 	if isReset, _ := cmd.Flags().GetBool(`reset`); isReset {
-		log.Println(fsconfigCmdReset(dir))
+		fmt.Println(fsconfigCmdReset(dir))
 	}
 	//--init
 	if isInit, _ := cmd.Flags().GetBool(`init`); isInit {
-		log.Println(fsconfigCmdInit(dir))
+		fmt.Println(fsconfigCmdInit(dir))
 	}
 }
 

@@ -1,6 +1,7 @@
 package run_time
 
 import (
+	"fmt"
 	"log"
 	"sync"
 
@@ -60,16 +61,16 @@ func SetUaOnline(e *eventsocket.Event) {
 	if _, isloaded := uamap.LoadOrStore(k, &ua); isloaded {
 		uamap.Delete(k)
 		uamap.Store(k, &ua)
-		log.Println("SetUaOnline: update value")
+		fmt.Println("SetUaOnline: update value")
 	} else {
-		log.Println(ua)
+		fmt.Println(ua)
 	}
 }
 
 func SetUaOffline(e *eventsocket.Event) {
 	k := e.Get("User_Name") + "@" + e.Get("Domain_Name")
 	if ua, isloaded := uamap.LoadAndDelete(k); isloaded {
-		log.Println(ua)
+		fmt.Println(ua)
 	}
 }
 
@@ -113,7 +114,7 @@ func SetGatewayState(e *eventsocket.Event) {
 		gwmap.Store(gw.gateway, &gw)
 		log.Printf("SetGatewayState:%v\n", gw)
 	} else {
-		log.Println(gw)
+		fmt.Println(gw)
 	}
 }
 

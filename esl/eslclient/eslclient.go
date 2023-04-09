@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"strings"
 	"syscall"
 	"time"
@@ -31,7 +30,7 @@ func ClientRun() {
 	modname := viper.GetString(`switch.cdr.modname`)
 	is_mod_odbc_cdr = utils.IsEqual(modname, "mod_odbc_cdr")
 	if err := clientReconnect(); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 }
 
@@ -45,29 +44,29 @@ func clientReconnect() error {
 	//	if isrun, ok := <-CHfsisrun; ok {
 	//		if isrun {
 	for alwaysrun {
-		log.Println("->start reconnect.")
+		fmt.Println("->start reconnect.")
 		c, err := eventsocket.Dial(addr, password)
 		if err != nil {
 			//if errors.Is(err, syscall.WSAECONNRESET+7) { //syscall.Errno=10061 (No connection could be made because the target machine actively refused it)
-			log.Println(err)
+			fmt.Println(err)
 			e = err
 			//}
 		} else {
 			ClientCon = c
-			log.Println("->connect successful.")
+			fmt.Println("->connect successful.")
 			if eventSubscribe("plain") &&
 				eventUnsubscribe("plain", "RE_SCHEDULE", "HEARTBEAT", "MESSAGE_WAITING", "MESSAGE_QUERY") {
 				//if eventSubscribe("plain", "API", "BACKGROUND_JOB", "CUSTOM sofia::register sofia::unregister sofia::expire sofia::gateway_state") {
 				if err := eventReadLoop(); err != nil {
 					e = err
 					if errors.Is(err, io.EOF) {
-						log.Println(err)
+						fmt.Println(err)
 					}
 					//if errors.Is(err, syscall.WSAECONNRESET) { //windows
-					//	log.Println(err)
+					//	fmt.Println(err)
 					//}
 					if errors.Is(err, syscall.ECONNRESET) { //linux
-						log.Println(err)
+						fmt.Println(err)
 					}
 				}
 			}
@@ -108,7 +107,7 @@ func eventSubscribe(format string, enames ...string) bool {
 
 	if event, err := ClientCon.Send(command); err != nil {
 		isOK = false
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		reply := event.Header["Reply-Text"]
 		if strings.Contains(reply.(string), "+OK") {
@@ -134,7 +133,7 @@ func eventUnsubscribe(format string, enames ...string) bool {
 
 	if event, err := ClientCon.Send(command); err != nil {
 		isOK = false
-		log.Println(err.Error())
+		fmt.Println(err.Error())
 	} else {
 		reply := event.Header["Reply-Text"]
 		if strings.Contains(reply.(string), "+OK") {

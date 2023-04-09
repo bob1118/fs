@@ -15,7 +15,6 @@ package modules
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/bob1118/fs/db"
@@ -39,7 +38,7 @@ func GetConfiguration(c *gin.Context) (string, error) {
 	if content, err = readConfFromDatabase(c); err != nil {
 		if content, err = readConfFromFile(c); err != nil {
 			if content, err = constConfiguration(c); err != nil {
-				log.Println(err)
+				fmt.Println(err)
 				return "", err
 			} else {
 				writeConfToFile(c, content)
@@ -57,8 +56,8 @@ func GetConfiguration(c *gin.Context) (string, error) {
 		filename := c.PostForm(`key_value`)
 		function := c.PostForm(`Event-Calling-Function`)
 		profile := c.PostForm(`profile`)
-		log.Println("Request:", filename, function, profile)
-		log.Println("Response:", content)
+		fmt.Println("Request:", filename, function, profile)
+		fmt.Println("Response:", content)
 	}
 	return content, err
 }

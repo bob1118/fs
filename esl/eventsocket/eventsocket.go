@@ -519,5 +519,5 @@ func (r *Event) LogPrint() {
 	if r.Body != "" {
 		log.Printf("BODY: %#v\n", r.Body)
 	}
-	log.Println("______________________________event end_______________________________")
+	fmt.Println("______________________________event end_______________________________")
 }

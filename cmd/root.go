@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -25,7 +24,7 @@ gateway:
         user: fsdba
     enablea1hash: false
     http:
-        addr: localhost:80
+        addr: localhost:8080
 postgres:
     host: 127.0.0.1
     name: postgres
@@ -39,7 +38,7 @@ server:
         tableprefix: s
         user: fsdba
     http:
-        addr: 10.10.10.25:80
+        addr: 10.10.10.21:8080
         readtimeout: 4
         writetimeout: 4
     eventsocket:
@@ -63,11 +62,11 @@ switch:
     record:
         dir: /var/lib/freeswitch/recorddings
     vars:
-        ipv4: 10.10.10.25
+        ipv4: 10.10.10.21
         external_sip_ip: $${local_ip_v4}
         external_rtp_ip: $${local_ip_v4}
     xml_curl:
-        url: http://localhost/fsapi
+        url: http://localhost:8080/fsapi
         bindings: dialplan|configuration|directory|phrases
 `
 
@@ -139,7 +138,7 @@ func initConfig() {
 		configFile = filepath.Join(home, filename)
 		if _, err := os.Stat(configFile); os.IsNotExist(err) {
 			if err := os.WriteFile(configFile, []byte(defaultFsContent), 0644); err != nil {
-				log.Println(err)
+				fmt.Println(err)
 			}
 		}
 	}
@@ -150,7 +149,7 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	} else {
-		log.Println("viper.ReadInConfig()", err)
+		fmt.Println("viper.ReadInConfig()", err)
 	}
 }
 

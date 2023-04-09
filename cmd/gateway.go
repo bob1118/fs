@@ -1,13 +1,12 @@
 /*
 Copyright © 2022 bob
-
 */
 package cmd
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"time"
 
 	"github.com/bob1118/fs/db"
 	"github.com/bob1118/fs/routers"
@@ -56,7 +55,7 @@ func gatewayCmdRun(cmd *cobra.Command, args []string) {
 		for _, key := range keys {
 			list = fmt.Sprintf("%s\n%-30s=>%s", list, key, gateway.GetString(key))
 		}
-		log.Println(`gateway config:`, list)
+		fmt.Println(`gateway config:`, list)
 	}
 }
 
@@ -67,8 +66,10 @@ func gatewayHttp() {
 		Addr:           viper.GetString(`gateway.http.addr`),
 		Handler:        h,
 		MaxHeaderBytes: 1 << 20,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
 	}
 	if err := s.ListenAndServe(); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 }

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -36,7 +35,7 @@ func New(conf string, bakext string) *Fsconf {
 					}
 				}
 			} else {
-				log.Println(e)
+				fmt.Println(e)
 			}
 			return e
 		})

@@ -1,12 +1,10 @@
 /*
 Copyright © 2022 bob
-
 */
 package cmd
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -66,7 +64,7 @@ func configCmdRun(cmd *cobra.Command, args []string) {
 	//--get switch.db.host
 	if get, err := cmd.Flags().GetString(`get`); err == nil {
 		if len(get) > 0 {
-			log.Println(get, "=>", configCmdGetVar(get))
+			fmt.Println(get, "=>", configCmdGetVar(get))
 		}
 	}
 }
@@ -77,7 +75,7 @@ func configCmdList() {
 	for _, key := range allkeys {
 		list = fmt.Sprintf("%s\n%-30s=>%s", list, key, viper.GetString(key))
 	}
-	log.Println(list)
+	fmt.Println(list)
 }
 
 func configCmdGetVar(key string) string { return viper.GetString(key) }

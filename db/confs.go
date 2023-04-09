@@ -17,7 +17,6 @@ package db
 import (
 	"errors"
 	"fmt"
-	"log"
 
 	"github.com/spf13/viper"
 )
@@ -43,7 +42,7 @@ func InsertConfsConf(c *Conf) error {
 	if len(conf.Cfilename) > 0 && len(conf.Ccontent) > 0 {
 		insertsql := fmt.Sprintf("insert into %sconfs(conf_filename, conf_profile, conf_content, conf_newcontent) values(:conf_filename,:conf_profile,:conf_content,:conf_newcontent)", realtableprefix)
 		if _, err = GetGatewaydb().NamedExec(insertsql, conf); err != nil {
-			log.Println(err)
+			fmt.Println(err)
 		}
 	} else {
 		err = errors.New("InsertGatewayConfsConf in param null")
@@ -64,7 +63,7 @@ func GetConfsConf(filename, function, profile string) (*Conf, error) {
 	query := fmt.Sprintf("select * from %sconfs where conf_filename = '%s'and conf_profile='%s'", realtableprefix, filename, profile)
 	if len(filename) > 0 {
 		if err = GetGatewaydb().Get(&conf, query); err != nil {
-			log.Println(err)
+			fmt.Println(err)
 		}
 	} else {
 		err = errors.New("GetGatewayConfsConf filename null")

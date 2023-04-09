@@ -53,7 +53,6 @@ package sofia
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -106,7 +105,7 @@ func Read(c *gin.Context) (string, error) {
 		file = fmt.Sprintf("%s/autoload_configs/%s", dir, MOD_CONF_NAME)
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
-			log.Println(e)
+			fmt.Println(e)
 		} else {
 			content = string(data)
 		}
@@ -114,7 +113,7 @@ func Read(c *gin.Context) (string, error) {
 		file = fmt.Sprintf("%s/sip_profiles/internal.xml", dir)
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
-			log.Println(e)
+			fmt.Println(e)
 		} else {
 			content = fmt.Sprintf(SOFIA_CONF_XML_WITH_PROFILE, string(data))
 		}
@@ -122,7 +121,7 @@ func Read(c *gin.Context) (string, error) {
 		file = fmt.Sprintf("%s/sip_profiles/internal-ipv6.xml", dir)
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
-			log.Println(e)
+			fmt.Println(e)
 		} else {
 			content = fmt.Sprintf(SOFIA_CONF_XML_WITH_PROFILE, string(data))
 		}
@@ -130,7 +129,7 @@ func Read(c *gin.Context) (string, error) {
 		file = fmt.Sprintf("%s/sip_profiles/external.xml", dir)
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
-			log.Println(e)
+			fmt.Println(e)
 		} else {
 			content = fmt.Sprintf(SOFIA_CONF_XML_WITH_PROFILE, string(data))
 		}
@@ -138,7 +137,7 @@ func Read(c *gin.Context) (string, error) {
 		file = fmt.Sprintf("%s/sip_profiles/external-ipv6.xml", dir)
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
-			log.Println(e)
+			fmt.Println(e)
 		} else {
 			content = fmt.Sprintf(SOFIA_CONF_XML_WITH_PROFILE, string(data))
 		}
@@ -189,7 +188,7 @@ func getProfileGateways(s string) (string, error) {
 		condition := fmt.Sprintf(`and profile_name='%s'`, profile)
 		if gateways, err := db.SelectGateways(condition); err != nil {
 			e = err
-			log.Println(err)
+			fmt.Println(err)
 		} else {
 			for _, gateway := range gateways {
 				gatewayConf := fmt.Sprintf(SOFIA_PROFILE_GATEWAY,

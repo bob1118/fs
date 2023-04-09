@@ -56,7 +56,7 @@ func pgsqlInitdb() {
 		viper.GetString(`postgres.user`), viper.GetString(`postgres.password`), viper.GetString(`postgres.host`), viper.GetString(`postgres.name`))
 	pgdb, err = pgsqlOpen(strcon)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		// for debug
 		if true {
@@ -64,19 +64,19 @@ func pgsqlInitdb() {
 		}
 		// initSwitchdb
 		if switchdb, err = pgsqlInitSwitchdb(pgdb); err != nil {
-			log.Println(err)
+			fmt.Println(err)
 		} else {
 			pgsqlInitSwitchMododbccdrTables(switchdb)
 		}
 		//initGatewaydb
 		if gatewaydb, err = pgsqlInitGatewaydb(pgdb); err != nil {
-			log.Println(err)
+			fmt.Println(err)
 		} else {
 			pgsqlInitGatewayTables(gatewaydb)
 		}
 		//initServerdb
 		if serverdb, err = pgsqlInitServerdb(pgdb); err != nil {
-			log.Println(err)
+			fmt.Println(err)
 		} else {
 			pgsqlInitServerTables(serverdb)
 		}
@@ -93,7 +93,7 @@ func pgsqlInitSwitchdb(db *sqlx.DB) (*sqlx.DB, error) {
 	switchDbPassword := viper.GetString(`switch.db.password`)
 	//init switch db
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_user where usename=$1", switchDbUser); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound { //create user.
 			createuser := fmt.Sprintf(USER_CREATE, switchDbUser, switchDbPassword)
@@ -101,7 +101,7 @@ func pgsqlInitSwitchdb(db *sqlx.DB) (*sqlx.DB, error) {
 		}
 	}
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_database where datname=$1", switchDbName); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound { //create db.
 			createdb := fmt.Sprintf(DB_CREATE, switchDbName, switchDbUser)
@@ -119,7 +119,7 @@ func pgsqlGetDatabaseOpenConnections(pgdb *sqlx.DB, dbname string) int {
 	var connections int
 	query := fmt.Sprintf(`select count(*) as connections from pg_stat_activity where datname = '%s';`, dbname)
 	if err := pgdb.Get(&connections, query); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 	return connections
 }
@@ -160,7 +160,7 @@ func pgsqlInitSwitchMododbccdrTables(db *sqlx.DB) {
 	if strings.EqualFold(modname, `mod_odbc_cdr`) {
 		for _, table := range tables {
 			if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", table); err != nil {
-				log.Println(err)
+				fmt.Println(err)
 			} else {
 				if !isFound {
 					cdrleg := fmt.Sprintf(CDR_LEG, table)
@@ -182,7 +182,7 @@ func pgsqlInitGatewaydb(db *sqlx.DB) (*sqlx.DB, error) {
 	gdbpassword := viper.GetString(`gateway.db.password`)
 	//init gateway db
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_user where usename=$1", gdbuser); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound { //create user.
 			createuser := fmt.Sprintf(USER_CREATE, gdbuser, gdbpassword)
@@ -190,7 +190,7 @@ func pgsqlInitGatewaydb(db *sqlx.DB) (*sqlx.DB, error) {
 		}
 	}
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_database where datname=$1", gdbname); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound { //create db.
 			createdb := fmt.Sprintf(DB_CREATE, gdbname, gdbuser)
@@ -212,7 +212,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 	//table confs define gateway response content.
 	tableConfs := fmt.Sprintf(`%sconfs`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableConfs); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound {
 			sql := fmt.Sprintf(CONFS, tableConfs, tableConfs)
@@ -223,7 +223,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 	//table accounts
 	tableAccounts := fmt.Sprintf(`%saccounts`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableAccounts); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound {
 			sql := fmt.Sprintf(ACCOUNTS, tableAccounts, tableAccounts)
@@ -241,7 +241,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 	//table gateways
 	tableGateways := fmt.Sprintf(`%sgateways`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableGateways); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound {
 			sql := fmt.Sprintf(GATEWAYS, tableGateways, tableGateways)
@@ -253,7 +253,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 	//table e164s
 	tableE164s := fmt.Sprintf(`%se164s`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableE164s); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound {
 			sql := fmt.Sprintf(E164S, tableE164s, tableE164s)
@@ -265,7 +265,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 	//table acce164s
 	tableAcce164 := fmt.Sprintf(`%sacce164s`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableAcce164); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound {
 			sql := fmt.Sprintf(ACCE164S, tableAcce164, tableAcce164, tableAcce164, tableAccounts, tableAcce164, tableGateways, tableAcce164, tableE164s)
@@ -277,7 +277,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 	//table fifos
 	tableFifo := fmt.Sprintf(`%sfifos`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableFifo); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound {
 			sql := fmt.Sprintf(FIFOS, tableFifo, tableFifo)
@@ -289,7 +289,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 	//table fifomembers
 	tableFifomembers := fmt.Sprintf(`%sfifomembers`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableFifomembers); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound {
 			sql := fmt.Sprintf(FIFOMEMBERS, tableFifomembers, tableFifomembers, tableFifomembers, tableFifo)
@@ -310,7 +310,7 @@ func pgsqlInitServerdb(db *sqlx.DB) (*sqlx.DB, error) {
 	sdbpassword := viper.GetString(`server.db.password`)
 	//init server db
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_user where usename=$1", sdbuser); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound { //create user.
 			createuser := fmt.Sprintf(USER_CREATE, sdbuser, sdbpassword)
@@ -318,7 +318,7 @@ func pgsqlInitServerdb(db *sqlx.DB) (*sqlx.DB, error) {
 		}
 	}
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_database where datname=$1", sdbname); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound { //create db.
 			createdb := fmt.Sprintf(DB_CREATE, sdbname, sdbuser)
@@ -339,7 +339,7 @@ func pgsqlInitServerTables(db *sqlx.DB) {
 	//table backlists
 	tableBlacklists := fmt.Sprintf(`%sblacklists`, serverTablePrefix)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableBlacklists); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound {
 			sql := fmt.Sprintf(BLACKLISTS, tableBlacklists, tableBlacklists)
@@ -352,7 +352,7 @@ func pgsqlInitServerTables(db *sqlx.DB) {
 	//table bgjobs
 	tableBgjobs := fmt.Sprintf(`%sbgjobs`, serverTablePrefix)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableBgjobs); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	} else {
 		if !isFound {
 			sql := fmt.Sprintf(BGJOBS, tableBgjobs, tableBgjobs)
