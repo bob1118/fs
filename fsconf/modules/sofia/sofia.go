@@ -185,8 +185,8 @@ func getProfileGateways(s string) (string, error) {
 	var gatewaysConf string
 	profile := s
 	if len(profile) > 0 {
-		condition := fmt.Sprintf(`and profile_name='%s'`, profile)
-		if gateways, err := db.SelectGateways(condition); err != nil {
+		condition := fmt.Sprintf(`profile_name='%s'`, profile)
+		if gateways, err := db.SelectGatewaysWithCondition(condition); err != nil {
 			e = err
 			fmt.Println(err)
 		} else {

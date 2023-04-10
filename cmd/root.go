@@ -38,7 +38,7 @@ server:
         tableprefix: s
         user: fsdba
     http:
-        addr: 10.10.10.21:8080
+        addr: 10.10.10.25:8080
         readtimeout: 4
         writetimeout: 4
     eventsocket:
@@ -62,7 +62,7 @@ switch:
     record:
         dir: /var/lib/freeswitch/recorddings
     vars:
-        ipv4: 10.10.10.21
+        ipv4: 10.10.10.25
         external_sip_ip: $${local_ip_v4}
         external_rtp_ip: $${local_ip_v4}
     xml_curl:

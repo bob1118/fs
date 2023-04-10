@@ -63,6 +63,10 @@ func serverRouter(r *gin.Engine) {
 		apiv1.PUT("/account/:uuid", v1.PutAccount)
 		apiv1.DELETE("/account/:uuid", v1.DeleteAccount)
 		//table gateways
+		apiv1.GET("/gateways", v1.GetGateways)
+		apiv1.POST("/gateway", v1.PostGateway)
+		apiv1.PUT("/gateway/:uuid", v1.PutGateway)
+		apiv1.DELETE("gateway/:uuid", v1.DeleteGateway)
 		//table e164s
 		//table acce164s
 		//table fifos

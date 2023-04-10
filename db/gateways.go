@@ -25,8 +25,6 @@ package db
 
 import (
 	"fmt"
-
-	"github.com/spf13/viper"
 )
 
 type Gateway struct {
@@ -48,16 +46,9 @@ type Gateway struct {
 	Goptionping         string `db:"gateway_optionping" json:"optionping"`
 }
 
-func SelectGateways(condition string) ([]Gateway, error) {
+func SelectGatewaysWithCondition(condition string) ([]Gateway, error) {
 	gateways := []Gateway{}
-	var realtableprefix string
-	tableprefix := viper.GetString(`gateway.db.tableprefix`)
-	if len(tableprefix) > 0 {
-		realtableprefix = fmt.Sprintf(`%s_`, tableprefix)
-	} else {
-		realtableprefix = tableprefix
-	}
-	query := fmt.Sprintf("select * from %sgateways where true %s", realtableprefix, condition)
+	query := fmt.Sprintf("select * from %sgateways where %s", GetTablesGatewayPrifex(), condition)
 	err := GetGatewaydb().Select(&gateways, query)
 	return gateways, err
 }
