@@ -9,9 +9,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetGateways function.
+// GetGateways function return gateways by condition.
+//
 // request: GET /api/v1/gateways?uuid=xxx&pname=xxx&gname=xxx&username=xxx&realm=xxx&proxy=xxx&registerproxy=xxx&register=true
+//
 // response: json
+//
+//	{
+//		code:{
+//			rtcode: rtcode, //return ec.SUCCESS or not.
+//			rtmsg: rtmsg	//return error message while some error occured.
+//		},
+//		data:{
+//			len: len(slice),
+//			lists:{slice[0],slice[1], ...}
+//		}
+//	}
 func GetGateways(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
@@ -44,12 +57,12 @@ func GetGateways(c *gin.Context) {
 	}
 
 	if rtcode == ec.SUCCESS {
-		if accounts, err := db.SelectAccountsWithCondition(condition); err != nil {
+		if gateways, err := db.SelectGatewaysWithCondition(condition); err != nil {
 			rtcode = ec.ERROR_DATABSE_QUERY
 			rtmsg = err.Error()
 		} else {
-			data["len"] = len(accounts)
-			data["lists"] = accounts
+			data["len"] = len(gateways)
+			data["lists"] = gateways
 		}
 	}
 
@@ -60,10 +73,55 @@ func GetGateways(c *gin.Context) {
 }
 
 // PostGateway function.
+//
+// request: POST /api/v1/gateway, a Gateway{} json.
+//
+// response: json
+//
+//	{
+//		code:{
+//			rtcode: rtcode, //return ec.SUCCESS or not.
+//			rtmsg: rtmsg	//return error message while some error occured.
+//		},
+//		data:{
+//			len: len(slice),
+//			lists:{slice[0],slice[1], ...}
+//		}
+//	}
 func PostGateway(c *gin.Context) {}
 
 // PutGateway function.
+//
+// request: PUT /api/v1/gateway/:uuid, a Gateway{} json.
+//
+// response: json
+//
+//	{
+//		code:{
+//			rtcode: rtcode, //return ec.SUCCESS or not.
+//			rtmsg: rtmsg	//return error message while some error occured.
+//		},
+//		data:{
+//			len: len(slice),
+//			lists:{slice[0],slice[1], ...}
+//		}
+//	}
 func PutGateway(c *gin.Context) {}
 
 // DeleteGateway function.
+//
+// request: DELETE /api/v1/gateway/:uuid
+//
+// response: json
+//
+//	{
+//		code:{
+//			rtcode: rtcode, //return ec.SUCCESS or not.
+//			rtmsg: rtmsg	//return error message while some error occured.
+//		},
+//		data:{
+//			len: len(slice),
+//			lists:{slice[0],slice[1], ...}
+//		}
+//	}
 func DeleteGateway(c *gin.Context) {}

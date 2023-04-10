@@ -12,8 +12,21 @@ import (
 )
 
 // GetAccounts function
+//
 // request: GET /api/v1/accounts?uuid=xxx&id=xxx&name=xxx&auth=xxx&group=xxx&domain=xxx&proxy=xxx&pn=xxx&ps=xxx
+//
 // response: json
+//
+//	{
+//		code:{
+//			rtcode: rtcode, //return ec.SUCCESS or not.
+//			rtmsg: rtmsg	//return error message while some error occured.
+//		},
+//		data:{
+//			len: len(slice),
+//			lists:{slice[0],slice[1], ...}
+//		}
+//	}
 func GetAccounts(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
@@ -77,8 +90,21 @@ func GetAccounts(c *gin.Context) {
 }
 
 // PostAccount function
-// request: POST /api/v1/account json
+//
+// request: POST /api/v1/account, a Account{} json.
+//
 // response: json
+//
+//	{
+//		code:{
+//			rtcode: rtcode, //return ec.SUCCESS or not.
+//			rtmsg: rtmsg	//return error message while some error occured.
+//		},
+//		data:{
+//			len: len(slice),
+//			lists:{slice[0],slice[1], ...}
+//		}
+//	}
 func PostAccount(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
@@ -144,8 +170,21 @@ func PostAccount(c *gin.Context) {
 }
 
 // PostAccounts function
-// request: POST /api/v1/account?domain=mydomain&idstart=8000&idend=8019
+//
+// request: POST /api/v1/accounts?domain=mydomain&idstart=8000&idend=8019
+//
 // response: json
+//
+//	{
+//		code:{
+//			rtcode: rtcode, //return ec.SUCCESS or not.
+//			rtmsg: rtmsg	//return error message while some error occured.
+//		},
+//		data:{
+//			len: len(slice),
+//			lists:{slice[0],slice[1], ...}
+//		}
+//	}
 func PostAccounts(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
@@ -207,8 +246,21 @@ func PostAccounts(c *gin.Context) {
 }
 
 // PutAccount function
-// request: POST /api/v1/account/:uuid json
+//
+// request: PUT /api/v1/account/:uuid, a Account{} json.
+//
 // response: json
+//
+//	{
+//		code:{
+//			rtcode: rtcode, //return ec.SUCCESS or not.
+//			rtmsg: rtmsg	//return error message while some error occured.
+//		},
+//		data:{
+//			len: len(slice),
+//			lists:{slice[0],slice[1], ...}
+//		}
+//	}
 func PutAccount(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
@@ -230,8 +282,8 @@ func PutAccount(c *gin.Context) {
 					rtcode = ec.ERROR_DATABSE_UPDATE
 					rtmsg = err.Error()
 				} else {
-					uas[0] = rtua
-					data["len"] = uas
+					uas = append(uas, rtua)
+					data["len"] = len(uas)
 					data["lists"] = uas
 				}
 			}
@@ -244,9 +296,22 @@ func PutAccount(c *gin.Context) {
 	})
 }
 
-// PutAccount function
-// request: POST /api/v1/account/:uuid
+// DeleteAccount function
+//
+// request: DELETE /api/v1/account/:uuid
+//
 // response: json
+//
+//	{
+//		code:{
+//			rtcode: rtcode, //return ec.SUCCESS or not.
+//			rtmsg: rtmsg	//return error message while some error occured.
+//		},
+//		data:{
+//			len: len(slice),
+//			lists:{slice[0],slice[1], ...}
+//		}
+//	}
 func DeleteAccount(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
