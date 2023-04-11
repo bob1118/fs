@@ -88,7 +88,79 @@ func GetGateways(c *gin.Context) {
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
-func PostGateway(c *gin.Context) {}
+func PostGateway(c *gin.Context) {
+	rtmsg := ``
+	rtcode := ec.SUCCESS
+	gw := db.Gateway{}
+	gws := make([]db.Gateway, 0)
+	data := make(map[string]interface{})
+
+	if c.ContentType() != gin.MIMEJSON {
+		rtcode = ec.ERROR_HTTP_REQUEST_CONTENTTYPE
+	} else {
+		if err := c.BindJSON(&gw); err != nil {
+			rtcode = ec.ERROR_HTTP_REQUEST_CONTEXTBINDJSON
+			rtmsg = err.Error()
+		} else {
+			if len(gw.Gname) == 0 {
+				rtcode = ec.ERROR_HTTP_REQUEST_JSONITEMNULL
+			} else {
+				if len(gw.Gusername) == 0 || len(gw.Gpassword) == 0 { /// account username password *required* ///
+					//maybe sip trunk, if blank.
+				}
+				if len(gw.Grealm) == 0 { /// auth realm: *optional* same as gateway name, if blank ///
+					gw.Grealm = gw.Gname
+				}
+				if len(gw.Gfromuser) == 0 { /// username to use in from: *optional* same as  username, if blank ///
+					gw.Gfromuser = gw.Gusername
+				}
+				if len(gw.Gfromdomain) == 0 { /// domain to use in from: *optional* same as  realm, if blank ///
+					gw.Gfromdomain = gw.Grealm
+				}
+				if len(gw.Gextension) == 0 { /// extension for inbound calls: *optional* same as username, if blank ///
+					gw.Gextension = gw.Gusername
+				}
+				if len(gw.Gproxy) == 0 { /// proxy host: *optional* same as realm, if blank ///
+					gw.Gproxy = gw.Grealm
+				}
+				if len(gw.Gregisterproxy) == 0 { ///// send register to this proxy: *optional* same as proxy, if blank ///
+					gw.Gregisterproxy = gw.Gproxy
+				}
+				if len(gw.Gexpire) == 0 { /// expire in seconds: *optional* 3600, if blank ///
+					gw.Gexpire = `3600`
+				}
+				if len(gw.Gregister) == 0 { /// do not register ///
+					gw.Gregister = `false`
+				}
+				if len(gw.Gcalleridinfrom) == 0 { /// Use the callerid of an inbound call in the from field on outbound calls via this gateway
+					gw.Gcalleridinfrom = `true`
+				}
+				if len(gw.Gextensionincontact) == 0 { /// Put the extension in the contact
+					gw.Gextensionincontact = `false`
+				}
+				if len(gw.Goptionping) == 0 { /// send an options ping every x seconds, failure will unregister and/or mark it down
+					gw.Goptionping = `0`
+				}
+			}
+		}
+	}
+
+	if rtcode == ec.SUCCESS {
+		gws = append(gws, gw)
+		if rtgws, err := db.InsertGateways(gws); err != nil {
+			rtcode = ec.ERROR_DATABSE_INSERT
+			rtmsg = err.Error()
+		} else {
+			data["len"] = len(rtgws)
+			data["lists"] = rtgws
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": gin.H{"rtcode": rtcode, "rtmsg": rtmsg},
+		"data": data,
+	})
+}
 
 // PutGateway function.
 //

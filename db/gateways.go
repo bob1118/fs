@@ -25,6 +25,7 @@ package db
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Gateway struct {
@@ -51,4 +52,22 @@ func SelectGatewaysWithCondition(condition string) ([]Gateway, error) {
 	query := fmt.Sprintf("select * from %sgateways where %s", GetTablesGatewayPrifex(), condition)
 	err := GetGatewaydb().Select(&gateways, query)
 	return gateways, err
+}
+
+func InsertGateways(in []Gateway) (rt []Gateway, e error) {
+	var gw Gateway
+	var newgws []Gateway
+	var q = fmt.Sprintf("insert into %sgateways(account_id,account_name,account_auth,account_password,account_a1hash,account_group,account_domain,account_proxy,account_cacheable)values", GetTablesGatewayPrifex())
+
+	if len := len(in); len > 0 {
+		for index := 0; index < len; index++ {
+			gw = in[index]
+			value := fmt.Sprintf("('%s','%s','%s','%s','%s','%s','%s','%s','%s'),", ua.Aid, ua.Aname, ua.Aauth, ua.Apassword, ua.Aa1hash, ua.Agroup, ua.Adomain, ua.Aproxy, ua.Acacheable)
+			q += value
+		}
+		q = strings.TrimSuffix(q, ",")
+		q += (" returning *;")
+	}
+	err := GetGatewaydb().Select(&newgws, q)
+	return newgws, err
 }

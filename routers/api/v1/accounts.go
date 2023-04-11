@@ -153,7 +153,7 @@ func PostAccount(c *gin.Context) {
 	}
 
 	if rtcode == ec.SUCCESS {
-		uas[0] = ua
+		uas = append(uas, ua)
 		if rtuas, err := db.InsertAccounts(uas); err != nil {
 			rtcode = ec.ERROR_DATABSE_INSERT
 			rtmsg = err.Error()
