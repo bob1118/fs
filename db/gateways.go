@@ -57,12 +57,13 @@ func SelectGatewaysWithCondition(condition string) ([]Gateway, error) {
 func InsertGateways(in []Gateway) (rt []Gateway, e error) {
 	var gw Gateway
 	var newgws []Gateway
-	var q = fmt.Sprintf("insert into %sgateways(account_id,account_name,account_auth,account_password,account_a1hash,account_group,account_domain,account_proxy,account_cacheable)values", GetTablesGatewayPrifex())
+	var q = fmt.Sprintf("insert into %sgateways(gateway_name,gateway_username,gateway_realm,gateway_fromuser,gateway_fromdomain,gateway_password,gateway_extension,gateway_proxy,gateway_registerproxy,gateway_expire,gateway_register,gateway_calleridinfrom,gateway_extensionincontact,gateway_optionping)values", GetTablesGatewayPrifex())
 
 	if len := len(in); len > 0 {
 		for index := 0; index < len; index++ {
 			gw = in[index]
-			value := fmt.Sprintf("('%s','%s','%s','%s','%s','%s','%s','%s','%s'),", ua.Aid, ua.Aname, ua.Aauth, ua.Apassword, ua.Aa1hash, ua.Agroup, ua.Adomain, ua.Aproxy, ua.Acacheable)
+			value := fmt.Sprintf("('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'),",
+				gw.Gname, gw.Gusername, gw.Grealm, gw.Gfromuser, gw.Gfromdomain, gw.Gpassword, gw.Gextension, gw.Gproxy, gw.Gregisterproxy, gw.Gexpire, gw.Gregister, gw.Gcalleridinfrom, gw.Gextensionincontact, gw.Goptionping)
 			q += value
 		}
 		q = strings.TrimSuffix(q, ",")
@@ -70,4 +71,70 @@ func InsertGateways(in []Gateway) (rt []Gateway, e error) {
 	}
 	err := GetGatewaydb().Select(&newgws, q)
 	return newgws, err
+}
+
+func UpdateGatewaysGateway(uuid string, in Gateway) (out Gateway, e error) {
+	var gw Gateway
+	var q = fmt.Sprintf("update %sgateways set ", GetTablesGatewayPrifex())
+
+	if len(in.Pname) > 0 {
+		q += fmt.Sprintf("profile_name='%s',", in.Pname)
+	}
+	if len(in.Gname) > 0 {
+		q += fmt.Sprintf("gateway_name='%s',", in.Gname)
+	}
+	if len(in.Gusername) > 0 {
+		q += fmt.Sprintf("gateway_username='%s',", in.Gusername)
+	}
+	if len(in.Grealm) > 0 {
+		q += fmt.Sprintf("gateway_realm='%s',", in.Grealm)
+	}
+	if len(in.Gfromuser) > 0 {
+		q += fmt.Sprintf("gateway_fromuser='%s',", in.Gfromuser)
+	}
+	if len(in.Gfromdomain) > 0 {
+		q += fmt.Sprintf("gateway_fromdomain='%s',", in.Gfromdomain)
+	}
+	if len(in.Gpassword) > 0 {
+		q += fmt.Sprintf("gateway_password='%s',", in.Gpassword)
+	}
+	if len(in.Gextension) > 0 {
+		q += fmt.Sprintf("gateway_extension='%s',", in.Gextension)
+	}
+	if len(in.Gproxy) > 0 {
+		q += fmt.Sprintf("gateway_proxy='%s',", in.Gproxy)
+	}
+	if len(in.Gregisterproxy) > 0 {
+		q += fmt.Sprintf("gateway_registerproxy='%s',", in.Gregisterproxy)
+	}
+	if len(in.Gexpire) > 0 {
+		q += fmt.Sprintf("gateway_expire='%s',", in.Gexpire)
+	}
+	if len(in.Gregister) > 0 {
+		q += fmt.Sprintf("gateway_register='%s',", in.Gregister)
+	}
+	if len(in.Gcalleridinfrom) > 0 {
+		q += fmt.Sprintf("gateway_calleridinfrom='%s',", in.Gcalleridinfrom)
+	}
+	if len(in.Gextensionincontact) > 0 {
+		q += fmt.Sprintf("gateway_extensionincontact='%s',", in.Gextensionincontact)
+	}
+	if len(in.Goptionping) > 0 {
+		q += fmt.Sprintf("gateway_optionping='%s',", in.Goptionping)
+	}
+	q = strings.TrimSuffix(q, ",")
+	q += fmt.Sprintf(" where gateway_uuid='%s'", uuid)
+	q += (" return *;")
+
+	err := GetGatewaydb().Select(&gw, q)
+	return gw, err
+}
+
+func DeleteGatewaysGateway(uuid string) (out Gateway, e error) {
+	var gw = Gateway{}
+	var q = fmt.Sprintf("delete from %sgateways ", GetTablesGatewayPrifex())
+	q += fmt.Sprintf("where gateway_uuid='%s'", uuid)
+	q += (" return *;")
+	err := GetGatewaydb().Select(&gw, q)
+	return gw, err
 }

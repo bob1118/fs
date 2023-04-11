@@ -329,7 +329,7 @@ func DeleteAccount(c *gin.Context) {
 					rtcode = ec.ERROR_DATABSE_DELETE
 					rtmsg = err.Error()
 				} else {
-					uas[0] = rtua
+					uas = append(uas, rtua)
 					data["len"] = uas
 					data["lists"] = uas
 				}

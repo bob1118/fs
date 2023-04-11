@@ -107,6 +107,7 @@ func PostGateway(c *gin.Context) {
 			} else {
 				if len(gw.Gusername) == 0 || len(gw.Gpassword) == 0 { /// account username password *required* ///
 					//maybe sip trunk, if blank.
+					gw.Gusername = `FREESWITCH`
 				}
 				if len(gw.Grealm) == 0 { /// auth realm: *optional* same as gateway name, if blank ///
 					gw.Grealm = gw.Gname
@@ -178,7 +179,40 @@ func PostGateway(c *gin.Context) {
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
-func PutGateway(c *gin.Context) {}
+func PutGateway(c *gin.Context) {
+	rtmsg := ``
+	rtcode := ec.SUCCESS
+	gw := db.Gateway{}
+	gws := make([]db.Gateway, 0)
+	data := make(map[string]interface{})
+
+	if c.ContentType() != gin.MIMEJSON {
+		rtcode = ec.ERROR_HTTP_REQUEST_CONTENTTYPE
+	} else {
+		if uuid := c.Param("uuid"); len(uuid) == 0 {
+			rtcode = ec.ERROR_HTTP_REQUEST_URLPARAM
+		} else {
+			if err := c.BindJSON(&gw); err != nil {
+				rtcode = ec.ERROR_HTTP_REQUEST_CONTEXTBINDJSON
+				rtmsg = err.Error()
+			} else {
+				if rtgw, err := db.UpdateGatewaysGateway(uuid, gw); err != nil {
+					rtcode = ec.ERROR_DATABSE_UPDATE
+					rtmsg = err.Error()
+				} else {
+					gws = append(gws, rtgw)
+					data["len"] = len(gws)
+					data["lists"] = gws
+				}
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": gin.H{"rtcode": rtcode, "rtmsg": rtmsg},
+		"data": data,
+	})
+}
 
 // DeleteGateway function.
 //
@@ -196,4 +230,33 @@ func PutGateway(c *gin.Context) {}
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
-func DeleteGateway(c *gin.Context) {}
+func DeleteGateway(c *gin.Context) {
+	rtmsg := ``
+	rtcode := ec.SUCCESS
+	gws := make([]db.Gateway, 0)
+	data := make(map[string]interface{})
+
+	if c.ContentType() != gin.MIMEJSON {
+		rtcode = ec.ERROR_HTTP_REQUEST_CONTENTTYPE
+	} else {
+		if uuid := c.Param("uuid"); len(uuid) == 0 {
+			rtcode = ec.ERROR_HTTP_REQUEST_URLPARAM
+		} else {
+			{
+				if rtgw, err := db.DeleteGatewaysGateway(uuid); err != nil {
+					rtcode = ec.ERROR_DATABSE_DELETE
+					rtmsg = err.Error()
+				} else {
+					gws = append(gws, rtgw)
+					data["len"] = gws
+					data["lists"] = gws
+				}
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": gin.H{"rtcode": rtcode, "rtmsg": rtmsg},
+		"data": data,
+	})
+}
