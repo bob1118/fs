@@ -83,11 +83,11 @@ func UpdateFifomembersFifomember(uuid string, in FifoMember) (FifoMember, error)
 }
 
 // DeleteFifomembersFifomember
-func DeleteFifomembersFifomember(uuid string) (Fifo, error) {
-	var fifo = Fifo{}
+func DeleteFifomembersFifomember(uuid string) (FifoMember, error) {
+	var fifomember = FifoMember{}
 	var q = fmt.Sprintf("delete from %sfifomembers ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf(" where fifomember_uuid='%s'", uuid)
 	q += (" return *;")
-	err := GetGatewaydb().Select(&fifo, q)
-	return fifo, err
+	err := GetGatewaydb().Select(&fifomember, q)
+	return fifomember, err
 }

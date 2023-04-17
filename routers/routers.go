@@ -91,12 +91,12 @@ func serverRouter(r *gin.Engine) {
 
 		////server tables
 		//table backlists
-		apiv1.GET("/backlists")
-		apiv1.POST("/backlist")
-		apiv1.PUT("/backlist/:uuid")
-		apiv1.DELETE("/backlist/:uuid")
+		apiv1.GET("/backlists", v1.GetBlacklists)
+		apiv1.POST("/backlist", v1.PostBlacklist)
+		apiv1.PUT("/backlist/:uuid", v1.PutBlacklist)
+		apiv1.DELETE("/backlist/:uuid", v1.DeleteBlacklist)
 		//table bgjobs
-		apiv1.GET("/bgjobs")
+		apiv1.GET("/bgjobs", v1.GetBgjobs)
 		apiv1.POST("/bgjob")
 		apiv1.PUT("/bgjob/:uuid")
 		apiv1.DELETE("/bgjob/:uuid")
