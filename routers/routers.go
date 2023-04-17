@@ -74,13 +74,38 @@ func serverRouter(r *gin.Engine) {
 		apiv1.PUT("/e164/:uuid", v1.PutE164)
 		apiv1.DELETE("/e164/:uuid", v1.DeleteE164)
 		//table acce164s
+		apiv1.GET("/acce164s", v1.GetAcce164s)
+		apiv1.POST("/acce164", v1.PostAcce164)
+		apiv1.PUT("/acce164/:uuid", v1.PutAcce164)
+		apiv1.DELETE("/acce164/:uuid", v1.DeleteAcce164)
 		//table fifos
+		apiv1.GET("/fifos", v1.GetFifos)
+		apiv1.POST("/fifo", v1.PostFifo)
+		apiv1.PUT("/fifo/:uuid", v1.PutFifo)
+		apiv1.DELETE("/fifo/:uuid", v1.DeleteFifo)
 		//table fifomembers
+		apiv1.GET("/fifomembers", v1.GetFifomembers)
+		apiv1.POST("/fifomember", v1.PostFifomember)
+		apiv1.PUT("/fifomember/:uuid", v1.PutFifomember)
+		apiv1.DELETE("/fifomember/:uuid", v1.DeleteFifomember)
+
 		////server tables
 		//table backlists
+		apiv1.GET("/backlists")
+		apiv1.POST("/backlist")
+		apiv1.PUT("/backlist/:uuid")
+		apiv1.DELETE("/backlist/:uuid")
 		//table bgjobs
+		apiv1.GET("/bgjobs")
+		apiv1.POST("/bgjob")
+		apiv1.PUT("/bgjob/:uuid")
+		apiv1.DELETE("/bgjob/:uuid")
 		////cdr tables
 		//table cdr
+		apiv1.GET("/cdr")
+		apiv1.POST("/cdr")
+		apiv1.PUT("/cdr/:uuid")
+		apiv1.DELETE("/cdr/:uuid")
 	}
 	apiv2 := r.Group("/api/v2")
 	{

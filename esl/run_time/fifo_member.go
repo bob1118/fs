@@ -18,7 +18,7 @@ func FifoMemberManage(c *eventsocket.Connection, originate string, is bool) (e e
 	var op string
 
 	condition := fmt.Sprintf("member_string='%s'", originate)
-	if fifomembers, err := db.GetFifomembers(condition); err != nil {
+	if fifomembers, err := db.SelectFifomembersWithCondition(condition); err != nil {
 		fmt.Println(err)
 		return err
 	} else {

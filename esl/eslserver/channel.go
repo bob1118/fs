@@ -67,7 +67,7 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 			c.APPBridge(appargv, true)
 		} else { //ua dial out through gateway.
 			q := fmt.Sprintf(`account_id='%s' and account_domain='%s' and acce164_isdefault=true limit 1`, call.ani, call.domain)
-			if acce164s, err := db.GetAcce164s(q); err != nil { //row not found.
+			if acce164s, err := db.SelectAcce164sWithCondition(q); err != nil { //row not found.
 				c.APPHangup("NO_ROUTE_DESTINATION")
 				myerr = err
 			} else {

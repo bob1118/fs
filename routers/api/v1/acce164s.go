@@ -3,7 +3,6 @@ package v1
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/bob1118/fs/db"
 	"github.com/bob1118/fs/ec"
@@ -11,9 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetE164s function return e164s by condition.
+// GetAcce164s function.
 //
-// request: GET /api/v1/e164s?uuid=xxx&gname=xxx&number=xxx&enable=true
+// request: GET /api/v1/acce164s?uuid=xxx&aid=xxx&adomain=xxx&gname=xxx&enumber=xxx&isdefault=true
 //
 // response: json
 //
@@ -27,36 +26,42 @@ import (
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
-func GetE164s(c *gin.Context) {
+func GetAcce164s(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
 	condition := "true"
 	data := make(map[string]interface{})
 
 	if uuid := c.Query("uuid"); len(uuid) > 0 {
-		condition += fmt.Sprintf(" and e164_uuid='%s'", uuid)
+		condition += fmt.Sprintf(" and acce164_uuid='%s'", uuid)
+	}
+	if id := c.Query("aid"); len(id) > 0 {
+		condition += fmt.Sprintf(" and account_id='%s'", id)
+	}
+	if domain := c.Query("adomain"); len(domain) > 0 {
+		condition += fmt.Sprintf(" and account_domain='%s'", domain)
 	}
 	if gname := c.Query("gname"); len(gname) > 0 {
 		condition += fmt.Sprintf(" and gateway_name='%s'", gname)
 	}
-	if number := c.Query("number"); len(number) > 0 {
+	if number := c.Query("enumber"); len(number) > 0 {
 		condition += fmt.Sprintf(" and e164_number='%s'", number)
 	}
-	if enable := c.Query("enable"); len(enable) > 0 {
-		if utils.IsEqual(enable, `true`) {
-			condition += " and e164_enable is true"
+	if isdefault := c.Query("isdefault"); len(isdefault) > 0 {
+		if utils.IsEqual(isdefault, `true`) {
+			condition += " and acce164_isdefault is true"
 		} else {
-			condition += " and e164_enable is false"
+			condition += " and acce164_isdefault is false"
 		}
 	}
 
 	if rtcode == ec.SUCCESS {
-		if gateways, err := db.SelectE164sWithCondition(condition); err != nil {
+		if acce164s, err := db.SelectAcce164sWithCondition(condition); err != nil {
 			rtcode = ec.ERROR_DATABSE_QUERY
 			rtmsg = err.Error()
 		} else {
-			data["len"] = len(gateways)
-			data["lists"] = gateways
+			data["len"] = len(acce164s)
+			data["lists"] = acce164s
 		}
 	}
 
@@ -66,9 +71,9 @@ func GetE164s(c *gin.Context) {
 	})
 }
 
-// PostE164 function.
+// PostAcce164 function.
 //
-// request: POST /api/v1/e164, a E164{} json.
+// request: POST /api/v1/acce164, a ACCE164{} json.
 //
 // response: json
 //
@@ -82,29 +87,29 @@ func GetE164s(c *gin.Context) {
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
-func PostE164(c *gin.Context) {
+func PostAcce164(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
-	e164 := db.E164{}
-	e164s := make([]db.E164, 0)
+	acce164 := db.ACCE164{}
+	acce164s := make([]db.ACCE164, 0)
 	data := make(map[string]interface{})
 
 	if c.ContentType() != gin.MIMEJSON {
 		rtcode = ec.ERROR_HTTP_REQUEST_CONTENTTYPE
 	} else {
-		if err := c.BindJSON(&e164); err != nil {
+		if err := c.BindJSON(&acce164); err != nil {
 			rtcode = ec.ERROR_HTTP_REQUEST_CONTEXTBINDJSON
 			rtmsg = err.Error()
 		} else {
-			if len(e164.Enumber) == 0 {
+			if len(acce164.Aid) == 0 || len(acce164.Adomain) == 0 || len(acce164.Enumber) == 0 || len(acce164.Gname) == 0 {
 				rtcode = ec.ERROR_HTTP_REQUEST_JSONITEMNULL
 			}
 		}
 	}
 
 	if rtcode == ec.SUCCESS {
-		e164s = append(e164s, e164)
-		if rte164s, err := db.InsertE164s(e164s); err != nil {
+		acce164s = append(acce164s, acce164)
+		if rte164s, err := db.InsertAcce164s(acce164s); err != nil {
 			rtcode = ec.ERROR_DATABSE_INSERT
 			rtmsg = err.Error()
 		} else {
@@ -119,78 +124,9 @@ func PostE164(c *gin.Context) {
 	})
 }
 
-// PostE164s function.
+// PutAcce164 function.
 //
-// request: POST /api/v1/e164s?gname=xxx&numberprefix=xxx&numberstart=xxx&numberend=xxx
-//
-// response: json
-//
-//	{
-//		code:{
-//			rtcode: rtcode, //return ec.SUCCESS or not.
-//			rtmsg: rtmsg	//return error message while some error occured.
-//		},
-//		data:{
-//			len: len(slice),
-//			lists:{slice[0],slice[1], ...}
-//		}
-//	}
-func PostE164s(c *gin.Context) {
-	rtmsg := ``
-	rtcode := ec.SUCCESS
-	e164 := db.E164{}
-	e164s := make([]db.E164, 0)
-	data := make(map[string]interface{})
-
-	if c.ContentType() != gin.MIMEJSON {
-		rtcode = ec.ERROR_HTTP_REQUEST_CONTENTTYPE
-	} else {
-		gname := c.Query("gname")
-		numberPrefix := c.Query("numberprefix")
-		if numberStart := c.Query("numberstart"); len(numberStart) > 0 {
-			if start, err := strconv.Atoi(numberStart); err != nil {
-				rtcode = ec.ERROR_HTTP_REQUEST_URLQUERYATOI
-				rtmsg = err.Error()
-			} else {
-				if numberEnd := c.Query("numberend"); len(numberEnd) > 0 {
-					if end, err := strconv.Atoi(numberEnd); err != nil {
-						rtcode = ec.ERROR_HTTP_REQUEST_URLQUERYATOI
-						rtmsg = err.Error()
-					} else {
-						for index := start; index <= end; index++ {
-							e164.Gname = gname
-							e164.Enumber = fmt.Sprintf("%s%d", numberPrefix, index)
-							e164s = append(e164s, e164)
-						}
-					}
-				} else {
-					rtcode = ec.ERROR_HTTP_REQUEST_URLQUERYKEY
-				}
-			}
-		} else {
-			rtcode = ec.ERROR_HTTP_REQUEST_URLQUERYKEY
-		}
-	}
-
-	if rtcode == ec.SUCCESS {
-		if rte164s, err := db.InsertE164s(e164s); err != nil {
-			rtcode = ec.ERROR_DATABSE_INSERT
-			rtmsg = err.Error()
-		} else {
-			data["len"] = len(rte164s)
-			data["lists"] = rte164s
-		}
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": gin.H{"rtcode": rtcode, "rtmsg": rtmsg},
-		"data": data,
-	})
-}
-
-// PutE164 function.
-//
-// request: PUT /api/v1/e164/:uuid, a E164{} json.
+// request: PUT /api/v1/acce164/:uuid, a ACCE164{} json.
 //
 // response: json
 //
@@ -204,11 +140,11 @@ func PostE164s(c *gin.Context) {
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
-func PutE164(c *gin.Context) {
+func PutAcce164(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
-	e164 := db.E164{}
-	e164s := make([]db.E164, 0)
+	acce164 := db.ACCE164{}
+	acce164s := make([]db.ACCE164, 0)
 	data := make(map[string]interface{})
 
 	if c.ContentType() != gin.MIMEJSON {
@@ -217,17 +153,17 @@ func PutE164(c *gin.Context) {
 		if uuid := c.Param("uuid"); len(uuid) == 0 {
 			rtcode = ec.ERROR_HTTP_REQUEST_URLPARAM
 		} else {
-			if err := c.BindJSON(&e164); err != nil {
+			if err := c.BindJSON(&acce164); err != nil {
 				rtcode = ec.ERROR_HTTP_REQUEST_CONTEXTBINDJSON
 				rtmsg = err.Error()
 			} else {
-				if rte164, err := db.UpdateE164sE164(uuid, e164); err != nil {
+				if rtacce164, err := db.UpdateAcce164sAcce164(uuid, acce164); err != nil {
 					rtcode = ec.ERROR_DATABSE_UPDATE
 					rtmsg = err.Error()
 				} else {
-					e164s = append(e164s, rte164)
-					data["len"] = len(e164s)
-					data["lists"] = e164s
+					acce164s = append(acce164s, rtacce164)
+					data["len"] = len(acce164s)
+					data["lists"] = acce164s
 				}
 			}
 		}
@@ -239,9 +175,9 @@ func PutE164(c *gin.Context) {
 	})
 }
 
-// DeleteE164 function.
+// DeleteAcce164 function.
 //
-// request: DELETE /api/v1/e164/:uuid
+// request: DELETE /api/v1/acce164/:uuid
 //
 // response: json
 //
@@ -255,10 +191,10 @@ func PutE164(c *gin.Context) {
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
-func DeleteE164(c *gin.Context) {
+func DeleteAcce164(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
-	e164s := make([]db.E164, 0)
+	acce164s := make([]db.ACCE164, 0)
 	data := make(map[string]interface{})
 
 	if c.ContentType() != gin.MIMEJSON {
@@ -268,13 +204,13 @@ func DeleteE164(c *gin.Context) {
 			rtcode = ec.ERROR_HTTP_REQUEST_URLPARAM
 		} else {
 			{
-				if rte164, err := db.DeleteE164sE164(uuid); err != nil {
+				if rtacce164, err := db.DeleteAcce164sAcce164(uuid); err != nil {
 					rtcode = ec.ERROR_DATABSE_DELETE
 					rtmsg = err.Error()
 				} else {
-					e164s = append(e164s, rte164)
-					data["len"] = e164s
-					data["lists"] = e164s
+					acce164s = append(acce164s, rtacce164)
+					data["len"] = acce164s
+					data["lists"] = acce164s
 				}
 			}
 		}
