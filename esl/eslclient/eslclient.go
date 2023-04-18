@@ -1,7 +1,18 @@
-//eslclient is a tcp client connect to mod_evnet_socket.
-//while mod_sofia receive a incoming call, dialplan execute app park.
-//now, do what you want to before received park execute complete event.
-
+// ////////////////////////eslclient /////////////////////////////////////////
+// eslclient is a tcp client connect to mod_evnet_socket.
+// while mod_sofia receive a incoming call, dialplan execute app park.
+// now, do what you want to execute ... before received park execute complete event.
+//
+// default, eslclient do some eventaction while received CUSTOM,BACKGROUND_JOB,CHANNEL_HANGUP_COMPLETE.
+// 1. Event-Name = CUSTOM
+// Event-Subclass = sofia::register
+// Event-Subclass = sofia::unregister
+// Event-Subclass = sofia::expire
+// Event-Subclass = sofia::gateway_state
+// 2. Event-Name = BACKGROUND_JOB
+// some bgapi xxx execute complete.
+// 3. Event-Name = CHANNEL_HANGUP_COMPLETE
+// self channel cdr support.
 package eslclient
 
 import (

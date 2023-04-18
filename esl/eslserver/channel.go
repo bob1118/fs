@@ -18,10 +18,8 @@ func ChannelDefaultAction(c *eventsocket.Connection, ev *eventsocket.Event) erro
 		myerr = err
 		fmt.Println(err)
 	} else {
-		//send myevents
-		c.SendCommand("myevents")
 		//call route.
-		if utils.IsEqual(call.direction, "inbound") { //incoming call
+		if utils.IsEqual(call.direction, "inbound") { //incoming call hit DIALPLAN_APP_SOCKET
 			switch call.profile {
 			case "internal", "internal-ipv6": //internal ua incoming
 				myerr = channelInternalIncomingProc(c, call)
@@ -67,14 +65,19 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 			c.APPBridge(appargv, true)
 		} else { //ua dial out through gateway.
 			q := fmt.Sprintf(`account_id='%s' and account_domain='%s' and acce164_isdefault=true limit 1`, call.ani, call.domain)
-			if acce164s, err := db.SelectAcce164sWithCondition(q); err != nil { //row not found.
+			if acce164s, err := db.SelectAcce164sWithCondition(q); err != nil {
 				c.APPHangup("NO_ROUTE_DESTINATION")
 				myerr = err
 			} else {
-				gatewayname := acce164s[0].Gname
-				gatewaye164number := acce164s[0].Enumber
-				appargv := fmt.Sprintf(`{origination_uuid=%s,origination_caller_id_number=%s,ignore_early_media=true,codec_string="PCMU,PCMA"}sofia/gateway/%s/%s`, uuid, gatewaye164number, gatewayname, call.distinationnumber)
-				c.APPBridge(appargv, true)
+				if len(acce164s) == 0 { //no row.
+					c.APPHangup("NO_ROUTE_DESTINATION")
+					myerr = fmt.Errorf("NO_ROUTE_DESTINATION")
+				} else {
+					gatewayname := acce164s[0].Gname
+					gatewaye164number := acce164s[0].Enumber
+					appargv := fmt.Sprintf(`{origination_uuid=%s,origination_caller_id_number=%s,ignore_early_media=true,codec_string="PCMU,PCMA"}sofia/gateway/%s/%s`, uuid, gatewaye164number, gatewayname, call.distinationnumber)
+					c.APPBridge(appargv, true)
+				}
 			}
 		}
 	} else {
