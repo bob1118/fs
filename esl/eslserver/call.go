@@ -3,6 +3,7 @@ package eslserver
 import (
 	"errors"
 
+	"github.com/bob1118/fs/db"
 	"github.com/bob1118/fs/esl/eventsocket"
 	"github.com/bob1118/fs/esl/run_time"
 )
@@ -66,36 +67,36 @@ func (c *CALL) CalleeIsUa() bool {
 
 func (c *CALL) CallFilterPassed() bool {
 	passed := false
-	// if c.e164CalleeExist() {
-	// 	if !c.blacklistCallerExist() {
-	// 		passed = true
-	// 	}
-	// }
+	if c.IsE164number() {
+		if !c.IsBlacklist() {
+			passed = true
+		}
+	}
 	return passed
 }
 
-// func (c *CALL) e164CalleeExist() bool {
-// 	is := false
-// 	if len(c.distinationnumber) > 0 && len(c.gateway) > 0 {
-// 		if e164, exist := db.IsExistE164BynumberEx(c.gateway, c.distinationnumber); !exist {
-// 			is = false
-// 		} else {
-// 			if e164.Eenable {
-// 				if !e164.Elockin {
-// 					is = true
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return is
-// }
+func (c *CALL) IsE164number() bool {
+	is := false
+	if len(c.distinationnumber) > 0 && len(c.gateway) > 0 {
+		if e164, err := db.IsExistE164(c.gateway, c.distinationnumber); err != nil {
+			is = false
+		} else {
+			if e164.Eenable {
+				if !e164.Elockin {
+					is = true
+				}
+			}
+		}
+	}
+	return is
+}
 
-// func (c *CALL) blacklistCallerExist() bool {
-// 	is := false
-// 	if len(c.ani) > 0 {
-// 		if _, exist := db.IsExistBlacklistCaller(c.ani, c.distinationnumber); exist {
-// 			is = true
-// 		}
-// 	}
-// 	return is
-// }
+func (c *CALL) IsBlacklist() bool {
+	is := false
+	if len(c.ani) > 0 && len(c.distinationnumber) > 0 {
+		if _, exist := db.IsExistBlacklist(c.ani, c.distinationnumber); exist {
+			is = true
+		}
+	}
+	return is
+}

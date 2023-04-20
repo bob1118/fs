@@ -21,20 +21,20 @@ type Blacklist struct {
 	Bcallee string `db:"blacklist_callee" json:"callee"`
 }
 
-// // IsExistBlacklistCaller
-// func IsExistBlacklistCaller(caller, callee string) (b Blacklist, exist bool) {
-// 	var is bool
-// 	blacklist := Blacklist{}
-// 	query := fmt.Sprintf("select * from %sblacklist where blacklist_caller='%s' and blacklist_callee='%s'", GetTablesServerPrifex(), caller, callee)
-// 	if err := GetServerdb().Get(&blacklist, query); err != nil {
-// 		if err == sql.ErrNoRows {
-// 			is = false
-// 		}
-// 	} else {
-// 		is = true
-// 	}
-// 	return blacklist, is
-// }
+// IsExistBlacklist
+func IsExistBlacklist(caller, callee string) (Blacklist, bool) {
+	var is bool
+	blacklist := Blacklist{}
+	q := fmt.Sprintf("select * from %sblacklist where blacklist_caller='%s' and blacklist_callee='%s'", GetTablesServerPrifex(), caller, callee)
+	if err := GetServerdb().Get(&blacklist, q); err != nil {
+		//if err == sql.ErrNoRows {
+		is = false
+		//}
+	} else {
+		is = true
+	}
+	return blacklist, is
+}
 
 // SelectBlacklistsWithCondition
 func SelectBlacklistsWithCondition(condition string) ([]Blacklist, error) {

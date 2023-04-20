@@ -27,7 +27,7 @@ func handler(c *eventsocket.Connection) {
 	if e, err := c.SendCommandEx("connect"); err != nil {
 		fmt.Println(err)
 	} else {
-		//incoming call CHANNEL_DATA event.
+		//send connect return default event CHANNEL_DATA.
 		eventChannelDefaultAction(c, e)
 		eventChannelReadLoop(c)
 	}

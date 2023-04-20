@@ -90,6 +90,11 @@ func serverRouter(r *gin.Engine) {
 		apiv1.DELETE("/fifomember/:uuid", v1.DeleteFifomember)
 
 		////server tables
+		//table jobs for outgoing call
+		apiv1.GET("/jobs")
+		apiv1.POST("/job")
+		apiv1.PUT("/job/:uuid")
+		apiv1.DELETE("/job/:uuid")
 		//table backlists
 		apiv1.GET("/backlists", v1.GetBlacklists)
 		apiv1.POST("/backlist", v1.PostBlacklist)

@@ -45,6 +45,8 @@ func ChannelDefaultAction(c *eventsocket.Connection, ev *eventsocket.Event) erro
 }
 
 // channelInternalIncomingProc
+// 1. ua ->ua;
+// 2. ua -> gateway ->remote;
 func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err error) {
 	var (
 		uuid  string
@@ -87,6 +89,7 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 }
 
 // channelExternalIncomingProc
+// remote -> gateway -fifo ->ua
 func channelExternalIncomingProc(c *eventsocket.Connection, call *CALL) (err error) {
 
 	if !call.CallFilterPassed() {
@@ -110,40 +113,9 @@ func channelExternalExecuteFifo(c *eventsocket.Connection) error {
 }
 
 // channelInternaOutgoingProc function.
+// http client post data ->http server receive data ->bgapi originate sofia/profile/id@domain &socket ...
 func channelInternaOutgoingProc(c *eventsocket.Connection, call *CALL) error { return nil }
 
 // channelExternalOutgoingProc function.
+// http client post data ->http server receive data ->bgapi originate sofia/gatewayname/reomte &socket...
 func channelExternalOutgoingProc(c *eventsocket.Connection, call *CALL) error { return nil }
-
-// //////////////////////channel event action////////////////////
-// ChannelAction function
-func ChannelAction(c *eventsocket.Connection, e *eventsocket.Event) {
-	//e.LogPrint()
-	eventName := e.Get("Event-Name")
-	if len(eventName) > 0 {
-		switch eventName {
-		case "CHANNEL_STATE":
-			channelstateAction(c, e)
-		case "CHANNEL_CALLSTATE":
-			channelcallstateAction(c, e)
-		case "CHANNEL_HANGUP":
-			channelhangupAction(c, e)
-		case "CHANNEL_DESTROY":
-			channelCDRAction(c, e)
-		default:
-			//nothing todo.
-		}
-	}
-}
-
-// channelstateAction function.
-func channelstateAction(c *eventsocket.Connection, e *eventsocket.Event) {}
-
-// channelcallstateAction function.
-func channelcallstateAction(c *eventsocket.Connection, e *eventsocket.Event) {}
-
-// channelhangupAction function.
-func channelhangupAction(c *eventsocket.Connection, e *eventsocket.Event) {}
-
-// channelCDRAction function. channel cdr.
-func channelCDRAction(c *eventsocket.Connection, e *eventsocket.Event) {}

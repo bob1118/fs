@@ -31,9 +31,24 @@ type E164 struct {
 
 func SelectE164sWithCondition(condition string) ([]E164, error) {
 	e164s := []E164{}
-	query := fmt.Sprintf("select * from %se164s where %s", GetTablesGatewayPrifex(), condition)
-	err := GetGatewaydb().Select(&e164s, query)
+	q := fmt.Sprintf("select * from %se164s where %s", GetTablesGatewayPrifex(), condition)
+	err := GetGatewaydb().Select(&e164s, q)
 	return e164s, err
+}
+
+func IsExistE164(gateway string, number string) (E164, error) {
+	var err error
+	var e164 E164
+	var e164s []E164
+	condition := fmt.Sprintf("gateway_name='%s'and e164_number='%s'", gateway, number)
+	if e164s, err = SelectE164sWithCondition(condition); err == nil {
+		if len(e164s) == 0 {
+			err = fmt.Errorf("IsExistE164: no row")
+		} else {
+			e164 = e164s[0]
+		}
+	}
+	return e164, err
 }
 
 func InsertE164s(in []E164) ([]E164, error) {
