@@ -74,32 +74,6 @@ func Read(c *gin.Context) (string, error) {
 	//reconfig := c.PostForm(`reconfig`)
 	//function := c.PostForm(`Event-Calling-Function`)
 
-	// switch function {
-	// case "config_sofia":
-	// 	switch profile {
-	// 	case "": //sofia.conf.xml
-	// 		file = fmt.Sprintf("%s/autoload_configs/sofia.conf.xml", dir)
-	// 	case "internal": //sofia profile internal xxx
-	// 		file = fmt.Sprintf("%s/sip_profiles/internal.xml", dir)
-	// 	case "internal-ipv6": //sofia profile internal-ipv6 xxx
-	// 		file = fmt.Sprintf("%s/sip_profiles/internal-ipv6.xml", dir)
-	// 	case "external": //sofia profile external xxx
-	// 		file = fmt.Sprintf("%s/sip_profiles/external.xml", dir)
-	// 	case "external-ipv6": //sofia profile external-ipv6 xxx
-	// 		file = fmt.Sprintf("%s/sip_profiles/external-ipv6.xml", dir)
-	// 	}
-	// case "launch_sofia_worker_thread":
-	// 	switch profile {
-	// 	case "internal":
-	// 		file = fmt.Sprintf("%s/sip_profiles/internal.xml", dir)
-	// 	case "internal-ipv6":
-	// 		file = fmt.Sprintf("%s/sip_profiles/internal-ipv6.xml", dir)
-	// 	case "external":
-	// 		file = fmt.Sprintf("%s/sip_profiles/external.xml", dir)
-	// 	case "external-ipv6":
-	// 		file = fmt.Sprintf("%s/sip_profiles/external-ipv6.xml", dir)
-	// 	}
-
 	switch profile {
 	case "": //sofia.conf.xml
 		file = fmt.Sprintf("%s/autoload_configs/%s", dir, MOD_CONF_NAME)

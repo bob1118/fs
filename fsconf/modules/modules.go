@@ -66,9 +66,9 @@ func readConfFromDatabase(c *gin.Context) (string, error) {
 	var err error
 	var content string
 	filename := c.PostForm(`key_value`)
-	function := c.PostForm(`Event-Calling-Function`)
 	profile := c.PostForm(`profile`)
-	if conf, e := db.GetConfsConf(filename, function, profile); e != nil {
+	condition := fmt.Sprintf("conf_filename='%s' and conf_profile='%s'", filename, profile)
+	if conf, e := db.GetConfsConfWithCondition(condition); e != nil {
 		err = e
 	} else {
 		if len(conf.Ccontent) > 0 {
@@ -190,15 +190,15 @@ func buildConf(c *gin.Context, old string) (string, error) {
 
 func writeConfToDatabase(c *gin.Context, content string, newcontent string) error {
 	filename := c.PostForm(`key_value`)
-	//function := c.PostForm(`Event-Calling-Function`)
 	profile := c.PostForm(`profile`)
-	conf := &db.Conf{
+	conf := db.Conf{
 		Cfilename:   filename,
 		Cprofile:    profile,
 		Ccontent:    content,
 		Cnewcontent: newcontent,
 	}
-	return db.InsertConfsConf(conf)
+	_, err := db.InsertConfsConf(conf)
+	return err
 }
 
 func readModuleDefaultConf(filename string) (string, error) {

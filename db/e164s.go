@@ -95,7 +95,7 @@ func UpdateE164sE164(uuid string, in E164) (E164, error) {
 	}
 	q = strings.TrimSuffix(q, ",")
 	q += fmt.Sprintf(" where e164_uuid='%s'", uuid)
-	q += (" return *;")
+	q += (" returning *;")
 
 	err := GetGatewaydb().Select(&e164, q)
 	return e164, err
@@ -105,7 +105,7 @@ func DeleteE164sE164(uuid string) (E164, error) {
 	var e164 = E164{}
 	var q = fmt.Sprintf("delete from %se164s ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf("where e164_uuid='%s'", uuid)
-	q += (" return *;")
+	q += (" returning *;")
 	err := GetGatewaydb().Select(&e164, q)
 	return e164, err
 }

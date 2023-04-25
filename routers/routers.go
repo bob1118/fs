@@ -54,7 +54,6 @@ func serverRouter(r *gin.Engine) {
 		apiv1.GET("/confs")
 		apiv1.POST("/confs")
 		apiv1.PUT("/confs/:uuid")
-		//apiv1.PATCH("/confs/:uuid")
 		apiv1.DELETE("/confs/:uuid")
 		//table accounts
 		apiv1.GET("/accounts", v1.GetAccounts)

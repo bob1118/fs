@@ -109,7 +109,7 @@ func UpdateAccountsAccount(uuid string, in Account) (out Account, e error) {
 	}
 	q = strings.TrimSuffix(q, ",")
 	q += fmt.Sprintf(" where account_uuid='%s'", uuid)
-	q += (" return *;")
+	q += (" returning *;")
 
 	err := GetGatewaydb().Select(&ua, q)
 	return ua, err
@@ -119,7 +119,7 @@ func DeleteAccountsAccount(uuid string) (out Account, e error) {
 	var ua = Account{}
 	var q = fmt.Sprintf("delete from %saccounts ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf("where account_uuid='%s'", uuid)
-	q += (" return *;")
+	q += (" returning *;")
 	err := GetGatewaydb().Select(&ua, q)
 	return ua, err
 }

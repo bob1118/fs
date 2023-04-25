@@ -76,7 +76,7 @@ func UpdateFifomembersFifomember(uuid string, in FifoMember) (FifoMember, error)
 	}
 	q = strings.TrimSuffix(q, ",")
 	q += fmt.Sprintf(" where fifomember_uuid='%s'", uuid)
-	q += (" return *;")
+	q += (" returning *;")
 
 	err := GetGatewaydb().Select(&fifomember, q)
 	return fifomember, err
@@ -87,7 +87,7 @@ func DeleteFifomembersFifomember(uuid string) (FifoMember, error) {
 	var fifomember = FifoMember{}
 	var q = fmt.Sprintf("delete from %sfifomembers ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf(" where fifomember_uuid='%s'", uuid)
-	q += (" return *;")
+	q += (" returning *;")
 	err := GetGatewaydb().Select(&fifomember, q)
 	return fifomember, err
 }

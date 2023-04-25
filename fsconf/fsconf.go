@@ -16,7 +16,7 @@ type Fsconf struct {
 	confDir      string   //conf direcotry.
 	changedFiles []string //new conf files who changed by function buildBootableConf()
 	fileExt      string   //switch config file extend, default extend=`xml`, eg: vars.xml
-	bakfileExt   string   //bak conf file extend, default extend=`bak`, eg: vars.xml.bak
+	bakfileExt   string   //bak conf file extend, default extend=`.bak`, eg: vars.xml.bak
 	v            *viper.Viper
 }
 
@@ -128,10 +128,10 @@ func (p *Fsconf) Reset() error {
 		if p.IsInited() {
 			//do reset
 			for _, filechanged := range p.changedFiles {
-				defaultFile := fmt.Sprintf("%s%s", filechanged, p.bakfileExt)
-				if data, errRead := os.ReadFile(defaultFile); errRead == nil {
+				bakfile := fmt.Sprintf("%s%s", filechanged, p.bakfileExt)
+				if data, errRead := os.ReadFile(bakfile); errRead == nil {
 					os.WriteFile(filechanged, data, 0664)
-					os.Remove(defaultFile)
+					os.Remove(bakfile)
 				}
 			}
 		} else {
@@ -205,12 +205,12 @@ func (p *Fsconf) buildVars(in string) error {
 	var err error
 	var old, new string
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
-	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
+	bakfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
+	if _, e := os.Stat(bakfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
 		} else {
-			os.WriteFile(defaultfile, data, 0644)
+			os.WriteFile(bakfile, data, 0644)
 			//`  <X-PRE-PROCESS cmd="set" data="default_password=1234"/>`
 			old = `  <X-PRE-PROCESS cmd="set" data="default_password=1234"/>`
 			new_content := VARS_NEW_PASSWORD_WITH_IPV4_AND_PGHANDLE
@@ -244,12 +244,12 @@ func (p *Fsconf) buildVars(in string) error {
 func (p *Fsconf) buildAutoloadSwitch(in string) error {
 	var err error
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
-	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
+	bakfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
+	if _, e := os.Stat(bakfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
 		} else {
-			os.WriteFile(defaultfile, data, 0644)
+			os.WriteFile(bakfile, data, 0644)
 			//<!-- <param name="core-db-dsn" value="dsn:username:password" /> -->
 			old := `<!-- <param name="core-db-dsn" value="dsn:username:password" /> -->`
 			new := `<param name="core-db-dsn" value="$${pg_handle}"/>`
@@ -262,12 +262,12 @@ func (p *Fsconf) buildAutoloadSwitch(in string) error {
 func (p *Fsconf) buildAutoloadModules(in string) error {
 	var err error
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
-	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
+	bakfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
+	if _, e := os.Stat(bakfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
 		} else {
-			os.WriteFile(defaultfile, data, 0644)
+			os.WriteFile(bakfile, data, 0644)
 			//<load module="mod_enum"/>
 			p.Comment(file, []byte(`<load module="mod_enum"/>`))
 			//<!-- <load module="mod_xml_curl"/> -->
@@ -307,12 +307,12 @@ func (p *Fsconf) buildAutoloadModules(in string) error {
 func (p *Fsconf) buildAutoloadXmlcurl(in string) error {
 	var err error
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
-	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
+	bakfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
+	if _, e := os.Stat(bakfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
 		} else {
-			os.WriteFile(defaultfile, data, 0644)
+			os.WriteFile(bakfile, data, 0644)
 			//<!-- <param name="gateway-url" value="http://www.freeswitch.org/gateway.xml" bindings="dialplan"/> -->
 			//<param name="gateway-url" value="http://localhost/fsapi" bindings="dialplan|configuration|directory|phrases"/>
 			old := `<!-- <param name="gateway-url" value="http://www.freeswitch.org/gateway.xml" bindings="dialplan"/> -->`
@@ -329,12 +329,12 @@ func (p *Fsconf) buildAutoloadEventsocket(in string) error {
 	var err error
 	var old, new string
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
-	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
+	bakfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
+	if _, e := os.Stat(bakfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
 		} else {
-			os.WriteFile(defaultfile, data, 0644)
+			os.WriteFile(bakfile, data, 0644)
 			old = `<param name="listen-ip" value="::"/>`
 			new = fmt.Sprintf(`<param name="listen-ip" value="%s"/>`, p.v.GetString(`switch.eventsocket.ipaddr`))
 			p.Update(file, []byte(old), []byte(new))
@@ -353,12 +353,12 @@ func (p *Fsconf) buildAutoloadEventsocket(in string) error {
 func (p *Fsconf) buildInternal(in string) error {
 	var err error
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
-	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
+	bakfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
+	if _, e := os.Stat(bakfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
 		} else {
-			os.WriteFile(defaultfile, data, 0644)
+			os.WriteFile(bakfile, data, 0644)
 			//<!--<param name="odbc-dsn" value="dsn:user:pass"/>-->
 			old := `<!--<param name="odbc-dsn" value="dsn:user:pass"/>-->`
 			new := `<param name="odbc-dsn" value="$${pg_handle}"/>`
@@ -379,12 +379,12 @@ func (p *Fsconf) buildInternalv6(in string) error { return p.buildInternal(in) }
 func (p *Fsconf) buildExternal(in string) error {
 	var err error
 	var file = in
-	defaultfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
-	if _, e := os.Stat(defaultfile); os.IsNotExist(e) {
+	bakfile := fmt.Sprintf("%s%s", file, p.bakfileExt)
+	if _, e := os.Stat(bakfile); os.IsNotExist(e) {
 		if data, e := os.ReadFile(file); e != nil {
 			err = e
 		} else {
-			os.WriteFile(defaultfile, data, 0644)
+			os.WriteFile(bakfile, data, 0644)
 			//<!-- ************************************************* -->
 			old := `<!-- ************************************************* -->`
 			new := `<param name="odbc-dsn" value="$${pg_handle}"/>`
