@@ -62,7 +62,7 @@ func Default() (string, error) {
 
 func Build(c *gin.Context, content string) (string, error) {
 	//<param name="odbc-dsn" value="$${pg_handle}"/>
-	newOdbcdsn := `<param name="odbc-dsn" value="$${pg_handle}"/>`
-	newcontent := strings.ReplaceAll(content, ODBC_DSN, newOdbcdsn)
+	newodbcdsn := `<param name="odbc-dsn" value="$${pg_handle}"/>`
+	newcontent := strings.ReplaceAll(content, ODBC_DSN, newodbcdsn)
 	return newcontent, nil
 }

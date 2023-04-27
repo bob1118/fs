@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//doConfiguration function return mod_xxx xml config.
+// doConfiguration function return mod_xxx xml config.
 func doConfiguration(c *gin.Context) (b string) {
 
 	body := fsconf.NOT_FOUND
@@ -28,6 +28,9 @@ func doConfiguration(c *gin.Context) (b string) {
 			body = fmt.Sprintf(fsconf.CONFIGURATION, sofia)
 		}
 	case "loopback.conf": //3th
+		if loopback, err := modules.GetConfiguration(c); err == nil {
+			body = fmt.Sprintf(fsconf.CONFIGURATION, loopback)
+		}
 	case "verto.conf": //4th
 		if verto, err := modules.GetConfiguration(c); err == nil {
 			body = fmt.Sprintf(fsconf.CONFIGURATION, verto)

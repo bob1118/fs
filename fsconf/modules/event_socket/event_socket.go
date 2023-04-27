@@ -13,9 +13,9 @@
 package event_socket
 
 import (
+	"errors"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -30,24 +30,26 @@ func Read(c *gin.Context) (string, error) {
 func Default() (string, error) { return MOD_CONF_XML, nil }
 
 func Build(c *gin.Context, content string) (string, error) {
-	var newcontent = content
-	ipaddr := viper.GetString(`switch.eventsocket.ipaddr`)
-	port := viper.GetString(`switch.eventsocket.port`)
-	password := viper.GetString(`switch.eventsocket.password`)
-	//<param name="listen-ip" value="::"/>
-	if len(ipaddr) > 0 {
-		listenip := fmt.Sprintf(`<param name="listen-ip" value="%s"/>`, ipaddr)
-		newcontent = strings.ReplaceAll(newcontent, `<param name="listen-ip" value="::"/>`, listenip)
-	}
-	//<param name="listen-port" value="8021"/>
-	if len(port) > 0 {
-		listenport := fmt.Sprintf(`<param name="listen-port" value="%s"/>`, port)
-		newcontent = strings.ReplaceAll(newcontent, `<param name="listen-port" value="8021"/>`, listenport)
-	}
-	//<param name="password" value="ClueCon"/>
-	if len(password) > 0 {
-		authpassword := fmt.Sprintf(`<param name="password" value="%s"/>`, password)
-		newcontent = strings.ReplaceAll(newcontent, `<param name="password" value="ClueCon"/>`, authpassword)
-	}
-	return newcontent, nil
+	// var newcontent = content
+	// ipaddr := viper.GetString(`switch.eventsocket.ipaddr`)
+	// port := viper.GetString(`switch.eventsocket.port`)
+	// password := viper.GetString(`switch.eventsocket.password`)
+	// //<param name="listen-ip" value="::"/>
+	// if len(ipaddr) > 0 {
+	// 	listenip := fmt.Sprintf(`<param name="listen-ip" value="%s"/>`, ipaddr)
+	// 	newcontent = strings.ReplaceAll(newcontent, `<param name="listen-ip" value="::"/>`, listenip)
+	// }
+	// //<param name="listen-port" value="8021"/>
+	// if len(port) > 0 {
+	// 	listenport := fmt.Sprintf(`<param name="listen-port" value="%s"/>`, port)
+	// 	newcontent = strings.ReplaceAll(newcontent, `<param name="listen-port" value="8021"/>`, listenport)
+	// }
+	// //<param name="password" value="ClueCon"/>
+	// if len(password) > 0 {
+	// 	authpassword := fmt.Sprintf(`<param name="password" value="%s"/>`, password)
+	// 	newcontent = strings.ReplaceAll(newcontent, `<param name="password" value="ClueCon"/>`, authpassword)
+	// }
+	// return newcontent, nil
+	return ``, errors.New(`event_socket.Build() nothing`)
+
 }

@@ -34,32 +34,33 @@ import (
 
 func GetConfiguration(c *gin.Context) (string, error) {
 	var err error
-	var content, newcontent string
-	if content, err = readConfFromDatabase(c); err != nil {
-		if content, err = readConfFromFile(c); err != nil {
-			if content, err = constConfiguration(c); err != nil {
-				fmt.Println(err)
-				return "", err
-			} else {
-				writeConfToFile(c, content)
-			}
-		}
-		if newcontent, err = buildConf(c, content); err != nil {
-			writeConfToDatabase(c, content, ``)
+	var rtconf, modconf, newmodconf string
+	//if modconf, err = readConfFromDatabase(c); err != nil {
+	if modconf, err = readConfFromFile(c); err != nil {
+		if modconf, err = constConfiguration(c); err != nil {
+			fmt.Println(err)
+			return "", err
 		} else {
-			writeConfToDatabase(c, content, newcontent)
-			content = newcontent
+			writeConfToFile(c, modconf)
 		}
 	}
+	if newmodconf, err = buildConf(c, modconf); err != nil {
+		writeConfToDatabase(c, modconf, ``)
+		rtconf = modconf
+	} else {
+		writeConfToDatabase(c, modconf, newmodconf)
+		rtconf = newmodconf
+	}
+	//}
 	//for debug
 	if true {
 		filename := c.PostForm(`key_value`)
 		function := c.PostForm(`Event-Calling-Function`)
 		profile := c.PostForm(`profile`)
 		fmt.Println("Request:", filename, function, profile)
-		fmt.Println("Response:", content)
+		fmt.Println("Response:", rtconf)
 	}
-	return content, err
+	return rtconf, err
 }
 
 func readConfFromDatabase(c *gin.Context) (string, error) {
@@ -110,7 +111,8 @@ func readConfFromFile(c *gin.Context) (string, error) {
 	case "pre_load_switch.conf", "switch.conf", "post_load_switch.conf":
 		content, err = switch_main.Read(c)
 	//readModule DefaultConf
-	case "verto.conf",
+	case "loopback.conf",
+		"verto.conf",
 		"conference.conf",
 		"hash.conf",
 		"httapi.conf",

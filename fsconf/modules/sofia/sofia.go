@@ -131,18 +131,7 @@ func Build(c *gin.Context, content string) (string, error) {
 		new = `<X-PRE-PROCESS cmd="include" data="./sip_profiles/*.xml"/>`
 		newcontent = strings.ReplaceAll(content, old, new)
 	case "internal", "internal-ipv6":
-		//<param name="force-register-domain" value="$${domain}"/>
-		old = `<param name="force-register-domain" value="$${domain}"/>`
-		new = `<!--<param name="force-register-domain" value="$${domain}"/>-->`
-		newcontent = strings.ReplaceAll(newcontent, old, new)
-		//<param name="force-subscription-domain" value="$${domain}"/>
-		old = `<param name="force-subscription-domain" value="$${domain}"/>`
-		new = `<!--<param name="force-subscription-domain" value="$${domain}"/>-->`
-		newcontent = strings.ReplaceAll(newcontent, old, new)
-		//<param name="force-register-db-domain" value="$${domain}"/>
-		old = `<param name="force-register-db-domain" value="$${domain}"/>`
-		new = `<!--<param name="force-register-db-domain" value="$${domain}"/>-->`
-		newcontent = strings.ReplaceAll(newcontent, old, new)
+		newcontent = content
 	case "external", "external-ipv6":
 		//<X-PRE-PROCESS cmd="include" data="external/*.xml"/>
 		old = fmt.Sprintf(`<X-PRE-PROCESS cmd="include" data="%s/*.xml"/>`, profile)
