@@ -66,6 +66,11 @@ func serverRouter(r *gin.Engine) {
 		apiv1.POST("/gateway", v1.PostGateway)
 		apiv1.PUT("/gateway/:uuid", v1.PutGateway)
 		apiv1.DELETE("gateway/:uuid", v1.DeleteGateway)
+		apiv1.POST("/gateway/:uuid/load", apicmd.LoadGateway)
+		apiv1.POST("/gateway/:uuid/kill", apicmd.KillGateway)
+		apiv1.POST("/gateway/:uuid/reload", apicmd.ReloadGateway)
+		apiv1.POST("/gateway/:uuid/register", apicmd.RegisterGateway)
+		apiv1.POST("/gateway/:uuid/unregister", apicmd.UnregisterGateway)
 		//table e164s
 		apiv1.GET("/e164s", v1.GetE164s)
 		apiv1.POST("/e164", v1.PostE164)

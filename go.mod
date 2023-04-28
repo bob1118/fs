@@ -5,13 +5,13 @@ go 1.18
 require (
 	github.com/gin-gonic/gin v1.9.0
 	github.com/jmoiron/sqlx v1.3.5
-	github.com/lib/pq v1.10.8
+	github.com/lib/pq v1.10.9
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.15.0
 )
 
 require (
-	github.com/bytedance/sonic v1.8.7 // indirect
+	github.com/bytedance/sonic v1.8.8 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect

@@ -64,6 +64,6 @@ const SOFIA_PROFILE_GATEWAY = `
         <param name="ping" value="%s"/>
         <!--<param name="cid-type" value="rpid"/>-->
         <!--<param name="rfc-5626" value="true"/>-->
-        <!--<param name="reg-id" value="1"/>-->s
+        <!--<param name="reg-id" value="1"/>-->
       </gateway>
 `
