@@ -18,7 +18,7 @@ func Get(c *gin.Context) {
 	var err error
 	var cmd, result string
 	cmd = c.Query("cmd")
-	if result, err = eslclient.ClientCon.SendApiCommand(cmd); err != nil {
+	if result, err = eslclient.ClientCon.SendApiCommandSync(cmd); err != nil {
 		result = err.Error()
 	}
 	c.String(http.StatusOK, result)
@@ -58,7 +58,7 @@ func LoadGateway(c *gin.Context) {
 			} else {
 				profilename := gateways[0].Pname
 				cmd := fmt.Sprintf("sofia profile %s rescan", profilename)
-				if result, err := eslclient.ClientCon.SendApiCommand(cmd); err != nil {
+				if result, err := eslclient.ClientCon.SendApiCommandSync(cmd); err != nil {
 					rtcode = ec.ERROR_SWITCH_EXECUTE_API
 					rtmsg = err.Error()
 				} else {
@@ -115,7 +115,7 @@ func KillGateway(c *gin.Context) {
 				profilename := gateways[0].Pname
 				gatewayname := gateways[0].Gname
 				cmd := fmt.Sprintf("sofia profile %s killgw %s", profilename, gatewayname)
-				if result, err := eslclient.ClientCon.SendApiCommand(cmd); err != nil {
+				if result, err := eslclient.ClientCon.SendApiCommandSync(cmd); err != nil {
 					rtcode = ec.ERROR_SWITCH_EXECUTE_API
 					rtmsg = err.Error()
 				} else {
@@ -175,7 +175,7 @@ func ReloadGateway(c *gin.Context) {
 				profilename := gateways[0].Pname
 				gatewayname := gateways[0].Gname
 				killcmd := fmt.Sprintf("sofia profile %s killgw %s", profilename, gatewayname)
-				if killresult, err := eslclient.ClientCon.SendApiCommand(killcmd); err != nil {
+				if killresult, err := eslclient.ClientCon.SendApiCommandSync(killcmd); err != nil {
 					rtcode = ec.ERROR_SWITCH_EXECUTE_API
 					rtmsg = err.Error()
 				} else {
@@ -187,7 +187,7 @@ func ReloadGateway(c *gin.Context) {
 						data["killresult"] = killresult
 						//load
 						loadcmd := fmt.Sprintf("sofia profile %s rescan", profilename)
-						if loadresult, err := eslclient.ClientCon.SendApiCommand(loadcmd); err != nil {
+						if loadresult, err := eslclient.ClientCon.SendApiCommandSync(loadcmd); err != nil {
 							rtcode = ec.ERROR_SWITCH_EXECUTE_API
 							rtmsg = err.Error()
 						} else {
@@ -246,7 +246,7 @@ func RegisterGateway(c *gin.Context) {
 				profilename := gateways[0].Pname
 				gatewayname := gateways[0].Gname
 				cmd := fmt.Sprintf("sofia profile %s register %s", profilename, gatewayname)
-				if result, err := eslclient.ClientCon.SendApiCommand(cmd); err != nil {
+				if result, err := eslclient.ClientCon.SendApiCommandSync(cmd); err != nil {
 					rtcode = ec.ERROR_SWITCH_EXECUTE_API
 					rtmsg = err.Error()
 				} else {
@@ -303,7 +303,7 @@ func UnregisterGateway(c *gin.Context) {
 				profilename := gateways[0].Pname
 				gatewayname := gateways[0].Gname
 				cmd := fmt.Sprintf("sofia profile %s unregister %s", profilename, gatewayname)
-				if result, err := eslclient.ClientCon.SendApiCommand(cmd); err != nil {
+				if result, err := eslclient.ClientCon.SendApiCommandSync(cmd); err != nil {
 					rtcode = ec.ERROR_SWITCH_EXECUTE_API
 					rtmsg = err.Error()
 				} else {
