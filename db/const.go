@@ -12,36 +12,70 @@ const USER_DROP = `drop user if exists %s;`
 
 //CREATE TABLE if not exists table_name(...)
 
+// // CDR_LEG mod_odbc_cdr table define
+// const CDR_LEG = `
+// CREATE TABLE IF NOT EXISTS %s (
+//
+//	uuid varchar NOT NULL,
+//	otheruuid varchar,
+//	othertype varchar,
+//	ch_name varchar,
+//	ch_profile varchar,
+//	ch_direction varchar,
+//	ch_domain varchar,
+//	ch_gateway varchar,
+//	ch_calleridname varchar,
+//	ch_calleridnumber varchar,
+//	ch_calleeidname varchar,
+//	ch_calleeidnumber varchar,
+//	ch_destination varchar,
+//	ch_app varchar,
+//	ch_appdata varchar,
+//	ch_dialstatus varchar,
+//	hangup_cause varchar,
+//	hangup_q850 varchar,
+//	hangup_disposition varchar,
+//	hangup_protocause varchar,
+//	hangup_phrase varchar,
+//	start_epoch varchar,
+//	answer_epoch varchar,
+//	end_epoch varchar,
+//	waitsec varchar,
+//	billsec varchar,
+//	duration varchar
+//
+// );
+// `
 // CDR_LEG mod_odbc_cdr table define
 const CDR_LEG = `
 CREATE TABLE IF NOT EXISTS %s (
 	uuid varchar NOT NULL,
-	otheruuid varchar,
-	othertype varchar,
-	ch_name varchar,
-	ch_profile varchar,
-	ch_direction varchar,
-	ch_domain varchar,
-	ch_gateway varchar,
-	ch_calleridname varchar,
-	ch_calleridnumber varchar,
-	ch_calleeidname varchar,
-	ch_calleeidnumber varchar,
-	ch_destination varchar,
-	ch_app varchar,
-	ch_appdata varchar,
-	ch_dialstatus varchar,
-	hangup_cause varchar,
-	hangup_q850 varchar,
-	hangup_disposition varchar,
-	hangup_protocause varchar,
-	hangup_phrase varchar,
-	start_epoch varchar,
-	answer_epoch varchar,
-	end_epoch varchar,
-	waitsec varchar,
-	billsec varchar,
-	duration varchar
+	otheruuid varchar NOT NULL DEFAULT '',
+	othertype varchar NOT NULL DEFAULT '',
+	name varchar NOT NULL DEFAULT '',
+	profile varchar NOT NULL DEFAULT '',
+	direction varchar NOT NULL DEFAULT '',
+	domain varchar NOT NULL DEFAULT '',
+	gateway varchar NOT NULL DEFAULT '',
+	calleridname varchar NOT NULL DEFAULT '',
+	calleridnumber varchar NOT NULL DEFAULT '',
+	calleeidname varchar NOT NULL DEFAULT '',
+	calleeidnumber varchar NOT NULL DEFAULT '',
+	destination varchar NOT NULL DEFAULT '',
+	app varchar NOT NULL DEFAULT '',
+	appdata varchar NOT NULL DEFAULT '',
+	dialstatus varchar NOT NULL DEFAULT '',
+	cause varchar NOT NULL DEFAULT '',
+	q850 varchar NOT NULL DEFAULT '',
+	disposition varchar NOT NULL DEFAULT '',
+	protocause varchar NOT NULL DEFAULT '',
+	phrase varchar NOT NULL DEFAULT '',
+	startepoch varchar NOT NULL DEFAULT '',
+	answerepoch varchar NOT NULL DEFAULT '',
+	endepoch varchar NOT NULL DEFAULT '',
+	waitsec varchar NOT NULL DEFAULT '',
+	billsec varchar NOT NULL DEFAULT '',
+	duration varchar NOT NULL DEFAULT ''
 );
 `
 

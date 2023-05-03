@@ -111,7 +111,7 @@ func serverRouter(r *gin.Engine) {
 		apiv1.DELETE("/bgjob/:uuid")
 		////cdr tables
 		//table cdr
-		apiv1.GET("/cdr")
+		apiv1.GET("/cdrs", v1.GetCallDetailRecords)
 		apiv1.POST("/cdr")
 		apiv1.PUT("/cdr/:uuid")
 		apiv1.DELETE("/cdr/:uuid")

@@ -38,51 +38,51 @@ const ODBC_CDR_CONF_XML_TABLE = `
     <field name ="othertype" chan-var-name="other_type"/>
 
     <!-- Variable_channel_name -->
-    <field name="ch_name" chan-var-name="channel_name"/>
+    <field name="name" chan-var-name="channel_name"/>
     <!-- Variable_sofia_profile_name -->
-    <field name="ch_profile" chan-var-name="sofia_profile_name"/>
+    <field name="profile" chan-var-name="sofia_profile_name"/>
     <!-- Call-Direction/Variable_direction -->
-    <field name = "ch_direction" chan-var-name="direction"/>
+    <field name = "direction" chan-var-name="direction"/>
     <!-- Variable_domain_name -->
-    <field name="ch_domain" chan-var-name="domain_name"/>
+    <field name="domain" chan-var-name="domain_name"/>
     <!-- Variable_sip_gateway_name -->
-    <field name="ch_gateway" chan-var-name="sip_gateway_name"/>
+    <field name="gateway" chan-var-name="sip_gateway_name"/>
 
     <!-- Caller-Caller-ID-Name -->
-    <field name ="ch_calleridname" chan-var-name="caller_id_name"/>
+    <field name ="calleridname" chan-var-name="caller_id_name"/>
     <!-- Caller-Caller-ID-Number -->
-    <field name ="ch_calleridnumber" chan-var-name="caller_id_number"/>
+    <field name ="calleridnumber" chan-var-name="caller_id_number"/>
     <!-- Caller-Callee-ID-Name -->
-    <field name ="ch_calleeidname" chan-var-name="callee_id_name"/>
+    <field name ="calleeidname" chan-var-name="callee_id_name"/>
     <!-- Caller-Callee-ID-Number -->
-    <field name ="ch_calleeidnumber" chan-var-name="callee_id_number"/>	
+    <field name ="calleeidnumber" chan-var-name="callee_id_number"/>	
     <!-- Caller-Destination-Number	-->
-    <field name ="ch_destination" chan-var-name="destination_number"/>
+    <field name ="destination" chan-var-name="destination_number"/>
 
     <!-- Variable_current_application -->
-    <field name ="ch_app" chan-var-name="current_application"/>
+    <field name ="app" chan-var-name="current_application"/>
     <!-- Variable_current_application_data -->
-    <field name ="ch_appdata" chan-var-name="current_application_data"/>
+    <field name ="appdata" chan-var-name="current_application_data"/>
     <!-- Variable_dialstatus -->
-    <field name ="ch_dialstatus" chan-var-name="dialstatus"/>
+    <field name ="dialstatus" chan-var-name="dialstatus"/>
     
     <!-- Variable_hangup_cause = "NORMAL_CLEARING" -->
-    <field name ="hangup_cause" chan-var-name="hangup_cause"/>
+    <field name ="cause" chan-var-name="hangup_cause"/>
     <!-- Variable_hangup_cause_q850 = "16" -->
-    <field name ="hangup_q850" chan-var-name="hangup_cause_q850"/>
+    <field name ="q850" chan-var-name="hangup_cause_q850"/>
     <!-- Variable_sip_hangup_disposition = "recv_bye";"recv_cancel";"recv_refuse";"send_bye";"send_cancel";"send_refuse"; -->
-    <field name ="hangup_disposition" chan-var-name="sip_hangup_disposition"/>
+    <field name ="disposition" chan-var-name="sip_hangup_disposition"/>
     <!-- Variable_proto_specific_hangup_cause = "sip:200" -->
-    <field name ="hangup_protocause" chan-var-name="proto_specific_hangup_cause"/>
+    <field name ="protocause" chan-var-name="proto_specific_hangup_cause"/>
     <!-- Variable_sip_hangup_phrase = "OK";"send_bye ok ?"-->
-    <field name ="hangup_phrase" chan-var-name="sip_hangup_phrase"/>
+    <field name ="phrase" chan-var-name="sip_hangup_phrase"/>
     
     <!-- Variable_start_epoch -->
-    <field name ="start_epoch" chan-var-name ="start_epoch"/>
+    <field name ="startepoch" chan-var-name ="start_epoch"/>
     <!-- Variable_answer_epoch -->
-    <field name ="answer_epoch" chan-var-name ="answer_epoch"/>
+    <field name ="answerepoch" chan-var-name ="answer_epoch"/>
     <!-- Variable_end_epoch -->
-    <field name ="end_epoch" chan-var-name ="end_epoch"/>
+    <field name ="endepoch" chan-var-name ="end_epoch"/>
     <!-- Variable_waitsec -->
     <filed name ="waitsec" chan-var-name ="waitsec"/>
     <!-- Variable_billsec -->

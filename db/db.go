@@ -209,7 +209,7 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 	var isFound bool
 	ip := viper.GetString(`switch.vars.ipv4`)
 
-	//table confs define gateway response content.
+	//table confs
 	tableConfs := fmt.Sprintf(`%sconfs`, gatewayTableprifex)
 	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableConfs); err != nil {
 		fmt.Println(err)

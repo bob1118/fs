@@ -1,7 +1,42 @@
+// // CDR_LEG mod_odbc_cdr table define
+// const CDR_LEG = `
+// CREATE TABLE IF NOT EXISTS %s (
+// 	uuid varchar NOT NULL,
+// 	otheruuid varchar NOT NULL DEFAULT '',
+// 	othertype varchar NOT NULL DEFAULT '',
+// 	name varchar NOT NULL DEFAULT '',
+// 	profile varchar NOT NULL DEFAULT '',
+// 	direction varchar NOT NULL DEFAULT '',
+// 	domain varchar NOT NULL DEFAULT '',
+// 	gateway varchar NOT NULL DEFAULT '',
+// 	calleridname varchar NOT NULL DEFAULT '',
+// 	calleridnumber varchar NOT NULL DEFAULT '',
+// 	calleeidname varchar NOT NULL DEFAULT '',
+// 	calleeidnumber varchar NOT NULL DEFAULT '',
+// 	destination varchar NOT NULL DEFAULT '',
+// 	app varchar NOT NULL DEFAULT '',
+// 	appdata varchar NOT NULL DEFAULT '',
+// 	dialstatus varchar NOT NULL DEFAULT '',
+// 	cause varchar NOT NULL DEFAULT '',
+// 	q850 varchar NOT NULL DEFAULT '',
+// 	disposition varchar NOT NULL DEFAULT '',
+// 	protocause varchar NOT NULL DEFAULT '',
+// 	phrase varchar NOT NULL DEFAULT '',
+// 	startepoch varchar NOT NULL DEFAULT '',
+// 	answerepoch varchar NOT NULL DEFAULT '',
+// 	endepoch varchar NOT NULL DEFAULT '',
+// 	waitsec varchar NOT NULL DEFAULT '',
+// 	billsec varchar NOT NULL DEFAULT '',
+// 	duration varchar NOT NULL DEFAULT ''
+// );
+// `
+
 package db
 
 import (
 	"fmt"
+
+	"github.com/spf13/viper"
 )
 
 type CDRLEG struct {
@@ -47,7 +82,7 @@ func CreateCdrAleg(in *CDRLEG) (e error) {
 		a.UUID, a.OtherUUID, a.OtherType, a.Name, a.Profile, a.Direction, a.Domain, a.Gateway,
 		a.Calleridname, a.Calleridnumber, a.Calleeidname, a.Calleeidnumber, a.Destination, a.App, a.Appdata, a.Appdialstatus,
 		a.Cause, a.Q850, a.Disposition, a.Protocause, a.Phrase, a.Startepoch, a.Answerepoch, a.Endepoch, a.Waitsec, a.Billsec, a.Duration)
-	_, err = GetServerdb().Exec(q)
+	_, err = GetSwitchdb().Exec(q)
 	return err
 }
 
@@ -63,6 +98,17 @@ func CreateCdrBleg(in *CDRLEG) (e error) {
 		b.UUID, b.OtherUUID, b.OtherType, b.Name, b.Profile, b.Direction, b.Domain, b.Gateway,
 		b.Calleridname, b.Calleridnumber, b.Calleeidname, b.Calleeidnumber, b.Destination, b.App, b.Appdata, b.Appdialstatus,
 		b.Cause, b.Q850, b.Disposition, b.Protocause, b.Phrase, b.Startepoch, b.Answerepoch, b.Endepoch, b.Waitsec, b.Billsec, b.Duration)
-	_, err = GetServerdb().Exec(q)
+	_, err = GetSwitchdb().Exec(q)
 	return err
+}
+
+// SelectCallDetailRecordsWithCondition
+func SelectCallDetailRecordsWithCondition(condition string) ([]CDRLEG, error) {
+	cdrs := []CDRLEG{}
+	alegname := viper.GetString(`switch.cdr.a-leg`)
+	//blegname := viper.GetString(`switch.cdr.b-leg`)
+
+	q := fmt.Sprintf("select * from %s where %s", alegname, condition)
+	err := GetSwitchdb().Select(&cdrs, q)
+	return cdrs, err
 }

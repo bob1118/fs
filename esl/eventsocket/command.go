@@ -320,6 +320,44 @@ func (h *Connection) ExecuteUUID(uuid, appName, appArg string) (*Event, error) {
 	}, uuid, "")
 }
 
+// ExecuteDptools Execute is a shortcut to SendMsg with call-command: execute without UUID,
+//
+// suitable for use on outbound event socket connections (acting as server).
+//
+// Execute("set", "a=b", true)
+//
+// https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Modules/mod_event_socket_1048924/#3911-execute
+func (h *Connection) ExecuteDptools(appName, appArg string, lock bool) (*Event, error) {
+	var msg MSG
+	if lock {
+		msg = MSG{
+			"call-command":     "execute",
+			"execute-app-name": appName,
+			"execute-app-arg":  appArg,
+			"event-lock":       "true",
+		}
+	} else {
+		msg = MSG{
+			"call-command":     "execute",
+			"execute-app-name": appName,
+			"execute-app-arg":  appArg,
+		}
+	}
+	return h.SendMSG("", msg, "")
+}
+
+// ExecuteDptoolsEx is similar to Execute, but takes a UUID and no lock. Suitable
+// for use on inbound event socket connections (acting as client).
+func (h *Connection) ExecuteDptoolsEx(uuid, appName, appArg string) (*Event, error) {
+	//var msg MSG
+	msg := MSG{
+		"call-command":     "execute",
+		"execute-app-name": appName,
+		"execute-app-arg":  appArg,
+	}
+	return h.SendMSG(uuid, msg, "")
+}
+
 // Hangup function.
 //
 // 3.9.1.2 hangup
@@ -337,6 +375,15 @@ func (h *Connection) Hangup(cause string) error {
 	}
 	_, err := h.SendMSG("", msg, "")
 	return err
+}
+
+// HangupEx function, hangup with uuid
+func (h *Connection) HangupEx(uuid, cause string) (*Event, error) {
+	msg := MSG{
+		"call-command": "hangup",
+		"hangup-cause": cause,
+	}
+	return h.SendMSG(uuid, msg, "")
 }
 
 // Unicast function.
@@ -415,56 +462,7 @@ func (h *Connection) NixEvent(format string, enames ...string) error {
 // NoEvents function.
 //
 // 3.15 noevents
-
 func (h *Connection) NoEvents() error { return h.SendCommand("noevents") }
-
-// ExecuteDptools Execute is a shortcut to SendMsg with call-command: execute without UUID,
-//
-// suitable for use on outbound event socket connections (acting as server).
-//
-// Execute("set", "a=b", true)
-//
-// https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket#mod_event_socket-3.9.1.1execute
-// https://freeswitch.org/confluence/display/FREESWITCH/Event+Socket+Outbound#EventSocketOutbound-FAQ
-func (h *Connection) ExecuteDptools(appName, appArg string, lock bool) (*Event, error) {
-	var msg MSG
-	if lock {
-		msg = MSG{
-			"call-command":     "execute",
-			"execute-app-name": appName,
-			"execute-app-arg":  appArg,
-			"event-lock":       "true",
-		}
-	} else {
-		msg = MSG{
-			"call-command":     "execute",
-			"execute-app-name": appName,
-			"execute-app-arg":  appArg,
-		}
-	}
-	return h.SendMSG("", msg, "")
-}
-
-// ExecuteDptoolsEx is similar to Execute, but takes a UUID and no lock. Suitable
-// for use on inbound event socket connections (acting as client).
-func (h *Connection) ExecuteDptoolsEx(uuid, appName, appArg string) (*Event, error) {
-	//var msg MSG
-	msg := MSG{
-		"call-command":     "execute",
-		"execute-app-name": appName,
-		"execute-app-arg":  appArg,
-	}
-	return h.SendMSG(uuid, msg, "")
-}
-
-// HangupEx function, hangup with uuid
-func (h *Connection) HangupEx(uuid, cause string) (*Event, error) {
-	msg := MSG{
-		"call-command": "hangup",
-		"hangup-cause": cause,
-	}
-	return h.SendMSG(uuid, msg, "")
-}
 
 ////////////////////////////////////////////////////////////////////////////
 /////////////////////////////api and app////////////////////////////////////

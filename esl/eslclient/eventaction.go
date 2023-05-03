@@ -45,19 +45,19 @@ func customAction(e *eventsocket.Event) {
 			if len(user) > 0 && len(domain) > 0 {
 				originate_string := fmt.Sprintf(`sofia/%s/%s`, domain, user)
 				run_time.SetUaOnline(e)
-				run_time.FifoMemberManage(ClientCon, originate_string, true)
+				run_time.FifoMemberAdd(ClientCon, originate_string)
 			}
 		case "sofia::unregister": //sofia_reg_handle_register_token
 			if len(user) > 0 && len(domain) > 0 {
 				originate_string := fmt.Sprintf(`sofia/%s/%s`, domain, user)
 				run_time.SetUaOffline(e)
-				run_time.FifoMemberManage(ClientCon, originate_string, false)
+				run_time.FifoMemberDel(ClientCon, originate_string)
 			}
 		case "sofia::expire": //sofia_reg_del_call_back
 			if len(user) > 0 && len(domain) > 0 {
 				originate_string := fmt.Sprintf(`sofia/%s/%s`, domain, user)
 				run_time.SetUaOffline(e)
-				run_time.FifoMemberManage(ClientCon, originate_string, false)
+				run_time.FifoMemberDel(ClientCon, originate_string)
 			}
 		case "sofia::gateway_state": //sofia_reg_fire_custom_gateway_state_event
 			run_time.SetGatewayState(e)
