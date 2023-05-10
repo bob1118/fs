@@ -58,7 +58,7 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 	}
 
 	//continue_on_fail=true/continue_on_fail=NORMAL_TEMPORARY_FAILURE,USER_BUSY,NO_ANSWER,NO_ROUTE_DESTINATION
-	c.APPSet(`continue_on_fail=NORMAL_TEMPORARY_FAILURE,USER_BUSY,NO_ANSWER,NO_ROUTE_DESTINATION`, true)
+	c.APPSet(`continue_on_fail=false`, true)
 	c.APPSet(`hangup_after_bridge=true`, true)
 
 	if call.CallerIsUa() {

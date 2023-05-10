@@ -22,6 +22,10 @@ func eventAction(e *eventsocket.Event) {
 		case "BACKGROUND_JOB":
 			backgroundjobAction(e)
 		case "CHANNEL_HANGUP_COMPLETE":
+			// for cdr debug
+			if true {
+				e.LogPrint()
+			}
 			if !is_mod_odbc_cdr {
 				channelCdrAction(e)
 			}
@@ -86,10 +90,6 @@ func backgroundjobAction(e *eventsocket.Event) {
 
 // channelCdrAction function
 func channelCdrAction(e *eventsocket.Event) {
-
-	// for cdr debug
-	e.LogPrint()
-
 	//
 	var isbleg bool
 	var uuid, otherUUID, otherType string

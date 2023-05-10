@@ -43,15 +43,15 @@ func Default() (string, error) {
 	blegname := viper.GetString(`switch.cdr.b-leg`)
 	bothname := viper.GetString(`switch.cdr.both`)
 	if len(alegname) > 0 {
-		table := fmt.Sprintf(ODBC_CDR_CONF_XML_TABLE, alegname, `a-leg`)
+		table := fmt.Sprintf(ODBC_CDR_CONF_XML_TABLE_ALEG, alegname)
 		tables = fmt.Sprintf("%s\n%s", tables, table)
 	}
 	if len(blegname) > 0 {
-		table := fmt.Sprintf(ODBC_CDR_CONF_XML_TABLE, blegname, `b-leg`)
+		table := fmt.Sprintf(ODBC_CDR_CONF_XML_TABLE_BLEG, blegname)
 		tables = fmt.Sprintf("%s\n%s", tables, table)
 	}
 	if len(bothname) > 0 {
-		table := fmt.Sprintf(ODBC_CDR_CONF_XML_TABLE, bothname, `both`)
+		table := fmt.Sprintf(ODBC_CDR_CONF_XML_TABLE_BOTH, bothname)
 		tables = fmt.Sprintf("%s\n%s", tables, table)
 	}
 	if len(tables) <= 0 {
