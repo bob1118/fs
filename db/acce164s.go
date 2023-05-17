@@ -85,7 +85,7 @@ func UpdateAcce164sAcce164(uuid string, in ACCE164) (ACCE164, error) {
 	q += fmt.Sprintf(" where acce164_uuid='%s'", uuid)
 	q += (" returning *;")
 
-	err := GetGatewaydb().Select(&acce164, q)
+	err := GetGatewaydb().Get(&acce164, q)
 	return acce164, err
 }
 
@@ -95,6 +95,6 @@ func DeleteAcce164sAcce164(uuid string) (ACCE164, error) {
 	var q = fmt.Sprintf("delete from %sacce164s ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf("where acce164_uuid='%s'", uuid)
 	q += (" returning *;")
-	err := GetGatewaydb().Select(&acce164, q)
+	err := GetGatewaydb().Get(&acce164, q)
 	return acce164, err
 }

@@ -32,7 +32,7 @@ func ChannelDefaultAction(c *eventsocket.Connection, ev *eventsocket.Event) erro
 		} else { //outgoing call hit socket. bgapi origination... &socket ?
 			switch call.profile {
 			case "internal", "internal-ipv6":
-				myerr = channelInternaOutgoingProc(c, call)
+				myerr = channelInternalOutgoingProc(c, call)
 			case "external", "external-ipv6":
 				myerr = channelExternalOutgoingProc(c, call)
 			default:
@@ -112,9 +112,9 @@ func channelExternalExecuteFifo(c *eventsocket.Connection) error {
 	return err
 }
 
-// channelInternaOutgoingProc function.
+// channelInternalOutgoingProc function.
 // http client post data ->http server receive data ->bgapi originate sofia/profile/id@domain &socket ...
-func channelInternaOutgoingProc(c *eventsocket.Connection, call *CALL) error { return nil }
+func channelInternalOutgoingProc(c *eventsocket.Connection, call *CALL) error { return nil }
 
 // channelExternalOutgoingProc function.
 // http client post data ->http server receive data ->bgapi originate sofia/gatewayname/reomte &socket...

@@ -195,7 +195,7 @@ func DeleteFifomember(c *gin.Context) {
 					rtmsg = err.Error()
 				} else {
 					fifomembers = append(fifomembers, rt)
-					data["len"] = fifomembers
+					data["len"] = len(fifomembers)
 					data["lists"] = fifomembers
 				}
 			}

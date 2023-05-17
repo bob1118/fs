@@ -273,7 +273,7 @@ func DeleteE164(c *gin.Context) {
 					rtmsg = err.Error()
 				} else {
 					e164s = append(e164s, rte164)
-					data["len"] = e164s
+					data["len"] = len(e164s)
 					data["lists"] = e164s
 				}
 			}

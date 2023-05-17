@@ -195,7 +195,7 @@ func DeleteBlacklist(c *gin.Context) {
 					rtmsg = err.Error()
 				} else {
 					blacklists = append(blacklists, rt)
-					data["len"] = blacklists
+					data["len"] = len(blacklists)
 					data["lists"] = blacklists
 				}
 			}

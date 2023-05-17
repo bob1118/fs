@@ -92,7 +92,7 @@ func UpdateConfsConf(uuid string, in Conf) (Conf, error) {
 	q += fmt.Sprintf(" where conf_uuid='%s'", uuid)
 	q += (" returning *;")
 
-	err := GetGatewaydb().Select(&conf, q)
+	err := GetGatewaydb().Get(&conf, q)
 	return conf, err
 }
 
@@ -102,6 +102,6 @@ func DeleteConfsConf(uuid string) (Conf, error) {
 	var q = fmt.Sprintf("delete from %sconfs ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf("where conf_uuid='%s'", uuid)
 	q += (" returning *;")
-	err := GetGatewaydb().Select(&conf, q)
+	err := GetGatewaydb().Get(&conf, q)
 	return conf, err
 }

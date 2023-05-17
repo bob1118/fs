@@ -330,7 +330,7 @@ func DeleteAccount(c *gin.Context) {
 					rtmsg = err.Error()
 				} else {
 					uas = append(uas, rtua)
-					data["len"] = uas
+					data["len"] = len(uas)
 					data["lists"] = uas
 				}
 			}

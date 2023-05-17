@@ -65,11 +65,17 @@ func doDirectory(c *gin.Context) string {
 	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(purpose, `network-list`) {
 	}
 
-	// user REGISTER SUBSCRIBE INVITE
-	if false ||
-		(strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) && strings.EqualFold(authmethod, `REGISTER`)) ||
-		(strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) && strings.EqualFold(authmethod, `SUBSCRIBE`)) ||
-		(strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) && strings.EqualFold(authmethod, `INVITE`)) {
+	// user REGISTER SUBSCRIBE INVITE MESSAGE ...
+	// if false ||
+	// 	(strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) && strings.EqualFold(authmethod, `REGISTER`)) ||
+	// 	(strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) && strings.EqualFold(authmethod, `SUBSCRIBE`)) ||
+	// 	(strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) && strings.EqualFold(authmethod, `INVITE`)) ||
+	// 	(strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) && strings.EqualFold(authmethod, `MESSAGE`)) {
+	// 	if len(uaid) > 0 && len(uadomain) > 0 {
+	// 		body = useragentAuthConf(action, uaid, uadomain)
+	// 	}
+	// }
+	if strings.EqualFold(eventname, `REQUEST_PARAMS`) && strings.EqualFold(action, `sip_auth`) {
 		if len(uaid) > 0 && len(uadomain) > 0 {
 			body = useragentAuthConf(action, uaid, uadomain)
 		}

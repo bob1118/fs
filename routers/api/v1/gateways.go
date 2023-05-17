@@ -248,7 +248,7 @@ func DeleteGateway(c *gin.Context) {
 					rtmsg = err.Error()
 				} else {
 					gws = append(gws, rtgw)
-					data["len"] = gws
+					data["len"] = len(gws)
 					data["lists"] = gws
 				}
 			}

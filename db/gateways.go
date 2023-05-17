@@ -126,7 +126,7 @@ func UpdateGatewaysGateway(uuid string, in Gateway) (out Gateway, e error) {
 	q += fmt.Sprintf(" where gateway_uuid='%s'", uuid)
 	q += (" returning *;")
 
-	err := GetGatewaydb().Select(&gw, q)
+	err := GetGatewaydb().Get(&gw, q)
 	return gw, err
 }
 
@@ -135,6 +135,6 @@ func DeleteGatewaysGateway(uuid string) (out Gateway, e error) {
 	var q = fmt.Sprintf("delete from %sgateways ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf("where gateway_uuid='%s'", uuid)
 	q += (" returning *;")
-	err := GetGatewaydb().Select(&gw, q)
+	err := GetGatewaydb().Get(&gw, q)
 	return gw, err
 }

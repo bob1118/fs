@@ -82,7 +82,7 @@ func UpdateFifosFifo(uuid string, in Fifo) (Fifo, error) {
 	q += fmt.Sprintf(" where fifo_uuid='%s'", uuid)
 	q += (" returning *;")
 
-	err := GetGatewaydb().Select(&fifo, q)
+	err := GetGatewaydb().Get(&fifo, q)
 	return fifo, err
 }
 
@@ -92,6 +92,6 @@ func DeleteFifosFifo(uuid string) (Fifo, error) {
 	var q = fmt.Sprintf("delete from %sfifos ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf(" where fifo_uuid='%s'", uuid)
 	q += (" returning *;")
-	err := GetGatewaydb().Select(&fifo, q)
+	err := GetGatewaydb().Get(&fifo, q)
 	return fifo, err
 }

@@ -77,7 +77,7 @@ func UpdateBlacklistsBlacklist(uuid string, in Blacklist) (Blacklist, error) {
 	q += fmt.Sprintf(" where blacklist_uuid='%s'", uuid)
 	q += (" returning *;")
 
-	err := GetServerdb().Select(&blacklist, q)
+	err := GetServerdb().Get(&blacklist, q)
 	return blacklist, err
 }
 
@@ -87,6 +87,6 @@ func DeleteBlacklistsBlacklist(uuid string) (Blacklist, error) {
 	var q = fmt.Sprintf("delete from %sblacklist ", GetTablesServerPrifex())
 	q += fmt.Sprintf(" where blacklist_uuid='%s'", uuid)
 	q += (" returning *;")
-	err := GetServerdb().Select(&blacklist, q)
+	err := GetServerdb().Get(&blacklist, q)
 	return blacklist, err
 }

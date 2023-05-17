@@ -192,7 +192,7 @@ func DeleteFifo(c *gin.Context) {
 					rtmsg = err.Error()
 				} else {
 					fifos = append(fifos, rtfifo)
-					data["len"] = fifos
+					data["len"] = len(fifos)
 					data["lists"] = fifos
 				}
 			}

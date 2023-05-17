@@ -32,22 +32,29 @@ const ODBC_CDR_CONF_XML_TABLE_ALEG = `
   <table name="%s" log-leg="a-leg">
     <!-- Variable_uuid -->
     <field name="uuid" chan-var-name="uuid"/>
-    <!-- Variable_originated_legs -->
+    <!-- Variable_call_uuid -->
+    <field name ="calluuid" chan-var-name="call_uuid"/>
+    <!-- Variable_originated_legs/Variable_originator aleg/bleg -->
     <field name ="otheruuid" chan-var-name="originated_legs"/>
-    <!-- Other-Type: "originatee" -->
-    <field name ="othertype" chan-var-name="other_type"/>
-
+    <!-- Other-Type: "originatee"/"originator" aleg/bleg -->
+    <!-- <field name ="othertype" chan-var-name="other-type"/> -->
     <!-- Variable_channel_name -->
     <field name="name" chan-var-name="channel_name"/>
     <!-- Variable_sofia_profile_name -->
-    <field name="profile" chan-var-name="sofia_profile_name"/>
+    <field name="sofiaprofile" chan-var-name="sofia_profile_name"/>
     <!-- Variable_direction -->
     <field name = "direction" chan-var-name="direction"/>
     <!-- Variable_domain_name -->
     <field name="domain" chan-var-name="domain_name"/>
+    <!-- Variable_sip_profile_name -->
+    <field name="sipprofile" chan-var-name="sip_profile_name"/>
     <!-- Variable_sip_gateway_name -->
     <field name="gateway" chan-var-name="sip_gateway_name"/>
 
+    <!-- Caller-Ani -->
+    <field name = "ani" chan-var-name="ani"/>
+    <!-- Caller-Destination-Number	-->
+    <field name ="destination" chan-var-name="destination_number"/>
     <!-- Caller-Caller-ID-Name -->
     <field name ="calleridname" chan-var-name="caller_id_name"/>
     <!-- Caller-Caller-ID-Number -->
@@ -56,8 +63,6 @@ const ODBC_CDR_CONF_XML_TABLE_ALEG = `
     <field name ="calleeidname" chan-var-name="callee_id_name"/>
     <!-- Caller-Callee-ID-Number -->
     <field name ="calleeidnumber" chan-var-name="callee_id_number"/>	
-    <!-- Caller-Destination-Number	-->
-    <field name ="destination" chan-var-name="destination_number"/>
 
     <!-- Variable_current_application -->
     <field name ="app" chan-var-name="current_application"/>
@@ -94,24 +99,31 @@ const ODBC_CDR_CONF_XML_TABLE_ALEG = `
 const ODBC_CDR_CONF_XML_TABLE_BLEG = `
   <!-- only b-legs will be inserted into this table -->
   <table name="%s" log-leg="b-leg">
-    <!--  Variable_uuid -->
+    <!-- Variable_uuid -->
     <field name="uuid" chan-var-name="uuid"/>
-    <!-- Variable_originator -->
+    <!-- Variable_call_uuid -->
+    <field name ="calluuid" chan-var-name="call_uuid"/>
+    <!-- Variable_originated_legs/Variable_originator aleg/bleg -->
     <field name ="otheruuid" chan-var-name="originator"/>
-    <!-- Other-Type: "originatee" aleg-->
-    <field name ="othertype" chan-var-name="other_type"/>
-
+    <!-- Other-Type: "originatee"/"originator" aleg/bleg -->
+    <!-- <field name ="othertype" chan-var-name="other_type"/> -->
     <!-- Variable_channel_name -->
     <field name="name" chan-var-name="channel_name"/>
     <!-- Variable_sofia_profile_name -->
-    <field name="profile" chan-var-name="sofia_profile_name"/>
+    <field name="sofiaprofile" chan-var-name="sofia_profile_name"/>
     <!-- Variable_direction -->
     <field name = "direction" chan-var-name="direction"/>
+    <!-- Variable_domain_name -->
+    <field name="domain" chan-var-name="domain_name"/>
     <!-- Variable_sip_profile_name -->
-    <field name="domain" chan-var-name="sip_profile_name"/>
+    <field name="sipprofile" chan-var-name="sip_profile_name"/>
     <!-- Variable_sip_gateway_name -->
     <field name="gateway" chan-var-name="sip_gateway_name"/>
 
+    <!-- Caller-Ani -->
+    <field name = "ani" chan-var-name="ani"/>
+    <!-- Caller-Destination-Number	-->
+    <field name ="destination" chan-var-name="destination_number"/>
     <!-- Caller-Caller-ID-Name -->
     <field name ="calleridname" chan-var-name="caller_id_name"/>
     <!-- Caller-Caller-ID-Number -->
@@ -120,8 +132,6 @@ const ODBC_CDR_CONF_XML_TABLE_BLEG = `
     <field name ="calleeidname" chan-var-name="callee_id_name"/>
     <!-- Caller-Callee-ID-Number -->
     <field name ="calleeidnumber" chan-var-name="callee_id_number"/>	
-    <!-- Caller-Destination-Number	-->
-    <field name ="destination" chan-var-name="destination_number"/>
 
     <!-- Variable_current_application -->
     <field name ="app" chan-var-name="current_application"/>

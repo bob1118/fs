@@ -111,7 +111,7 @@ func UpdateAccountsAccount(uuid string, in Account) (out Account, e error) {
 	q += fmt.Sprintf(" where account_uuid='%s'", uuid)
 	q += (" returning *;")
 
-	err := GetGatewaydb().Select(&ua, q)
+	err := GetGatewaydb().Get(&ua, q)
 	return ua, err
 }
 
@@ -120,6 +120,6 @@ func DeleteAccountsAccount(uuid string) (out Account, e error) {
 	var q = fmt.Sprintf("delete from %saccounts ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf("where account_uuid='%s'", uuid)
 	q += (" returning *;")
-	err := GetGatewaydb().Select(&ua, q)
+	err := GetGatewaydb().Get(&ua, q)
 	return ua, err
 }

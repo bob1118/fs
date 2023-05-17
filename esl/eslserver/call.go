@@ -60,6 +60,7 @@ func (c *CALL) CallerIsUa() bool {
 	mkey := c.ani + "@" + c.domain
 	return run_time.IsUa(mkey)
 }
+
 func (c *CALL) CalleeIsUa() bool {
 	mkey := c.distinationnumber + "@" + c.domain
 	return run_time.IsUa(mkey)

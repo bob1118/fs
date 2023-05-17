@@ -209,7 +209,7 @@ func DeleteAcce164(c *gin.Context) {
 					rtmsg = err.Error()
 				} else {
 					acce164s = append(acce164s, rtacce164)
-					data["len"] = acce164s
+					data["len"] = len(acce164s)
 					data["lists"] = acce164s
 				}
 			}
