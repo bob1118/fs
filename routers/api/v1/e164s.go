@@ -27,6 +27,12 @@ import (
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
+//
+// curl:
+//
+// curl 10.10.10.20/api/v1/e164s | json_pp
+//
+// curl --url-query number=10086 --url-query enable=true 10.10.10.20/api/v1/e164s | json_pp
 func GetE164s(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
@@ -82,6 +88,10 @@ func GetE164s(c *gin.Context) {
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
+//
+// curl:
+//
+// curl -X POST  -d '{"ganme":"","number":"12345678"}' -H 'Content-Type:application/json' -H 'Accept: application/json' http://10.10.10.20/api/v1/e164 | json_pp
 func PostE164(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
@@ -135,6 +145,10 @@ func PostE164(c *gin.Context) {
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
+//
+// curl:
+//
+// curl -X POST --url-query numberprefix=876543 --url-query numberstart=0 --url-query numberend=21 -H 'Content-Type:application/json' -H 'Accept: application/json' http://10.10.10.20/api/v1/e164s | json_pp
 func PostE164s(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
@@ -157,9 +171,11 @@ func PostE164s(c *gin.Context) {
 						rtcode = ec.ERROR_HTTP_REQUEST_URLQUERYATOI
 						rtmsg = err.Error()
 					} else {
+						numberFormat := `%s%0`
+						numberFormat += fmt.Sprintf("%dd", len(numberEnd))
 						for index := start; index <= end; index++ {
 							e164.Gname = gname
-							e164.Enumber = fmt.Sprintf("%s%d", numberPrefix, index)
+							e164.Enumber = fmt.Sprintf(numberFormat, numberPrefix, index)
 							e164s = append(e164s, e164)
 						}
 					}
@@ -204,6 +220,10 @@ func PostE164s(c *gin.Context) {
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
+//
+// curl:
+//
+// curl -X PUT --json '{"gname":"","number":"000000001","enable":true,"lockin":false,"lockout":false}' -H 'Content-Type: application/json' -H 'Accept: application/json' 10.10.10.20/api/v1/e164/2ce857b4-4252-450a-bdd0-ee49734fb541|json_pp
 func PutE164(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
@@ -255,6 +275,10 @@ func PutE164(c *gin.Context) {
 //			lists:{slice[0],slice[1], ...}
 //		}
 //	}
+//
+// curl:
+//
+// curl -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json' 10.10.10.20/api/v1/e164/2ce857b4-4252-450a-bdd0-ee49734fb541 |json_pp
 func DeleteE164(c *gin.Context) {
 	rtmsg := ``
 	rtcode := ec.SUCCESS
