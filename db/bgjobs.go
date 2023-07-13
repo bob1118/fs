@@ -29,7 +29,7 @@ func CreateBgjob(in *Bgjob) error {
 	if len(job.Juuid) == 0 {
 		err = errors.New("uuid not null")
 	} else {
-		q := fmt.Sprintf("insert into %sbgjobs(job_cmd,job_cmdarg,job_content)values('%s','%s','%s')", GetTablesServerPrifex(), job.Jcmd, job.Jcmdarg, job.Jcontent)
+		q := fmt.Sprintf("insert into %sbgjobs(job_uuid,job_cmd,job_cmdarg,job_content)values('%s','%s','%s','%s')", GetTablesServerPrifex(), job.Juuid, job.Jcmd, job.Jcmdarg, job.Jcontent)
 		GetServerdb().MustExec(q)
 	}
 	return err

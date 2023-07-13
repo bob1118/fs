@@ -15,13 +15,19 @@ import (
 // request: Get /api?cmd=xxx
 // response: string
 func Get(c *gin.Context) {
+	var sc int
 	var err error
 	var cmd, result string
 	cmd = c.Query("cmd")
-	if result, err = eslclient.ClientCon.SendApiCommandSync(cmd); err != nil {
-		result = err.Error()
+	if len(cmd) > 0 {
+		if result, err = eslclient.ClientCon.SendApiCommandSync(cmd); err != nil {
+			result = err.Error()
+		}
+		sc = http.StatusOK
+	} else {
+		sc = http.StatusBadRequest
 	}
-	c.String(http.StatusOK, result)
+	c.String(sc, result)
 }
 
 // LoadGateway function
