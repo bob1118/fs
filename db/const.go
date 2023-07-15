@@ -218,7 +218,7 @@ const DEFAULT_ACCOUNTS = `insert into %s(account_id,account_name,account_auth,ac
 const DEFAULT_GATEWAYS = `
 insert into %s(gateway_name,gateway_username,gateway_realm,gateway_fromuser,gateway_fromdomain,gateway_password,gateway_extension,gateway_proxy,gateway_registerproxy,gateway_expire,gateway_register,gateway_calleridinfrom,gateway_extensionincontact,gateway_optionping) values
 ('p2p','','p2p.ip','','','','','','','','false','true','',''),
-('myfsgateway','1000','10.10.10.200','1000','10.10.10.200','1234','1000','10.10.10.200','10.10.10.200','3600','false','true','true',''),
+('myfsgateway','1000','10.10.10.200','1000','10.10.10.200','1234','1000','10.10.10.200','10.10.10.200','3600','true','true','true',''),
 ('vos_in','username','vos.ip','','','password','','','','','false','true','true',''),
 ('vos_out','username','vos.ip','','','password','','','','','false','true','true','')
 `

@@ -77,7 +77,7 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 				} else {
 					gatewayname := acce164s[0].Gname
 					gatewaye164number := acce164s[0].Enumber
-					appargv := fmt.Sprintf(`{origination_uuid=%s,origination_caller_id_number=%s,ignore_early_media=true,codec_string="PCMU,PCMA"}sofia/gateway/%s/%s`, uuid, gatewaye164number, gatewayname, call.distinationnumber)
+					appargv := fmt.Sprintf(`{origination_uuid=%s,origination_caller_id_number=%s,ignore_early_media=true,codec_string='PCMU,PCMA'}sofia/gateway/%s/%s`, uuid, gatewaye164number, gatewayname, call.distinationnumber)
 					c.APPBridge(appargv, true)
 				}
 			}
@@ -105,7 +105,8 @@ func channelExternalExecuteFifo(c *eventsocket.Connection) error {
 	//<action application="fifo" data="myqueue in /tmp/exit-message.wav /tmp/music-on-hold.wav"/>
 	var err error
 	argv := `fifomember@fifos in`
-	c.APPSet(`hangup_after_bridge=true`, true)
+	//c.APPSet(`hangup_after_bridge=true`, true)
+	c.APPAnswer()
 	if err = c.APPFifo(argv, true); err != nil {
 		fmt.Println(err)
 	}

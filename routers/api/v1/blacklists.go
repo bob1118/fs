@@ -11,7 +11,7 @@ import (
 
 // GetBlacklists function.
 //
-// request: GET /api/v1/fifomembers?uuid=xxx&caller=xxx&callee=xxx
+// request: GET /api/v1/blacklists?uuid=xxx&caller=xxx&callee=xxx
 //
 // response: json
 //

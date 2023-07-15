@@ -10,7 +10,7 @@ import (
 )
 
 // some freeswitch bgapi/cmd reply.
-// request: Get /bgapi?cmd=xxx
+// request: Get api/v1/bgapi?cmd=xxx
 // response: job uuid.
 func Get(c *gin.Context) {
 	var cmd, result string
