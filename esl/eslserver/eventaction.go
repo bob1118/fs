@@ -5,7 +5,7 @@ package eslserver
 import "github.com/bob1118/fs/esl/eventsocket"
 
 // ChannelAction function
-func ChannelAction(c *eventsocket.Connection, e *eventsocket.Event) {
+func ChannelEventAction(c *eventsocket.Connection, e *eventsocket.Event) {
 	//e.LogPrint()
 	eventName := e.Get("Event-Name")
 	if len(eventName) > 0 {

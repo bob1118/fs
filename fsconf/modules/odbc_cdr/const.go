@@ -40,10 +40,10 @@ const ODBC_CDR_CONF_XML_TABLE_ALEG = `
     <!-- <field name ="othertype" chan-var-name="other-type"/> -->
     <!-- Variable_channel_name -->
     <field name="name" chan-var-name="channel_name"/>
+    <!-- Variable_direction -->
+    <field name = "direction" chan-var-name="direction"/>  
     <!-- Variable_sofia_profile_name -->
     <field name="sofiaprofile" chan-var-name="sofia_profile_name"/>
-    <!-- Variable_direction -->
-    <field name = "direction" chan-var-name="direction"/>
     <!-- Variable_domain_name -->
     <field name="domain" chan-var-name="domain_name"/>
     <!-- Variable_sip_profile_name -->
@@ -109,10 +109,10 @@ const ODBC_CDR_CONF_XML_TABLE_BLEG = `
     <!-- <field name ="othertype" chan-var-name="other_type"/> -->
     <!-- Variable_channel_name -->
     <field name="name" chan-var-name="channel_name"/>
-    <!-- Variable_sofia_profile_name -->
-    <field name="sofiaprofile" chan-var-name="sofia_profile_name"/>
     <!-- Variable_direction -->
     <field name = "direction" chan-var-name="direction"/>
+    <!-- Variable_sofia_profile_name -->
+    <field name="sofiaprofile" chan-var-name="sofia_profile_name"/>
     <!-- Variable_domain_name -->
     <field name="domain" chan-var-name="domain_name"/>
     <!-- Variable_sip_profile_name -->

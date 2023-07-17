@@ -10,7 +10,7 @@ import (
 	"github.com/bob1118/fs/utils"
 )
 
-// Send sends a single command to the server and returns a response Event.
+// Send sends a single command to the server and returns a Event.
 //
 // See https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Modules/mod_event_socket_1048924#3-command-documentation for
 // details.

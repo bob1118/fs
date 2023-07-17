@@ -45,7 +45,7 @@ func eventChannelReadLoop(c *eventsocket.Connection) error {
 		if e, err := c.ReadEvent(); err != nil {
 			return err
 		} else {
-			ChannelAction(c, e)
+			ChannelEventAction(c, e)
 		}
 	}
 	return nil

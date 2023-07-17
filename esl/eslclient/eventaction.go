@@ -92,31 +92,33 @@ func backgroundjobAction(e *eventsocket.Event) {
 func channelCdrAction(e *eventsocket.Event) {
 	//
 	var isbleg bool
-	var uuid, otherUUID, otherType string
+	var uuid, callUUID, otherUUID, otherType string
 	uuid = e.Get("Variable_uuid")
+	callUUID = e.Get("Variable_call_uuid")
 	otherType = e.Get("Other-Type")
 	isbleg = utils.IsEqual(otherType, "originator")
 
 	if isbleg { //bleg
 		otherUUID = utils.UUIDFormat(e.Get("Variable_originator"))
-	} else {
-		//if utils.IsEqual(otherType, "originatee"){}else{}
+	} else { //if utils.IsEqual(otherType, "originatee"){}else{}
 		otherUUID = utils.UUIDFormat(e.Get("Variable_originated_legs"))
 	}
 	leg := db.CDRLEG{
 		UUID:           uuid,
+		CallUUID:       callUUID,
 		OtherUUID:      otherUUID,
-		OtherType:      otherType,
 		Name:           e.Get("Variable_channel_name"),
-		Profile:        e.Get("Variable_sofia_profile_name"),
 		Direction:      e.Get("Variable_direction"),
+		Sofiaprofile:   e.Get("Variable_sofia_profile_name"),
 		Domain:         e.Get("Variable_domain_name"),
+		Sipprofile:     e.Get("Variable_sip_profile_name"),
 		Gateway:        e.Get("Variable_sip_gateway_name"),
+		Ani:            e.Get("Caller-Ani"),
+		Destination:    e.Get("Caller-Destination-Number"),
 		Calleridname:   e.Get("Caller-Caller-Id-Name"),
 		Calleridnumber: e.Get("Caller-Caller-Id-Number"),
 		Calleeidname:   e.Get("Caller-Callee-Id-Name"),
 		Calleeidnumber: e.Get("Caller-Callee-Id-Number"),
-		Destination:    e.Get("Caller-Destination-Number"),
 		App:            e.Get("Variable_current_application"),
 		Appdata:        e.Get("Variable_current_application_data"),
 		Appdialstatus:  e.Get("Variable_dialstatus"),

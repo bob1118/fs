@@ -10,42 +10,6 @@ const DBUSER_AUTH = "grant all privileges on database %s to %s"
 const DATABASE_DROP = `drop database if exists %s;`
 const USER_DROP = `drop user if exists %s;`
 
-//CREATE TABLE if not exists table_name(...)
-
-// // CDR_LEG mod_odbc_cdr table define
-// const CDR_LEG = `
-// CREATE TABLE IF NOT EXISTS %s (
-//
-//	uuid varchar NOT NULL,
-//	otheruuid varchar,
-//	othertype varchar,
-//	ch_name varchar,
-//	ch_profile varchar,
-//	ch_direction varchar,
-//	ch_domain varchar,
-//	ch_gateway varchar,
-//	ch_calleridname varchar,
-//	ch_calleridnumber varchar,
-//	ch_calleeidname varchar,
-//	ch_calleeidnumber varchar,
-//	ch_destination varchar,
-//	ch_app varchar,
-//	ch_appdata varchar,
-//	ch_dialstatus varchar,
-//	hangup_cause varchar,
-//	hangup_q850 varchar,
-//	hangup_disposition varchar,
-//	hangup_protocause varchar,
-//	hangup_phrase varchar,
-//	start_epoch varchar,
-//	answer_epoch varchar,
-//	end_epoch varchar,
-//	waitsec varchar,
-//	billsec varchar,
-//	duration varchar
-//
-// );
-// `
 // CDR_LEG mod_odbc_cdr table define
 const CDR_LEG = `
 CREATE TABLE IF NOT EXISTS %s (
@@ -53,8 +17,8 @@ CREATE TABLE IF NOT EXISTS %s (
 	calluuid varchar NOT NULL,
 	otheruuid varchar NOT NULL DEFAULT '',
 	name varchar NOT NULL DEFAULT '',
-	sofiaprofile varchar NOT NULL DEFAULT '',
 	direction varchar NOT NULL DEFAULT '',
+	sofiaprofile varchar NOT NULL DEFAULT '',
 	domain varchar NOT NULL DEFAULT '',
 	sipprofile varchar NOT NULL DEFAULT '',
 	gateway varchar NOT NULL DEFAULT '',
@@ -223,10 +187,10 @@ insert into %s(gateway_name,gateway_username,gateway_realm,gateway_fromuser,gate
 ('vos_out','username','vos.ip','','','password','','','','','false','true','true','')
 `
 const DEFAULT_E164S = `
-insert into %s(e164_number)values
-('1000'),
-('10010'),
-('10086')
+insert into %s(gateway_name,e164_number)values
+('myfsgateway','1000'),
+('','10010'),
+('','10086')
 `
 const DEFAULT_ACCE164 = `
 insert into %s(account_id,account_domain,gateway_name,e164_number, acce164_isdefault) values
