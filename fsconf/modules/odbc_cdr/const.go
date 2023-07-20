@@ -89,7 +89,7 @@ const ODBC_CDR_CONF_XML_TABLE_ALEG = `
     <!-- Variable_end_epoch -->
     <field name ="endepoch" chan-var-name ="end_epoch"/>
     <!-- Variable_waitsec -->
-    <filed name ="waitsec" chan-var-name ="waitsec"/>
+    <field name ="waitsec" chan-var-name ="waitsec"/>
     <!-- Variable_billsec -->
     <field name ="billsec" chan-var-name ="billsec"/>
     <!-- Variable_duration -->
@@ -158,7 +158,7 @@ const ODBC_CDR_CONF_XML_TABLE_BLEG = `
     <!-- Variable_end_epoch -->
     <field name ="endepoch" chan-var-name ="end_epoch"/>
     <!-- Variable_waitsec -->
-    <filed name ="waitsec" chan-var-name ="waitsec"/>
+    <field name ="waitsec" chan-var-name ="waitsec"/>
     <!-- Variable_billsec -->
     <field name ="billsec" chan-var-name ="billsec"/>
     <!-- Variable_duration -->
