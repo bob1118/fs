@@ -92,9 +92,9 @@ func backgroundjobAction(e *eventsocket.Event) {
 func channelCdrAction(e *eventsocket.Event) {
 	//
 	var isbleg bool
-	var uuid, callUUID, otherUUID, otherType string
+	var uuid, otherUUID, bondUUID, otherType string
 	uuid = e.Get("Variable_uuid")
-	callUUID = e.Get("Variable_call_uuid")
+	bondUUID = e.Get("Variable_signal_bond")
 	otherType = e.Get("Other-Type")
 	isbleg = utils.IsEqual(otherType, "originator")
 
@@ -105,8 +105,8 @@ func channelCdrAction(e *eventsocket.Event) {
 	}
 	leg := db.CDRLEG{
 		UUID:           uuid,
-		CallUUID:       callUUID,
 		OtherUUID:      otherUUID,
+		BondUUID:       bondUUID,
 		Name:           e.Get("Variable_channel_name"),
 		Direction:      e.Get("Variable_direction"),
 		Sofiaprofile:   e.Get("Variable_sofia_profile_name"),

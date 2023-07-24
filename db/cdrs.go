@@ -44,8 +44,8 @@ import (
 
 type CDRLEG struct {
 	UUID           string `db:"uuid" json:"uuid"`
-	CallUUID       string `db:"calluuid" json:"calluuid"`
 	OtherUUID      string `db:"otheruuid" json:"otheruuid"`
+	BondUUID       string `db:"bonduuid" json:"bonduuid"`
 	Name           string `db:"name" json:"name"`
 	Direction      string `db:"direction" json:"direction"`
 	Sofiaprofile   string `db:"sofiaprofile" json:"sofiaprofile"`
@@ -95,13 +95,13 @@ func InsertCallDetailRecord(isbleg bool, in *CDRLEG) error {
 	}
 	l := in
 	q := fmt.Sprintf(`INSERT INTO %s(
-		uuid,calluuid,otheruuid,name,direction,sofiaprofile,domain,sipprofile,gateway,
+		uuid,otheruuid,bonduuid,name,direction,sofiaprofile,domain,sipprofile,gateway,
 		ani,destination,calleridname,calleridnumber,calleeidname,calleeidnumber,
 		app,appdata,dialstatus,cause,q850,disposition,protocause,phrase,
 		startepoch,answerepoch,endepoch,waitsec,billsec,duration)
 		VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');`,
 		tablename,
-		l.UUID, l.CallUUID, l.OtherUUID, l.Name, l.Direction, l.Sofiaprofile, l.Domain, l.Sipprofile, l.Gateway,
+		l.UUID, l.OtherUUID, l.BondUUID, l.Name, l.Direction, l.Sofiaprofile, l.Domain, l.Sipprofile, l.Gateway,
 		l.Ani, l.Destination, l.Calleridname, l.Calleridnumber, l.Calleeidname, l.Calleeidnumber,
 		l.App, l.Appdata, l.Appdialstatus, l.Cause, l.Q850, l.Disposition, l.Protocause, l.Phrase,
 		l.Startepoch, l.Answerepoch, l.Endepoch, l.Waitsec, l.Billsec, l.Duration)

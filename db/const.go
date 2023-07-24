@@ -14,8 +14,8 @@ const USER_DROP = `drop user if exists %s;`
 const CDR_LEG = `
 CREATE TABLE IF NOT EXISTS %s (
 	uuid varchar NOT NULL,
-	calluuid varchar NOT NULL,
 	otheruuid varchar NOT NULL DEFAULT '',
+	bonduuid varchar NOT NULL DEFAULT '',
 	name varchar NOT NULL DEFAULT '',
 	direction varchar NOT NULL DEFAULT '',
 	sofiaprofile varchar NOT NULL DEFAULT '',
