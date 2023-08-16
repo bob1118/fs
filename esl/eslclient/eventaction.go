@@ -23,7 +23,7 @@ func eventAction(e *eventsocket.Event) {
 			backgroundjobAction(e)
 		case "CHANNEL_HANGUP_COMPLETE":
 			// for cdr debug
-			if true {
+			if false {
 				e.LogPrint()
 			}
 			if !is_mod_odbc_cdr {
