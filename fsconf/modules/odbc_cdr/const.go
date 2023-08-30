@@ -51,7 +51,7 @@ const ODBC_CDR_CONF_XML_TABLE_ALEG = `
     <!-- Variable_sip_profile_name -->
     <field name="sipprofile" chan-var-name="sip_profile_name"/>
     <!-- Variable_sip_gateway_name -->
-    <field name="gateway" chan-var-name="sip_gateway_name"/>
+    <field name="sipgateway" chan-var-name="sip_gateway_name"/>
 
     <!-- Caller-Ani -->
     <field name="ani" chan-var-name="ani"/>
@@ -122,7 +122,7 @@ const ODBC_CDR_CONF_XML_TABLE_BLEG = `
     <!-- Variable_sip_profile_name -->
     <field name="sipprofile" chan-var-name="sip_profile_name"/>
     <!-- Variable_sip_gateway_name -->
-    <field name="gateway" chan-var-name="sip_gateway_name"/>
+    <field name="sipgateway" chan-var-name="sip_gateway_name"/>
 
     <!-- Caller-Ani -->
     <field name="ani" chan-var-name="ani"/>

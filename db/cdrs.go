@@ -51,7 +51,7 @@ type CDRLEG struct {
 	Sofiaprofile   string `db:"sofiaprofile" json:"sofiaprofile"`
 	Domain         string `db:"domain" json:"domain"`
 	Sipprofile     string `db:"sipprofile" json:"sipprofile"`
-	Gateway        string `db:"gateway" json:"gateway"`
+	Sipgateway     string `db:"sipgateway" json:"sipgateway"`
 	Ani            string `db:"ani" json:"ani"`
 	Destination    string `db:"destination" json:"destination"`
 	Calleridname   string `db:"calleridname" json:"calleridname"`
@@ -101,7 +101,7 @@ func InsertCallDetailRecord(isbleg bool, in *CDRLEG) error {
 		startepoch,answerepoch,endepoch,waitsec,billsec,duration)
 		VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');`,
 		tablename,
-		l.UUID, l.OtherUUID, l.BondUUID, l.Name, l.Direction, l.Sofiaprofile, l.Domain, l.Sipprofile, l.Gateway,
+		l.UUID, l.OtherUUID, l.BondUUID, l.Name, l.Direction, l.Sofiaprofile, l.Domain, l.Sipprofile, l.Sipgateway,
 		l.Ani, l.Destination, l.Calleridname, l.Calleridnumber, l.Calleeidname, l.Calleeidnumber,
 		l.App, l.Appdata, l.Appdialstatus, l.Cause, l.Q850, l.Disposition, l.Protocause, l.Phrase,
 		l.Startepoch, l.Answerepoch, l.Endepoch, l.Waitsec, l.Billsec, l.Duration)

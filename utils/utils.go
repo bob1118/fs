@@ -33,7 +33,7 @@ func UUIDFormat(in string) string {
 	} else {
 		out = in
 	}
-	return strings.TrimSpace(out)
+	return out
 }
 
 // UUIDFormatEx function.

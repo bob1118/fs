@@ -112,7 +112,7 @@ func channelCdrAction(e *eventsocket.Event) {
 		Sofiaprofile:   e.Get("Variable_sofia_profile_name"),
 		Domain:         e.Get("Variable_domain_name"),
 		Sipprofile:     e.Get("Variable_sip_profile_name"),
-		Gateway:        e.Get("Variable_sip_gateway_name"),
+		Sipgateway:     e.Get("Variable_sip_gateway_name"),
 		Ani:            e.Get("Caller-Ani"),
 		Destination:    e.Get("Caller-Destination-Number"),
 		Calleridname:   e.Get("Caller-Caller-Id-Name"),

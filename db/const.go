@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS %s (
 	sofiaprofile varchar NOT NULL DEFAULT '',
 	domain varchar NOT NULL DEFAULT '',
 	sipprofile varchar NOT NULL DEFAULT '',
-	gateway varchar NOT NULL DEFAULT '',
+	sipgateway varchar NOT NULL DEFAULT '',
 	ani varchar NOT NULL DEFAULT '',
 	destination varchar NOT NULL DEFAULT '',
 	calleridname varchar NOT NULL DEFAULT '',
