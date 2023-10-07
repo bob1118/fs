@@ -538,6 +538,18 @@ func (h *Connection) APPFifo(data string, lock bool) error {
 	return err
 }
 
+// APPFifo function, dptools fifo.
+//
+// <action application="fifo" data="myqueue in /tmp/exit-message.wav /tmp/music-on-hold.wav"/>
+//
+// <action application="fifo" data="myqueue out nowait /tmp/caller-found.wav /tmp/agent-music-on-hold.wav"/>
+//
+// https://freeswitch.org/confluence/display/FREESWITCH/mod_fifo
+func (h *Connection) APPAcd(data string, lock bool) error {
+	_, err := h.ExecuteDptools("acd", data, lock)
+	return err
+}
+
 // APPHangup function
 //
 // <action application="hangup" data="USER_BUSY"/>

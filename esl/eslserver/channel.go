@@ -90,14 +90,19 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 
 // channelExternalIncomingProc
 // remote -> gateway -fifo ->ua
-func channelExternalIncomingProc(c *eventsocket.Connection, call *CALL) (err error) {
-
+func channelExternalIncomingProc(c *eventsocket.Connection, call *CALL) error {
+	var err error
 	if !call.CallFilterPassed() {
 		c.Hangup("CALL_REJECT")
-		return errors.New("function CallFilterPassed fail, Call Reject")
+		err = errors.New("function CallFilterPassed fail, Call Reject")
 	} else {
-		return channelExternalExecuteFifo(c)
+		if true {
+			err = channelExternalExecuteFifo(c)
+		} else {
+			err = channelExternalExecuteAcd(c)
+		}
 	}
+	return err
 }
 
 func channelExternalExecuteFifo(c *eventsocket.Connection) error {
@@ -108,6 +113,16 @@ func channelExternalExecuteFifo(c *eventsocket.Connection) error {
 	//c.APPSet(`hangup_after_bridge=true`, true)
 	c.APPAnswer()
 	if err = c.APPFifo(argv, true); err != nil {
+		fmt.Println(err)
+	}
+	return err
+}
+
+func channelExternalExecuteAcd(c *eventsocket.Connection) error {
+	var err error
+	argv := `acdmember@queue in`
+	c.APPAnswer()
+	if err = c.APPAcd(argv, true); err != nil {
 		fmt.Println(err)
 	}
 	return err
