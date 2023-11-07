@@ -14,10 +14,9 @@ import (
 // configCmd represents the config command
 var configCmd = &cobra.Command{
 	Use:   "config",
-	Short: "fs cli toolset configuration, default filename is .fs",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
+	Short: "fs toolset configuration.",
+	Long: `freeswitch commandline toolset configuration, default configuration file is $(home)/.fs.
+For example:
 fs config --set switch.conf=/etc/freeswitch
 fs config --set gateway.url=http://localhost/fsapi
 fs config --get switch.conf`,

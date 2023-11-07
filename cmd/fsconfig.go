@@ -16,10 +16,9 @@ import (
 // fsconfigCmd represents the fsconfig command
 var fsconfigCmd = &cobra.Command{
 	Use:   "fsconfig",
-	Short: "fs configuration, default dir is /etc/freeswitch",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
+	Short: "freeswitch configuration, default dir is /etc/freeswitch",
+	Long: `freeswitch configuration directory init and reset.
+For example:
 fs config fsconfig --init
 fs config fsconfig --reset`,
 	Run: fsconfigCmdRun,

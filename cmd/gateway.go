@@ -18,9 +18,8 @@ import (
 var gatewayCmd = &cobra.Command{
 	Use:   "gateway",
 	Short: "http server for freeswitch mod_xml_curl ",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
+	Long: `freeswitch mod_xml_curl gateway.
+For example:
 // run http gateway for fs mod_xml_curl.
 fs gateway --run
 // print gateway config

@@ -73,11 +73,10 @@ switch:
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "fs",
-	Short: "switch command line toolset",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. 
-
+	Short: "freeswitch command line toolset",
+	Long: `my freeswitch command line toolset.
 For example:
+
 fs config --set switch.conf=/etc/freeswitch
 fs config --get switch.xml_curl.url
 http://localhost/fsapi
