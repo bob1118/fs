@@ -32,9 +32,10 @@ func Default() (string, error) { return FIFO_CONF_XML, nil }
 
 func Build(c *gin.Context, content string) (string, error) {
 	var err error
+	//<param name="outbound-strategy" value=""/>
 	//<param name="odbc-dsn" value="$${pg_handle}"/>
 	old := `<settings>`
-	new := fmt.Sprintf("%s\n%s", old, ODBC_DSN)
+	new := fmt.Sprintf("%s\n%s\n%s", old, OUTBOUND_STRATEGY_ENTERPRISE, ODBC_DSN)
 	newcontent := strings.ReplaceAll(content, old, new)
 
 	//maybe buildfifos()
