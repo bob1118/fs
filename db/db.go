@@ -262,26 +262,14 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 			db.MustExec(e164sql)
 		}
 	}
-	//table acce164s
-	tableAcce164 := fmt.Sprintf(`%sacce164s`, gatewayTableprifex)
-	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableAcce164); err != nil {
-		fmt.Println(err)
-	} else {
-		if !isFound {
-			sql := fmt.Sprintf(ACCE164S, tableAcce164, tableAcce164, tableAcce164, tableAccounts, tableAcce164, tableGateways, tableAcce164, tableE164s)
-			acce164sql := fmt.Sprintf(DEFAULT_ACCE164, tableAcce164)
-			db.MustExec(sql)
-			db.MustExec(acce164sql)
-		}
-	}
 	//table fifos
-	tableFifo := fmt.Sprintf(`%sfifos`, gatewayTableprifex)
-	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableFifo); err != nil {
+	tableFifos := fmt.Sprintf(`%sfifos`, gatewayTableprifex)
+	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableFifos); err != nil {
 		fmt.Println(err)
 	} else {
 		if !isFound {
-			sql := fmt.Sprintf(FIFOS, tableFifo, tableFifo)
-			fifosql := fmt.Sprintf(DEFAULT_FIFOS, tableFifo)
+			sql := fmt.Sprintf(FIFOS, tableFifos, tableFifos)
+			fifosql := fmt.Sprintf(DEFAULT_FIFOS, tableFifos)
 			db.MustExec(sql)
 			db.MustExec(fifosql)
 		}
@@ -292,10 +280,34 @@ func pgsqlInitGatewayTables(db *sqlx.DB) {
 		fmt.Println(err)
 	} else {
 		if !isFound {
-			sql := fmt.Sprintf(FIFOMEMBERS, tableFifomembers, tableFifomembers, tableFifomembers, tableFifo)
+			sql := fmt.Sprintf(FIFOMEMBERS, tableFifomembers, tableFifomembers, tableFifomembers, tableFifos)
 			fifomembersql := fmt.Sprintf(DEFAULT_FIFOMEMBERS, tableFifomembers)
 			db.MustExec(sql)
 			db.MustExec(fifomembersql)
+		}
+	}
+	//table acce164s
+	tableAcce164s := fmt.Sprintf(`%sacce164s`, gatewayTableprifex)
+	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableAcce164s); err != nil {
+		fmt.Println(err)
+	} else {
+		if !isFound {
+			sql := fmt.Sprintf(ACCE164S, tableAcce164s, tableAcce164s, tableAcce164s, tableAccounts, tableAcce164s, tableGateways, tableAcce164s, tableE164s)
+			acce164sql := fmt.Sprintf(DEFAULT_ACCE164S, tableAcce164s)
+			db.MustExec(sql)
+			db.MustExec(acce164sql)
+		}
+	}
+	//table e164accs
+	tableE164accs := fmt.Sprintf(`%se164accs`, gatewayTableprifex)
+	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename =$1", tableE164accs); err != nil {
+		fmt.Println(err)
+	} else {
+		if !isFound {
+			sql := fmt.Sprintf(E164ACCS, tableE164accs, tableE164accs, tableE164accs, tableAccounts, tableE164accs, tableGateways, tableE164accs, tableE164s, tableE164accs, tableFifos)
+			e164accsql := fmt.Sprintf(DEFAULT_E164ACCES, tableE164accs)
+			db.MustExec(sql)
+			db.MustExec(e164accsql)
 		}
 	}
 }

@@ -89,20 +89,34 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 }
 
 // channelExternalIncomingProc
-// remote -> gateway -fifo ->ua
+// remote -> gateway ->ua/fifo
 func channelExternalIncomingProc(c *eventsocket.Connection, call *CALL) error {
-	var err error
+	var myerr error
 	if !call.CallFilterPassed() {
 		c.Hangup("CALL_REJECT")
-		err = errors.New("function CallFilterPassed fail, Call Reject")
+		myerr = errors.New("function CallFilterPassed fail, Call Reject")
 	} else {
-		if true {
-			err = channelExternalExecuteFifo(c)
+		q := fmt.Sprintf("gateway_name='%s' and e164_number='%s'", call.gateway, call.distinationnumber)
+		if e164accs, err := db.SelectE164accsWithCondition(q); err != nil {
+			c.APPHangup("NO_ROUTE_DESTINATION")
+			myerr = err
 		} else {
-			err = channelExternalExecuteAcd(c)
+			if len(e164accs) == 0 {
+				c.APPHangup("NO_ROUTE_DESTINATION")
+				myerr = err
+			} else {
+				e164acc := e164accs[0]
+				if !e164acc.Isfifo { // do bridge sofia/mydomain/xxxx
+					appargv := fmt.Sprintf(`{origination_caller_id_number=%s,ignore_early_media=true}sofia/%s/%s`, call.ani, e164acc.Adomain, e164acc.Aid)
+					myerr = c.APPBridge(appargv, true)
+				} else { //do fifo myfifo in
+					appargv := fmt.Sprintf(`%s in`, e164acc.Fname)
+					myerr = c.APPFifo(appargv, true)
+				}
+			}
 		}
 	}
-	return err
+	return myerr
 }
 
 func channelExternalExecuteFifo(c *eventsocket.Connection) error {

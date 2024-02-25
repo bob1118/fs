@@ -89,8 +89,8 @@ func UpdateAcce164sAcce164(uuid string, in ACCE164) (ACCE164, error) {
 	return acce164, err
 }
 
-// DeleteAcce164sAcce164
-func DeleteAcce164sAcce164(uuid string) (ACCE164, error) {
+// DeleteE164accsE164acc
+func DeleteE164accsE164acc(uuid string) (ACCE164, error) {
 	var acce164 = ACCE164{}
 	var q = fmt.Sprintf("delete from %sacce164s ", GetTablesGatewayPrifex())
 	q += fmt.Sprintf("where acce164_uuid='%s'", uuid)

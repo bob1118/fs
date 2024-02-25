@@ -121,10 +121,27 @@ CREATE TABLE IF NOT EXISTS %s (
 	acce164_isdefault bool NOT NULL DEFAULT false,
 	CONSTRAINT acce164_pkey PRIMARY KEY (acce164_uuid)
 );
-COMMENT ON TABLE %s IS 'account e164 number for outgoing call';
+COMMENT ON TABLE %s IS 'account receive incoming call, dial out witch gateway e164 number for outgoing call';
 ALTER TABLE %s ADD CONSTRAINT acce164_fk FOREIGN KEY (account_id,account_domain) REFERENCES %s(account_id,account_domain) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE %s ADD CONSTRAINT acce164_fk_1 FOREIGN KEY (gateway_name) REFERENCES %s(gateway_name) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE %s ADD CONSTRAINT acce164_fk_2 FOREIGN KEY (e164_number) REFERENCES %s(e164_number) ON DELETE CASCADE ON UPDATE CASCADE;
+`
+const E164ACCS = `
+CREATE TABLE IF NOT EXISTS %s (
+	e164acc_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
+	gateway_name varchar NOT NULL,
+	e164_number varchar NOT NULL,
+	account_id varchar NULL DEFAULT '',
+	account_domain varchar NULL DEFAULT '',
+	fifo_name varchar NULL DEFAULT '',
+	e164acc_isfifo bool NOT NULL DEFAULT false,
+	CONSTRAINT e164acc_pkey PRIMARY KEY (e164acc_uuid)
+);
+COMMENT ON TABLE %s IS 'gateway e164 receive incoming call, bridge account@domain or fifo fifo@fifoname in';
+ALTER TABLE %s ADD CONSTRAINT e164acc_fk FOREIGN KEY (account_id,account_domain) REFERENCES %s(account_id,account_domain) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE %s ADD CONSTRAINT e164acc_fk_1 FOREIGN KEY (gateway_name) REFERENCES %s(gateway_name) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE %s ADD CONSTRAINT e164acc_fk_2 FOREIGN KEY (e164_number) REFERENCES %s(e164_number) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE %s ADD CONSTRAINT e164acc_fk_3 FOREIGN KEY (fifo_name) REFERENCES %s(fifo_name) ON DELETE CASCADE ON UPDATE CASCADE;
 `
 const FIFOS = `
 CREATE TABLE IF NOT EXISTS %s (
@@ -192,13 +209,17 @@ insert into %s(gateway_name,e164_number)values
 ('','10010'),
 ('','10086')
 `
-const DEFAULT_ACCE164 = `
+const DEFAULT_ACCE164S = `
 insert into %s(account_id,account_domain,gateway_name,e164_number, acce164_isdefault) values
 ('8000','mydomain','myfsgateway','1000',true),
 ('8001','mydomain','myfsgateway','1000',true),
 ('8002','mydomain','myfsgateway','1000',true),
 ('8003','mydomain','myfsgateway','1000',true),
 ('8004','mydomain','myfsgateway','1000',true)
+`
+const DEFAULT_E164ACCES = `
+insert into %s(gateway_name,e164_number,account_id,account_domain,fifo_name,e164acc_isfifo) values
+('myfsgateway','1000','8001','mydomain','fifomember@fifos',true)
 `
 const DEFAULT_FIFOS = `
 insert into %s(fifo_name)values

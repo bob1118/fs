@@ -77,11 +77,6 @@ func serverRouter(r *gin.Engine) {
 		apiv1.POST("/e164s", v1.PostE164s)
 		apiv1.PUT("/e164/:uuid", v1.PutE164)
 		apiv1.DELETE("/e164/:uuid", v1.DeleteE164)
-		//table acce164s
-		apiv1.GET("/acce164s", v1.GetAcce164s)
-		apiv1.POST("/acce164", v1.PostAcce164)
-		apiv1.PUT("/acce164/:uuid", v1.PutAcce164)
-		apiv1.DELETE("/acce164/:uuid", v1.DeleteAcce164)
 		//table fifos
 		apiv1.GET("/fifos", v1.GetFifos)
 		apiv1.POST("/fifo", v1.PostFifo)
@@ -92,6 +87,16 @@ func serverRouter(r *gin.Engine) {
 		apiv1.POST("/fifomember", v1.PostFifomember)
 		apiv1.PUT("/fifomember/:uuid", v1.PutFifomember)
 		apiv1.DELETE("/fifomember/:uuid", v1.DeleteFifomember)
+		//table acce164s
+		apiv1.GET("/acce164s", v1.GetAcce164s)
+		apiv1.POST("/acce164", v1.PostAcce164)
+		apiv1.PUT("/acce164/:uuid", v1.PutAcce164)
+		apiv1.DELETE("/acce164/:uuid", v1.DeleteAcce164)
+		//table acce164s
+		apiv1.GET("/e164accs")
+		apiv1.POST("/e164acc")
+		apiv1.PUT("/e164acc/:uuid")
+		apiv1.DELETE("/e164acc/:uuid")
 
 		////server tables
 		//table jobs for outgoing call
