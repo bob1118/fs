@@ -23,7 +23,7 @@ func eventAction(e *eventsocket.Event) {
 			backgroundjobAction(e)
 		case "CHANNEL_HANGUP_COMPLETE":
 			// for cdr debug
-			if false {
+			if true {
 				e.LogPrint()
 			}
 			if !is_mod_odbc_cdr {
@@ -110,9 +110,10 @@ func channelCdrAction(e *eventsocket.Event) {
 		Name:           e.Get("Variable_channel_name"),
 		Direction:      e.Get("Variable_direction"),
 		Sofiaprofile:   e.Get("Variable_sofia_profile_name"),
-		Domain:         e.Get("Variable_domain_name"),
-		Sipprofile:     e.Get("Variable_sip_profile_name"),
-		Sipgateway:     e.Get("Variable_sip_gateway_name"),
+		Indomain:       e.Get("Variable_domain_name"),
+		Ingateway:      e.Get("Variable_sip_gateway"),
+		Outdomain:      e.Get("Variable_sip_profile_name"),
+		Outgateway:     e.Get("Variable_sip_gateway_name"),
 		Ani:            e.Get("Caller-Ani"),
 		Destination:    e.Get("Caller-Destination-Number"),
 		Calleridname:   e.Get("Caller-Caller-Id-Name"),

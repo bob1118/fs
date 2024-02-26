@@ -46,12 +46,15 @@ const ODBC_CDR_CONF_XML_TABLE_ALEG = `
     <field name ="direction" chan-var-name="direction"/>  
     <!-- Variable_sofia_profile_name -->
     <field name="sofiaprofile" chan-var-name="sofia_profile_name"/>
-    <!-- Variable_domain_name -->
-    <field name="domain" chan-var-name="domain_name"/>
-    <!-- Variable_sip_profile_name -->
-    <field name="sipprofile" chan-var-name="sip_profile_name"/>
-    <!-- Variable_sip_gateway_name -->
-    <field name="sipgateway" chan-var-name="sip_gateway_name"/>
+
+    <!-- Variable_domain_name (useragent inbound domain)-->
+    <field name="indomain" chan-var-name="domain_name"/>
+    <!-- Variable_sip_gateway (gateway inbound gateway)-->
+    <field name="ingateway" chan-var-name="sip_gateway"/>
+    <!-- Variable_sip_profile_name (useragent/gateway outbound domain)-->
+    <field name="outdomain" chan-var-name="sip_profile_name"/>
+    <!-- Variable_sip_gateway_name (gateway outbound gateway)-->
+    <field name="outgateway" chan-var-name="sip_gateway_name"/>
 
     <!-- Caller-Ani -->
     <field name="ani" chan-var-name="ani"/>
@@ -117,12 +120,15 @@ const ODBC_CDR_CONF_XML_TABLE_BLEG = `
     <field name ="direction" chan-var-name="direction"/>  
     <!-- Variable_sofia_profile_name -->
     <field name="sofiaprofile" chan-var-name="sofia_profile_name"/>
-    <!-- Variable_domain_name -->
-    <field name="domain" chan-var-name="domain_name"/>
-    <!-- Variable_sip_profile_name -->
-    <field name="sipprofile" chan-var-name="sip_profile_name"/>
-    <!-- Variable_sip_gateway_name -->
-    <field name="sipgateway" chan-var-name="sip_gateway_name"/>
+
+    <!-- Variable_domain_name (useragent inbound domain)-->
+    <field name="indomain" chan-var-name="domain_name"/>
+    <!-- Variable_sip_gateway (gateway inbound gateway)-->
+    <field name="ingateway" chan-var-name="sip_gateway"/>
+    <!-- Variable_sip_profile_name (useragent/gateway outbound domain)-->
+    <field name="outdomain" chan-var-name="sip_profile_name"/>
+    <!-- Variable_sip_gateway_name (gateway outbound gateway)-->
+    <field name="outgateway" chan-var-name="sip_gateway_name"/>
 
     <!-- Caller-Ani -->
     <field name="ani" chan-var-name="ani"/>

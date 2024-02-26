@@ -49,9 +49,10 @@ type CDRLEG struct {
 	Name           string `db:"name" json:"name"`
 	Direction      string `db:"direction" json:"direction"`
 	Sofiaprofile   string `db:"sofiaprofile" json:"sofiaprofile"`
-	Domain         string `db:"domain" json:"domain"`
-	Sipprofile     string `db:"sipprofile" json:"sipprofile"`
-	Sipgateway     string `db:"sipgateway" json:"sipgateway"`
+	Indomain       string `db:"indomain" json:"indomain"`
+	Ingateway      string `db:"ingateway" json:"ingateway"`
+	Outdomain      string `db:"outdomain" json:"outdomain"`
+	Outgateway     string `db:"outgateway" json:"outgateway"`
 	Ani            string `db:"ani" json:"ani"`
 	Destination    string `db:"destination" json:"destination"`
 	Calleridname   string `db:"calleridname" json:"calleridname"`
@@ -95,13 +96,13 @@ func InsertCallDetailRecord(isbleg bool, in *CDRLEG) error {
 	}
 	l := in
 	q := fmt.Sprintf(`INSERT INTO %s(
-		uuid,otheruuid,bonduuid,name,direction,sofiaprofile,domain,sipprofile,gateway,
+		uuid,otheruuid,bonduuid,name,direction,sofiaprofile,indomain,ingateway,outdomain,outgateway,
 		ani,destination,calleridname,calleridnumber,calleeidname,calleeidnumber,
 		app,appdata,dialstatus,cause,q850,disposition,protocause,phrase,
 		startepoch,answerepoch,endepoch,waitsec,billsec,duration)
-		VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');`,
+		VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');`,
 		tablename,
-		l.UUID, l.OtherUUID, l.BondUUID, l.Name, l.Direction, l.Sofiaprofile, l.Domain, l.Sipprofile, l.Sipgateway,
+		l.UUID, l.OtherUUID, l.BondUUID, l.Name, l.Direction, l.Sofiaprofile, l.Indomain, l.Ingateway, l.Outdomain, l.Outgateway,
 		l.Ani, l.Destination, l.Calleridname, l.Calleridnumber, l.Calleeidname, l.Calleeidnumber,
 		l.App, l.Appdata, l.Appdialstatus, l.Cause, l.Q850, l.Disposition, l.Protocause, l.Phrase,
 		l.Startepoch, l.Answerepoch, l.Endepoch, l.Waitsec, l.Billsec, l.Duration)

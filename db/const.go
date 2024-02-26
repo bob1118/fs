@@ -19,9 +19,10 @@ CREATE TABLE IF NOT EXISTS %s (
 	name varchar NOT NULL DEFAULT '',
 	direction varchar NOT NULL DEFAULT '',
 	sofiaprofile varchar NOT NULL DEFAULT '',
-	domain varchar NOT NULL DEFAULT '',
-	sipprofile varchar NOT NULL DEFAULT '',
-	sipgateway varchar NOT NULL DEFAULT '',
+	indomain varchar NOT NULL DEFAULT '',
+	ingateway varchar NOT NULL DEFAULT '',
+	outdomain varchar NOT NULL DEFAULT '',
+	outgateway varchar NOT NULL DEFAULT '',
 	ani varchar NOT NULL DEFAULT '',
 	destination varchar NOT NULL DEFAULT '',
 	calleridname varchar NOT NULL DEFAULT '',
@@ -219,7 +220,7 @@ insert into %s(account_id,account_domain,gateway_name,e164_number, acce164_isdef
 `
 const DEFAULT_E164ACCES = `
 insert into %s(gateway_name,e164_number,account_id,account_domain,fifo_name,e164acc_isfifo) values
-('myfsgateway','1000','8001','mydomain','fifomember@fifos',true)
+('myfsgateway','1000','8001','mydomain','fifomember@fifos',false)
 `
 const DEFAULT_FIFOS = `
 insert into %s(fifo_name)values
