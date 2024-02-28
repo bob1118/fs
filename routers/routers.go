@@ -93,10 +93,10 @@ func serverRouter(r *gin.Engine) {
 		apiv1.PUT("/acce164/:uuid", v1.PutAcce164)
 		apiv1.DELETE("/acce164/:uuid", v1.DeleteAcce164)
 		//table acce164s
-		apiv1.GET("/e164accs")
-		apiv1.POST("/e164acc")
-		apiv1.PUT("/e164acc/:uuid")
-		apiv1.DELETE("/e164acc/:uuid")
+		apiv1.GET("/e164accs", v1.GetE164accs)
+		apiv1.POST("/e164acc", v1.PostE164acc)
+		apiv1.PUT("/e164acc/:uuid", v1.PutE164acc)
+		apiv1.DELETE("/e164acc/:uuid", v1.DeleteE164acc)
 
 		////server tables
 		//table jobs for outgoing call
