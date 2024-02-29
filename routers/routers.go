@@ -111,9 +111,11 @@ func serverRouter(r *gin.Engine) {
 		apiv1.DELETE("/backlist/:uuid", v1.DeleteBlacklist)
 		//table bgjobs
 		apiv1.GET("/bgjobs", v1.GetBgjobs)
-		apiv1.POST("/bgjob")
-		apiv1.PUT("/bgjob/:uuid")
-		apiv1.DELETE("/bgjob/:uuid")
+		//POST/PUT by function esl.Client.backgroundjobAction()
+		//apiv1.POST("/bgjob")
+		//apiv1.PUT("/bgjob/:uuid")
+		apiv1.DELETE("/bgjob/:uuid", v1.DeleteBgjob)
+
 		////cdr tables
 		//table cdr
 		apiv1.GET("/cdrs", v1.GetCallDetailRecords)

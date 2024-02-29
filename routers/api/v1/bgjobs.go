@@ -56,3 +56,50 @@ func GetBgjobs(c *gin.Context) {
 		"data": data,
 	})
 }
+
+// DeleteBgjob function.
+//
+// request: DELETE /api/v1/bgjob/:uuid
+//
+// response: json
+//
+//	{
+//		code:{
+//			rtcode: rtcode, //return ec.SUCCESS or not.
+//			rtmsg: rtmsg	//return error message while some error occured.
+//		},
+//		data:{
+//			len: len(slice),
+//			lists:{slice[0],slice[1], ...}
+//		}
+//	}
+func DeleteBgjob(c *gin.Context) {
+	rtmsg := ``
+	rtcode := ec.SUCCESS
+	bgjobs := make([]db.Bgjob, 0)
+	data := make(map[string]interface{})
+
+	if c.ContentType() != gin.MIMEJSON {
+		rtcode = ec.ERROR_HTTP_REQUEST_CONTENTTYPE
+	} else {
+		if uuid := c.Param("uuid"); len(uuid) == 0 {
+			rtcode = ec.ERROR_HTTP_REQUEST_URLPARAM
+		} else {
+			{
+				if rtbgjob, err := db.DeleteBgjob(uuid); err != nil {
+					rtcode = ec.ERROR_DATABSE_DELETE
+					rtmsg = err.Error()
+				} else {
+					bgjobs = append(bgjobs, rtbgjob)
+					data["len"] = len(bgjobs)
+					data["lists"] = bgjobs
+				}
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": gin.H{"rtcode": rtcode, "rtmsg": rtmsg},
+		"data": data,
+	})
+}

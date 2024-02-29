@@ -183,9 +183,9 @@ COMMENT ON TABLE %s IS 'call filter blacklist include caller and callee';
 const BGJOBS = `
 CREATE TABLE IF NOT EXISTS %s (
 	job_uuid uuid NOT NULL,
-	job_cmd varchar,
-	job_cmdarg varchar,
-	job_content varchar,
+	job_cmd varchar NOT NULL,
+	job_cmdarg varchar NULL DEFAULT '',
+	job_content varchar NULL DEFAULT '',
 	CONSTRAINT bgjobs_pkey PRIMARY KEY (job_uuid)
 );
 COMMENT ON TABLE %s IS 'eslclient execute bgapi command then receive EVENT BACKGROUND_JOB ';

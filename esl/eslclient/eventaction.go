@@ -22,8 +22,8 @@ func eventAction(e *eventsocket.Event) {
 		case "BACKGROUND_JOB":
 			backgroundjobAction(e)
 		case "CHANNEL_HANGUP_COMPLETE":
-			// for cdr debug
-			if true {
+			// for debug cdr
+			if false {
 				e.LogPrint()
 			}
 			if !is_mod_odbc_cdr {
@@ -72,19 +72,21 @@ func customAction(e *eventsocket.Event) {
 
 // backgroundjobAction function.
 func backgroundjobAction(e *eventsocket.Event) {
-	job := &db.Bgjob{
+	job := db.Bgjob{
 		Juuid:    e.Get("Job-Uuid"),
 		Jcmd:     e.Get("Job-Command"),
 		Jcmdarg:  e.Get("Job-Command-Arg"),
 		Jcontent: e.Body,
 	}
+
 	if false ||
 		len(job.Juuid) == 0 ||
-		len(job.Jcmd) == 0 ||
-		len(job.Jcontent) == 0 {
+		len(job.Jcmd) == 0 {
 		fmt.Println(e)
 	} else {
-		db.CreateBgjob(job)
+		if err := db.CreateBgjob(job); err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
