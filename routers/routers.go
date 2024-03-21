@@ -100,21 +100,20 @@ func serverRouter(r *gin.Engine) {
 
 		////server tables
 		//table jobs for outgoing call
-		apiv1.GET("/jobs")
-		apiv1.POST("/job")
-		apiv1.PUT("/job/:uuid")
-		apiv1.DELETE("/job/:uuid")
+		apiv1.GET("/outgoingcalls", v1.GetOutgoingcalls)
+		apiv1.POST("/outgoingcall", v1.PostOutgoingcall)
+		apiv1.PUT("/outgoingcall/:uuid")
+		apiv1.DELETE("/outgoingcall/:uuid")
+		//table bgjobs
+		apiv1.GET("/bgjobs", v1.GetBgjobs)
+		apiv1.POST("/bgjob")
+		apiv1.PUT("/bgjob/:uuid")
+		apiv1.DELETE("/bgjob/:uuid", v1.DeleteBgjob)
 		//table backlists
 		apiv1.GET("/backlists", v1.GetBlacklists)
 		apiv1.POST("/backlist", v1.PostBlacklist)
 		apiv1.PUT("/backlist/:uuid", v1.PutBlacklist)
 		apiv1.DELETE("/backlist/:uuid", v1.DeleteBlacklist)
-		//table bgjobs
-		apiv1.GET("/bgjobs", v1.GetBgjobs)
-		//POST/PUT by function esl.Client.backgroundjobAction()
-		//apiv1.POST("/bgjob")
-		//apiv1.PUT("/bgjob/:uuid")
-		apiv1.DELETE("/bgjob/:uuid", v1.DeleteBgjob)
 
 		////cdr tables
 		//table cdr

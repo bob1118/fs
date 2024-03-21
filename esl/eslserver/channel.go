@@ -77,7 +77,7 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 				} else {
 					gatewayname := acce164s[0].Gname
 					gatewaye164number := acce164s[0].Enumber
-					appargv := fmt.Sprintf(`{origination_uuid=%s,origination_caller_id_number=%s,ignore_early_media=true,codec_string='PCMU,PCMA'}sofia/gateway/%s/%s`, uuid, gatewaye164number, gatewayname, call.distinationnumber)
+					appargv := fmt.Sprintf(`{origination_uuid=%s,origination_caller_id_number=%s,ignore_early_media=true,codec_string=PCMU}sofia/gateway/%s/%s`, uuid, gatewaye164number, gatewayname, call.distinationnumber)
 					c.APPBridge(appargv, true)
 				}
 			}
