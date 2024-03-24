@@ -1,39 +1,39 @@
 // // CDR_LEG mod_odbc_cdr table define
 // const CDR_LEG = `
 // CREATE TABLE IF NOT EXISTS %s (
-//
-//	uuid varchar NOT NULL,
-//	calluuid varchar NOT NULL,
-//	otheruuid varchar NOT NULL DEFAULT '',
-//	name varchar NOT NULL DEFAULT '',
-//	direction varchar NOT NULL DEFAULT '',
-//	sofiaprofile varchar NOT NULL DEFAULT '',
-//	domain varchar NOT NULL DEFAULT '',
-//	sipprofile varchar NOT NULL DEFAULT '',
-//	gateway varchar NOT NULL DEFAULT '',
-//	ani varchar NOT NULL DEFAULT '',
-//	destination varchar NOT NULL DEFAULT '',
-//	calleridname varchar NOT NULL DEFAULT '',
-//	calleridnumber varchar NOT NULL DEFAULT '',
-//	calleeidname varchar NOT NULL DEFAULT '',
-//	calleeidnumber varchar NOT NULL DEFAULT '',
-//	app varchar NOT NULL DEFAULT '',
-//	appdata varchar NOT NULL DEFAULT '',
-//	dialstatus varchar NOT NULL DEFAULT '',
-//	cause varchar NOT NULL DEFAULT '',
-//	q850 varchar NOT NULL DEFAULT '',
-//	disposition varchar NOT NULL DEFAULT '',
-//	protocause varchar NOT NULL DEFAULT '',
-//	phrase varchar NOT NULL DEFAULT '',
-//	startepoch varchar NOT NULL DEFAULT '',
-//	answerepoch varchar NOT NULL DEFAULT '',
-//	endepoch varchar NOT NULL DEFAULT '',
-//	waitsec varchar NOT NULL DEFAULT '',
-//	billsec varchar NOT NULL DEFAULT '',
-//	duration varchar NOT NULL DEFAULT ''
-//
+// 	uuid varchar NOT NULL,
+// 	otheruuid varchar NOT NULL DEFAULT '',
+// 	bonduuid varchar NOT NULL DEFAULT '',
+// 	name varchar NOT NULL DEFAULT '',
+// 	direction varchar NOT NULL DEFAULT '',
+// 	sofiaprofile varchar NOT NULL DEFAULT '',
+// 	indomain varchar NOT NULL DEFAULT '',
+// 	ingateway varchar NOT NULL DEFAULT '',
+// 	outdomain varchar NOT NULL DEFAULT '',
+// 	outgateway varchar NOT NULL DEFAULT '',
+// 	ani varchar NOT NULL DEFAULT '',
+// 	destination varchar NOT NULL DEFAULT '',
+// 	calleridname varchar NOT NULL DEFAULT '',
+// 	calleridnumber varchar NOT NULL DEFAULT '',
+// 	calleeidname varchar NOT NULL DEFAULT '',
+// 	calleeidnumber varchar NOT NULL DEFAULT '',
+// 	app varchar NOT NULL DEFAULT '',
+// 	appdata varchar NOT NULL DEFAULT '',
+// 	dialstatus varchar NOT NULL DEFAULT '',
+// 	cause varchar NOT NULL DEFAULT '',
+// 	q850 varchar NOT NULL DEFAULT '',
+// 	disposition varchar NOT NULL DEFAULT '',
+// 	protocause varchar NOT NULL DEFAULT '',
+// 	phrase varchar NOT NULL DEFAULT '',
+// 	startepoch varchar NOT NULL DEFAULT '',
+// 	answerepoch varchar NOT NULL DEFAULT '',
+// 	endepoch varchar NOT NULL DEFAULT '',
+// 	waitsec varchar NOT NULL DEFAULT '',
+// 	billsec varchar NOT NULL DEFAULT '',
+// 	duration varchar NOT NULL DEFAULT ''
 // );
 // `
+
 package db
 
 import (
@@ -90,9 +90,9 @@ func InsertCallDetailRecord(isbleg bool, in *CDRLEG) error {
 	var tablename string
 
 	if isbleg {
-		tablename = viper.GetString(`switch.cdr.a-leg`)
-	} else {
 		tablename = viper.GetString(`switch.cdr.b-leg`)
+	} else {
+		tablename = viper.GetString(`switch.cdr.a-leg`)
 	}
 	l := in
 	q := fmt.Sprintf(`INSERT INTO %s(
@@ -119,4 +119,30 @@ func SelectCallDetailRecordsWithCondition(condition string) ([]CDRLEG, error) {
 	q := fmt.Sprintf("select * from %s where %s", alegname, condition)
 	err := GetSwitchdb().Select(&cdrs, q)
 	return cdrs, err
+}
+
+// IsExistCallDetailRecordUuid
+func IsExistCallDetailRecordUuid(isbleg bool, uuid string) (bool, error) {
+	var (
+		err       error
+		isExist   bool
+		tablename string
+	)
+	if isbleg {
+		tablename = viper.GetString(`switch.cdr.b-leg`)
+	} else {
+		tablename = viper.GetString(`switch.cdr.a-leg`)
+	}
+	err = GetSwitchdb().Get(&isExist, "select count(1)!=0 as isexist from %s where uuid ='%s'", tablename, uuid)
+	return isExist, err
+}
+
+// IsExistCdrsAlegUuid
+func IsExistCdrsAlegUuid(uuid string) (bool, error) {
+	return IsExistCallDetailRecordUuid(false, uuid)
+}
+
+// IsExistCdrsBlegUuid
+func IsExistCdrsBlegUuid(uuid string) (bool, error) {
+	return IsExistCallDetailRecordUuid(true, uuid)
 }

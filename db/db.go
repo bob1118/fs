@@ -117,7 +117,7 @@ func pgsqlInitSwitchdb(db *sqlx.DB) (*sqlx.DB, error) {
 
 func pgsqlGetDatabaseOpenConnections(pgdb *sqlx.DB, dbname string) int {
 	var connections int
-	query := fmt.Sprintf(`select count(*) as connections from pg_stat_activity where datname = '%s';`, dbname)
+	query := fmt.Sprintf(`select count(1) as connections from pg_stat_activity where datname = '%s';`, dbname)
 	if err := pgdb.Get(&connections, query); err != nil {
 		fmt.Println(err)
 	}
@@ -370,6 +370,18 @@ func pgsqlInitServerTables(db *sqlx.DB) {
 			sql := fmt.Sprintf(BGJOBS, tableBgjobs, tableBgjobs)
 			db.MustExec(sql)
 			//db.MustExec(`inserted by fs server --run`)
+		}
+	}
+
+	//table outgoingcalls
+	tableOutgoingcalls := fmt.Sprintf(`%soutgoingcalls`, serverTablePrefix)
+	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_table where tablename=$1", tableOutgoingcalls); err != nil {
+		fmt.Println(err)
+	} else {
+		if !isFound {
+			sql := fmt.Sprintf(OUTGOINGCALLS, tableOutgoingcalls, tableOutgoingcalls)
+			db.MustExec(sql)
+			//db.MustExec(`inserted by post api/v1/outgoingcall`)
 		}
 	}
 }

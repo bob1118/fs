@@ -105,13 +105,55 @@ func PostOutgoingcall(c *gin.Context) {
 			rtmsg = err.Error()
 		} else {
 			var uuida, uuidb, cmd, a, b string
-			//make uuid safe.
-			if len(outgoingcall.Auuid) == 0 {
-				outgoingcall.Auuid = uuida
-			} else {
+			//make safe aleg uuid.
+			if len(outgoingcall.Auuid) != 36 {
+				if uuida, err = eslclient.ClientCon.APICreateUUID(); err != nil {
+					rtcode = ec.ERROR_SWITCH_EXECUTE_API
+					rtmsg = err.Error()
+				} else {
+					outgoingcall.Auuid = uuida
+				}
 			}
-			if len(outgoingcall.Buuid) == 0 {
-				outgoingcall.Buuid = uuidb
+			for isExist := true; isExist; {
+				if isExist, err = db.IsExistCdrsAlegUuid(outgoingcall.Auuid); err != nil {
+					rtcode = ec.ERROR_DATABSE_QUERY
+					rtmsg = err.Error()
+					isExist = false
+				} else {
+					if isExist { //uuid duplicate, createuuid agin.
+						if uuida, err = eslclient.ClientCon.APICreateUUID(); err != nil {
+							rtcode = ec.ERROR_SWITCH_EXECUTE_API
+							rtmsg = err.Error()
+						} else {
+							outgoingcall.Auuid = uuida
+						}
+					}
+				}
+			}
+			//make safe bleg uuid.
+			if len(outgoingcall.Buuid) != 36 {
+				if uuidb, err = eslclient.ClientCon.APICreateUUID(); err != nil {
+					rtcode = ec.ERROR_SWITCH_EXECUTE_API
+					rtmsg = err.Error()
+				} else {
+					outgoingcall.Buuid = uuidb
+				}
+			}
+			for isExist := true; isExist; {
+				if isExist, err = db.IsExistCdrsBlegUuid(outgoingcall.Buuid); err != nil {
+					rtcode = ec.ERROR_DATABSE_QUERY
+					rtmsg = err.Error()
+					isExist = false
+				} else {
+					if isExist { //uuid duplicate, createuuid agin.
+						if uuidb, err = eslclient.ClientCon.APICreateUUID(); err != nil {
+							rtcode = ec.ERROR_SWITCH_EXECUTE_API
+							rtmsg = err.Error()
+						} else {
+							outgoingcall.Buuid = uuidb
+						}
+					}
+				}
 			}
 			//originate ua bridge gateway or originate gateway bridge ua
 			if utils.IsEqual(outgoingcall.Id, outgoingcall.Ani) {
@@ -127,9 +169,11 @@ func PostOutgoingcall(c *gin.Context) {
 			}
 			cmd = fmt.Sprintf("originate %s &bridge(%s)", a, b)
 			//do bgapi command Async, while job execute success return aleg uuid
-			if jobuuid, apierr := eslclient.ClientCon.SendBgapiCommandAsync(cmd); apierr != nil {
-				fmt.Println(jobuuid)
-				rtmsg = err.Error()
+			if jobuuid, bgapierr := eslclient.ClientCon.SendBgapiCommandAsync(cmd); bgapierr != nil {
+				rtcode = ec.ERROR_SWITCH_EXECUTE_BGAPI_ORIGINATE
+				rtmsg = bgapierr.Error()
+			} else {
+				outgoingcall.Jobuuid = jobuuid
 			}
 		}
 	}

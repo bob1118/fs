@@ -190,6 +190,21 @@ CREATE TABLE IF NOT EXISTS %s (
 );
 COMMENT ON TABLE %s IS 'eslclient execute bgapi command then receive EVENT BACKGROUND_JOB ';
 `
+const OUTGOINGCALLS = `
+CREATE TABLE IF NOT EXISTS %s (
+	uuidjob uuid NOT NULL,
+	uuida uuid NOT NULL,
+	uuidb uuid NOT NULL,
+	id varchar NOT NULL DEFAULT '',
+	domain varchar NOT NULL DEFAULT '',
+	e164 varchar NOT NULL DEFAULT '',
+	gateway varchar NOT NULL DEFAULT '',
+	ani varchar NOT NULL DEFAULT '',
+	destination varchar NOT NULL DEFAULT '',
+	CONSTRAINT outgoingcalls_pkey PRIMARY KEY (uuidjob)
+);
+COMMENT ON TABLE %s IS 'outgoingcalls bgapi command originate a bridge b';
+`
 
 //////////////////////////////////////////////////////////////
 ///////////////////tables default values./////////////////////
