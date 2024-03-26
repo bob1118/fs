@@ -158,7 +158,7 @@ func PostOutgoingcall(c *gin.Context) {
 			//originate ua bridge gateway or originate gateway bridge ua
 			if utils.IsEqual(outgoingcall.Id, outgoingcall.Ani) {
 				//aleg ua, bleg gateway.
-				a = fmt.Sprintf("{origination_uuid=%s,ignore-early_media=true,codec_string=PCM}sofia/%s/%s", outgoingcall.Auuid, outgoingcall.Domain, outgoingcall.Id)
+				a = fmt.Sprintf("{origination_uuid=%s,origination_caller_id_name=%s,origination_caller_id_number=%s,ignore-early_media=true,codec_string=PCM}sofia/%s/%s", outgoingcall.Auuid, outgoingcall.Destination, outgoingcall.Destination, outgoingcall.Domain, outgoingcall.Id)
 				b = fmt.Sprintf("{origination_uuid=%s,origination_caller_id_name=%s,origination_caller_id_number=%s,ignore-early_media=true,codec_string=PCM}sofia/gateway/%s/%s", outgoingcall.Buuid, outgoingcall.E164, outgoingcall.E164, outgoingcall.Gateway, outgoingcall.Destination)
 
 			}
