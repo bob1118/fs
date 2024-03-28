@@ -375,7 +375,7 @@ func pgsqlInitServerTables(db *sqlx.DB) {
 
 	//table outgoingcalls
 	tableOutgoingcalls := fmt.Sprintf(`%soutgoingcalls`, serverTablePrefix)
-	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_table where tablename=$1", tableOutgoingcalls); err != nil {
+	if err = db.Get(&isFound, "select count(1)!=0 as isFound from pg_tables where tablename=$1", tableOutgoingcalls); err != nil {
 		fmt.Println(err)
 	} else {
 		if !isFound {
