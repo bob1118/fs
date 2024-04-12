@@ -59,7 +59,7 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 	}
 
 	//continue_on_fail=true/continue_on_fail=NORMAL_TEMPORARY_FAILURE,USER_BUSY,NO_ANSWER,NO_ROUTE_DESTINATION
-	c.APPSet(`continue_on_fail=false`, true)
+	c.APPSet(`continue_on_fail=true`, true)
 	c.APPSet(`hangup_after_bridge=true`, true)
 
 	if call.CallerIsUa() {
@@ -94,6 +94,11 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 // remote -> gateway ->ua/fifo
 func channelExternalIncomingProc(c *eventsocket.Connection, call *CALL) error {
 	var myerr error
+
+	//continue_on_fail=true/continue_on_fail=NORMAL_TEMPORARY_FAILURE,USER_BUSY,NO_ANSWER,NO_ROUTE_DESTINATION
+	c.APPSet(`continue_on_fail=true`, true)
+	c.APPSet(`hangup_after_bridge=true`, true)
+
 	if !call.CallFilterPassed() {
 		c.Hangup("CALL_REJECT")
 		myerr = errors.New("function CallFilterPassed fail, Call Reject")
