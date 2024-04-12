@@ -18,6 +18,7 @@ import (
 	"strings"
 
 	"github.com/bob1118/fs/db"
+	"github.com/bob1118/fs/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -32,17 +33,23 @@ func Default() (string, error) { return FIFO_CONF_XML, nil }
 
 func Build(c *gin.Context, content string) (string, error) {
 	var err error
+	var outbound_strategy string
 	//<param name="outbound-strategy" value=""/>
 	//<param name="odbc-dsn" value="$${pg_handle}"/>
 	old := `<settings>`
-	new := fmt.Sprintf("%s\n%s\n%s", old, OUTBOUND_STRATEGY_ENTERPRISE, ODBC_DSN)
+	if utils.IsEqual(`enterprise`, viper.GetString(`switch.fifo.outbound-strategy`)) {
+		outbound_strategy = OUTBOUND_STRATEGY_ENTERPRISE
+	} else {
+		outbound_strategy = OUTBOUND_STRATEGY_RINGALL
+	}
+	new := fmt.Sprintf("%s\n%s\n%s", old, outbound_strategy, ODBC_DSN)
 	newcontent := strings.ReplaceAll(content, old, new)
 
 	//maybe buildfifos()
 	if fifos, e := buildFifos(); e != nil {
 		err = e
 	} else {
-		newcontent = strings.ReplaceAll(newcontent, DEFAULT_FIFO, fifos)
+		newcontent = strings.ReplaceAll(newcontent, DEFAULT_FIFOS, fifos)
 	}
 	return newcontent, err
 }

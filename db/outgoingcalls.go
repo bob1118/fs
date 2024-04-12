@@ -22,7 +22,7 @@ import (
 	"strings"
 )
 
-// acce164 struct
+// OUTGOINGCALL struct
 type OUTGOINGCALL struct {
 	Jobuuid     string `db:"uuidjob" json:"uuidjob"`
 	Auuid       string `db:"uuida" json:"uuida"`

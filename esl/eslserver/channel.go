@@ -47,6 +47,7 @@ func ChannelDefaultAction(c *eventsocket.Connection, ev *eventsocket.Event) erro
 // channelInternalIncomingProc
 // 1. ua ->ua;
 // 2. ua -> gateway ->remote;
+// 3. ua as upstream gateway.
 func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err error) {
 	var (
 		uuid  string
@@ -83,7 +84,8 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 			}
 		}
 	} else {
-		c.APPHangup("USER_NOT_REGISTERED")
+		//ua as upstream gateway, like channelExternalIncomingPro.
+		c.APPHangup("CALL_REJECT")
 	}
 	return myerr
 }
@@ -117,29 +119,6 @@ func channelExternalIncomingProc(c *eventsocket.Connection, call *CALL) error {
 		}
 	}
 	return myerr
-}
-
-func channelExternalExecuteFifo(c *eventsocket.Connection) error {
-	//Put a caller into a FIFO queue
-	//<action application="fifo" data="myqueue in /tmp/exit-message.wav /tmp/music-on-hold.wav"/>
-	var err error
-	argv := `fifomember@fifos in`
-	//c.APPSet(`hangup_after_bridge=true`, true)
-	c.APPAnswer()
-	if err = c.APPFifo(argv, true); err != nil {
-		fmt.Println(err)
-	}
-	return err
-}
-
-func channelExternalExecuteAcd(c *eventsocket.Connection) error {
-	var err error
-	argv := `acdmember@queue in`
-	c.APPAnswer()
-	if err = c.APPAcd(argv, true); err != nil {
-		fmt.Println(err)
-	}
-	return err
 }
 
 // channelInternalOutgoingProc function.

@@ -17,7 +17,7 @@ const FIFO_CONF_XML = `
 const OUTBOUND_STRATEGY_RINGALL = `    <param name="outbound-strategy" value="ringall"/>`
 const OUTBOUND_STRATEGY_ENTERPRISE = `    <param name="outbound-strategy" value="enterprise"/>`
 const ODBC_DSN = `    <param name="odbc-dsn" value="$${pg_handle}"/>`
-const DEFAULT_FIFO = `
+const DEFAULT_FIFOS = `
     <fifo name="cool_fifo@$${domain}" importance="0">
       <!--<member timeout="60" simo="1" lag="20">{member_wait=nowait}user/1005@$${domain}</member>-->
     </fifo>`

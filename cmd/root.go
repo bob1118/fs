@@ -59,6 +59,8 @@ switch:
         ipaddr: 127.0.0.1
         port: 8021
         password: ClueCon
+	fifo:
+	    outbound-strategy: ringall
     record:
         dir: /var/lib/freeswitch/recorddings
     vars:
