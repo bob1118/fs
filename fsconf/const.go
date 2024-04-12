@@ -32,7 +32,6 @@ const DIALPLAN_APP_PARK = `<?xml version="1.0" encoding="UTF-8" standalone="no"?
     <context name="default">
       <extension name="default">
         <condition>
-          <action application="set" data="continue_on_fail=true"/>
           <action application="park"/>
         </condition>
       </extension>
@@ -40,7 +39,6 @@ const DIALPLAN_APP_PARK = `<?xml version="1.0" encoding="UTF-8" standalone="no"?
     <context name="public">
       <extension name="default">
         <condition>
-          <action application="set" data="continue_on_fail=true"/>
           <action application="park"/>
         </condition>
       </extension>

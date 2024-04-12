@@ -59,7 +59,7 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 	}
 
 	//continue_on_fail=true/continue_on_fail=NORMAL_TEMPORARY_FAILURE,USER_BUSY,NO_ANSWER,NO_ROUTE_DESTINATION
-	c.APPSet(`continue_on_fail=true`, true)
+	c.APPSet(`continue_on_fail=false`, true)
 	c.APPSet(`hangup_after_bridge=true`, true)
 
 	if call.CallerIsUa() {
@@ -96,7 +96,7 @@ func channelExternalIncomingProc(c *eventsocket.Connection, call *CALL) error {
 	var myerr error
 
 	//continue_on_fail=true/continue_on_fail=NORMAL_TEMPORARY_FAILURE,USER_BUSY,NO_ANSWER,NO_ROUTE_DESTINATION
-	c.APPSet(`continue_on_fail=true`, true)
+	c.APPSet(`continue_on_fail=false`, true)
 	c.APPSet(`hangup_after_bridge=true`, true)
 
 	if !call.CallFilterPassed() {
@@ -114,7 +114,7 @@ func channelExternalIncomingProc(c *eventsocket.Connection, call *CALL) error {
 			} else {
 				e164acc := e164accs[0]
 				if !e164acc.Isfifo { // do bridge sofia/mydomain/xxxx
-					appargv := fmt.Sprintf(`{origination_caller_id_number=%s,ignore_early_media=true}sofia/%s/%s`, call.ani, e164acc.Adomain, e164acc.Aid)
+					appargv := fmt.Sprintf(`{origination_caller_id_number=%s,ignore_early_media=true,codec_string=PCMU}sofia/%s/%s`, call.ani, e164acc.Adomain, e164acc.Aid)
 					myerr = c.APPBridge(appargv, true)
 				} else { //do fifo myfifo in
 					appargv := fmt.Sprintf(`%s in`, e164acc.Fname)
