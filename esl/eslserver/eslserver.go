@@ -24,12 +24,17 @@ func ServerRestart() {}
 // handler function.
 func handler(c *eventsocket.Connection) {
 	fmt.Println("new client:", c, "from:", c.RemoteAddr())
-	if e, err := c.SendCommandEx("connect"); err != nil {
+	if ev, err := c.SendCommandEx("connect"); err != nil {
+		//if err := c.SendCommand("connect"); err != nil {
 		fmt.Println(err)
 	} else {
-		//send connect return default event CHANNEL_DATA.
-		eventChannelDefaultAction(c, e)
-		eventChannelReadLoop(c)
+		if err := c.SendCommand("myevents"); err != nil {
+			fmt.Println(err)
+		} else {
+			//send connect return default event CHANNEL_DATA.
+			eventChannelDefaultAction(c, ev)
+			eventChannelReadLoop(c)
+		}
 	}
 }
 

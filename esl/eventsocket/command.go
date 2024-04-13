@@ -15,11 +15,7 @@ import (
 // See https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Modules/mod_event_socket_1048924#3-command-documentation for
 // details.
 func (h *Connection) Send(command string) (*Event, error) {
-	// Sanity check to avoid breaking the parser
-	//if strings.IndexAny(command, "\r\n") > 0 {
-	//	return nil, errInvalidCommand
-	//}
-	if _, err := fmt.Fprintf(h.conn, "%s\r\n\r\n", command); err != nil {
+	if _, err := fmt.Fprintf(h.conn, "%s\n\n", command); err != nil {
 		return nil, err
 	}
 	var (
@@ -196,15 +192,13 @@ func (h *Connection) SendEvent() {}
 
 type MSG map[string]string
 
-// SendMSG function.
+// SendMsg function.
 //
 // 3.9 sendmsg
 //
 // MSG is the container used by SendMsg to store messages sent to FreeSWITCH.
 // It's supposed to be populated with directives supported by the sendmsg
 // command only, like "call-command: execute".
-//
-// See https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Modules/mod_event_socket_1048924#39-sendmsg for details.
 //
 // Keys with empty values are ignored; uuid and appData are optional.
 // If appData is set, a "content-length" header is expected (lower case!).
@@ -219,8 +213,12 @@ func (h *Connection) SendMsg(m MSG, uuid, appData string) (*Event, error) {
 	// Example:
 	// sendmsg <uuid>
 	// call-command: execute
-	// execute-app-name: playback
-	// execute-app-arg: /tmp/test.wav
+	// execute-app-name: <one of the applications>
+	// loops: <number of times to invoke the command, default: 1>
+	// content-type: text/plain
+	// content-length: <content length>
+	//
+	// <app data>
 
 	b := bytes.NewBufferString("sendmsg")
 	if uuid != "" {
@@ -277,20 +275,12 @@ func (h *Connection) SendMSG(uuid string, m MSG, content string) (*Event, error)
 // https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Modules/mod_event_socket_1048924/#3911-execute
 // https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Modules/mod_dptools_1970333/#-c
 //
+// 3.9.1 Commands
+//
 // 3.9.1.1 execute
 //
 //	Execute("playback", "/tmp/test.wav", false)
 func (h *Connection) Execute(appName, appArg string, lock bool) (*Event, error) {
-	// sendmsg <uuid>
-	// call-command: execute
-	// execute-app-name: <one of the applications>
-	// loops: <number of times to invoke the command, default: 1>
-	// content-type: text/plain
-	// content-length: <content length>
-	//
-	// <application data>
-	//
-	// Example:
 	// sendmsg
 	// call-command: execute
 	// execute-app-name: set
@@ -298,26 +288,24 @@ func (h *Connection) Execute(appName, appArg string, lock bool) (*Event, error) 
 	// event-lock: true
 	var evlock string
 	if lock {
-		// Could be strconv.FormatBool(lock), but we don't want to
-		// send event-lock when it's set to false.
 		evlock = "true"
 	}
-	return h.SendMsg(MSG{
+	return h.SendMSG("", MSG{
 		"call-command":     "execute",
 		"execute-app-name": appName,
 		"execute-app-arg":  appArg,
 		"event-lock":       evlock,
-	}, "", "")
+	}, "")
 }
 
-// ExecuteUUID is similar to Execute, but takes a UUID and no lock. Suitable
+// ExecuteEx is similar to Execute, but takes a UUID and no lock. Suitable
 // for use on inbound event socket connections (acting as client).
-func (h *Connection) ExecuteUUID(uuid, appName, appArg string) (*Event, error) {
-	return h.SendMsg(MSG{
+func (h *Connection) ExecuteEx(uuid, appName, appArg string) (*Event, error) {
+	return h.SendMSG(uuid, MSG{
 		"call-command":     "execute",
 		"execute-app-name": appName,
 		"execute-app-arg":  appArg,
-	}, uuid, "")
+	}, "")
 }
 
 // ExecuteDptools Execute is a shortcut to SendMsg with call-command: execute without UUID,
@@ -328,34 +316,13 @@ func (h *Connection) ExecuteUUID(uuid, appName, appArg string) (*Event, error) {
 //
 // https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Modules/mod_event_socket_1048924/#3911-execute
 func (h *Connection) ExecuteDptools(appName, appArg string, lock bool) (*Event, error) {
-	var msg MSG
-	if lock {
-		msg = MSG{
-			"call-command":     "execute",
-			"execute-app-name": appName,
-			"execute-app-arg":  appArg,
-			"event-lock":       "true",
-		}
-	} else {
-		msg = MSG{
-			"call-command":     "execute",
-			"execute-app-name": appName,
-			"execute-app-arg":  appArg,
-		}
-	}
-	return h.SendMSG("", msg, "")
+	return h.Execute(appName, appArg, lock)
 }
 
 // ExecuteDptoolsEx is similar to Execute, but takes a UUID and no lock. Suitable
 // for use on inbound event socket connections (acting as client).
 func (h *Connection) ExecuteDptoolsEx(uuid, appName, appArg string) (*Event, error) {
-	//var msg MSG
-	msg := MSG{
-		"call-command":     "execute",
-		"execute-app-name": appName,
-		"execute-app-arg":  appArg,
-	}
-	return h.SendMSG(uuid, msg, "")
+	return h.ExecuteEx(uuid, appName, appArg)
 }
 
 // Hangup function.
@@ -367,7 +334,10 @@ func (h *Connection) ExecuteDptoolsEx(uuid, appName, appArg string) (*Event, err
 // call-command: hangup
 //
 // hangup-cause: <one of the causes listed below>
+//
 // https://developer.signalwire.com/freeswitch/FreeSWITCH-Explained/Troubleshooting-Debugging/Hangup-Cause-Code-Table_3964945/#q850-to-sip-code-table
+//
+// https://github.com/signalwire/freeswitch/blob/master/src/switch_channel.c switch_cause_table.
 func (h *Connection) Hangup(cause string) error {
 	msg := MSG{
 		"call-command": "hangup",
@@ -556,7 +526,7 @@ func (h *Connection) APPAcd(data string, lock bool) error {
 //
 // https://freeswitch.org/confluence/display/FREESWITCH/mod_dptools%3A+hangup
 func (h *Connection) APPHangup(data string) error {
-	_, err := h.ExecuteDptools("hangup", data, false)
+	_, err := h.ExecuteDptools("hangup", data, true)
 	return err
 }
 
