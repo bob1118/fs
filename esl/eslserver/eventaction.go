@@ -14,6 +14,9 @@ import (
 // ChannelAction function
 func ChannelEventAction(c *eventsocket.Connection, e *eventsocket.Event) {
 	//e.LogPrint()
+	if utils.IsEqual(e.Get("Content-Type"), "text/disconnect-notice") {
+		c.Close()
+	}
 	eventName := e.Get("Event-Name")
 	if len(eventName) > 0 {
 		switch eventName {
@@ -36,7 +39,7 @@ func ChannelEventAction(c *eventsocket.Connection, e *eventsocket.Event) {
 // channelparkAction function.
 func channelparkAction(c *eventsocket.Connection, e *eventsocket.Event) {
 	//ChannelDefaultAction(c, e)
-	fmt.Println("Event-Name: CHANNEL_PARK")
+	//fmt.Println("Event-Name: CHANNEL_PARK")
 }
 
 // DefaultChannelAction
@@ -54,7 +57,7 @@ func ChannelDefaultAction(c *eventsocket.Connection, ev *eventsocket.Event) erro
 			case "external", "external-ipv6": //external gateway incoming
 				myerr = channelExternalIncomingProc(c, call)
 			default:
-				c.APPHangup("CALL_REJECT")
+				c.Hangup("CALL_REJECT")
 				myerr = errors.New("CHANNEL_DATA: unknown profile")
 			}
 		} else { //outgoing call hit socket. bgapi origination... &socket ?
@@ -64,7 +67,7 @@ func ChannelDefaultAction(c *eventsocket.Connection, ev *eventsocket.Event) erro
 			case "external", "external-ipv6":
 				myerr = channelExternalOutgoingProc(c, call)
 			default:
-				c.APPHangup("CALL_REJECT")
+				c.Hangup("CALL_REJECT")
 				myerr = errors.New("CHANNEL_DATA: unknown profile")
 			}
 		}
@@ -87,33 +90,33 @@ func channelInternalIncomingProc(c *eventsocket.Connection, call *CALL) (err err
 	}
 
 	//continue_on_fail=true/continue_on_fail=NORMAL_TEMPORARY_FAILURE,USER_BUSY,NO_ANSWER,NO_ROUTE_DESTINATION
-	c.APPSet(`continue_on_fail=false`, true)
-	c.APPSet(`hangup_after_bridge=true`, true)
+	c.APPSet(`continue_on_fail=false`)
+	c.APPSet(`hangup_after_bridge=true`)
 
 	if call.CallerIsUa() {
 		if call.CalleeIsUa() { //ua dial ua
 			appargv := fmt.Sprintf(`{origination_uuid=%s,origination_caller_id_name=%s,origination_caller_id_number=%s,ignore_early_media=true}sofia/%s/%s`, uuid, "local", call.ani, call.domain, call.distinationnumber)
-			c.APPBridge(appargv, true)
+			c.APPBridge(appargv)
 		} else { //ua dial out through gateway.
 			q := fmt.Sprintf(`account_id='%s' and account_domain='%s' and acce164_isdefault=true limit 1`, call.ani, call.domain)
 			if acce164s, err := db.SelectAcce164sWithCondition(q); err != nil {
-				c.APPHangup("NO_ROUTE_DESTINATION")
+				c.Hangup("NO_ROUTE_DESTINATION")
 				myerr = err
 			} else {
 				if len(acce164s) == 0 { //no row.
-					c.APPHangup("NO_ROUTE_DESTINATION")
+					c.Hangup("NO_ROUTE_DESTINATION")
 					myerr = fmt.Errorf("NO_ROUTE_DESTINATION")
 				} else {
 					gatewayname := acce164s[0].Gname
 					gatewaye164number := acce164s[0].Enumber
 					appargv := fmt.Sprintf(`{origination_uuid=%s,origination_caller_id_number=%s,ignore_early_media=true,codec_string=PCMU}sofia/gateway/%s/%s`, uuid, gatewaye164number, gatewayname, call.distinationnumber)
-					c.APPBridge(appargv, true)
+					c.APPBridge(appargv)
 				}
 			}
 		}
 	} else {
 		//ua as upstream gateway, like channelExternalIncomingPro.
-		c.APPHangup("CALL_REJECT")
+		c.Hangup("CALL_REJECT")
 	}
 	return myerr
 }
@@ -124,29 +127,28 @@ func channelExternalIncomingProc(c *eventsocket.Connection, call *CALL) error {
 	var myerr error
 
 	//continue_on_fail=true/continue_on_fail=NORMAL_TEMPORARY_FAILURE,USER_BUSY,NO_ANSWER,NO_ROUTE_DESTINATION
-	c.APPSet(`continue_on_fail=false`, true)
-	c.APPSet(`hangup_after_bridge=true`, true)
-
+	c.APPSet(`continue_on_fail=false`)
+	c.APPSet(`hangup_after_bridge=true`)
 	if !call.CallFilterPassed() {
 		c.Hangup("CALL_REJECT")
 		myerr = errors.New("function CallFilterPassed fail, Call Reject")
 	} else {
 		q := fmt.Sprintf("gateway_name='%s' and e164_number='%s'", call.gateway, call.distinationnumber)
 		if e164accs, err := db.SelectE164accsWithCondition(q); err != nil {
-			c.APPHangup("NO_ROUTE_DESTINATION")
+			c.Hangup("NO_ROUTE_DESTINATION")
 			myerr = err
 		} else {
 			if len(e164accs) == 0 {
-				c.APPHangup("NO_ROUTE_DESTINATION")
+				c.Hangup("NO_ROUTE_DESTINATION")
 				myerr = err
 			} else {
 				e164acc := e164accs[0]
 				if !e164acc.Isfifo { // do bridge sofia/mydomain/xxxx
 					appargv := fmt.Sprintf(`{origination_caller_id_number=%s,ignore_early_media=true,codec_string=PCMU}sofia/%s/%s`, call.ani, e164acc.Adomain, e164acc.Aid)
-					myerr = c.APPBridge(appargv, true)
+					myerr = c.APPBridge(appargv)
 				} else { //do fifo myfifo in
 					appargv := fmt.Sprintf(`%s in`, e164acc.Fname)
-					myerr = c.APPFifo(appargv, true)
+					myerr = c.APPFifo(appargv)
 				}
 			}
 		}

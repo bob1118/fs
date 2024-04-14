@@ -128,7 +128,7 @@ func Dial(addr, passwd string) (*Connection, error) {
 		c.Close()
 		return nil, errMissingAuthRequest
 	}
-	fmt.Fprintf(c, "auth %s\r\n\r\n", passwd)
+	fmt.Fprintf(c, "auth %s\n\n", passwd)
 	m, err = h.textreader.ReadMIMEHeader()
 	if err != nil {
 		c.Close()

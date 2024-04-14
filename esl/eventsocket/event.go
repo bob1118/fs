@@ -21,7 +21,7 @@ func (r *Event) String() string {
 	if r.Body == "" {
 		return fmt.Sprintf("%s", r.Header)
 	} else {
-		return fmt.Sprintf("%s\r\n%s", r.Header, r.Body)
+		return fmt.Sprintf("%s\n%s", r.Header, r.Body)
 	}
 }
 
@@ -74,5 +74,5 @@ func (r *Event) LogPrint() {
 	if r.Body != "" {
 		log.Printf("BODY: %#v\n", r.Body)
 	}
-	fmt.Println("______________________________event end_______________________________")
+	log.Println("-----------------------------Event-Name:", r.Get("Event-Name"), "-----------------------------")
 }

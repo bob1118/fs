@@ -19,18 +19,20 @@ func (h *Connection) Send(command string) (*Event, error) {
 		return nil, err
 	}
 	var (
-		ev  *Event
-		err error
+		evCMD  *Event
+		evAPI  *Event
+		errCMD error
+		errAPI error
 	)
 	select {
-	case err = <-h.cmderr:
-		return nil, err
-	case err = <-h.apierr:
-		return nil, err
-	case ev = <-h.cmd:
-		return ev, nil
-	case ev = <-h.api:
-		return ev, nil
+	case errCMD = <-h.cmderr:
+		return nil, errCMD
+	case errAPI = <-h.apierr:
+		return nil, errAPI
+	case evCMD = <-h.cmd:
+		return evCMD, nil
+	case evAPI = <-h.api:
+		return evAPI, nil
 	case <-time.After(timeoutPeriod):
 		return nil, errTimeout
 	}
@@ -481,8 +483,8 @@ func (h *Connection) APIReloadModule(modulename string) (bool, error) { return t
 // <action application="set" data="effective_caller_id_number=12345678"/>
 //
 // https://freeswitch.org/confluence/display/FREESWITCH/mod_dptools%3A+set
-func (h *Connection) APPSet(data string, lock bool) error {
-	_, err := h.ExecuteDptools("set", data, lock)
+func (h *Connection) APPSet(data string) error {
+	_, err := h.ExecuteDptools("set", data, true)
 	return err
 }
 
@@ -491,8 +493,8 @@ func (h *Connection) APPSet(data string, lock bool) error {
 // <action application="bridge" data="endpoint/gateway/gateway_name/address"/>
 //
 // https://freeswitch.org/confluence/display/FREESWITCH/mod_dptools%3A+bridge
-func (h *Connection) APPBridge(data string, lock bool) error {
-	_, err := h.ExecuteDptools("bridge", data, lock)
+func (h *Connection) APPBridge(data string) error {
+	_, err := h.ExecuteDptools("bridge", data, true)
 	return err
 }
 
@@ -503,8 +505,8 @@ func (h *Connection) APPBridge(data string, lock bool) error {
 // <action application="fifo" data="myqueue out nowait /tmp/caller-found.wav /tmp/agent-music-on-hold.wav"/>
 //
 // https://freeswitch.org/confluence/display/FREESWITCH/mod_fifo
-func (h *Connection) APPFifo(data string, lock bool) error {
-	_, err := h.ExecuteDptools("fifo", data, lock)
+func (h *Connection) APPFifo(data string) error {
+	_, err := h.ExecuteDptools("fifo", data, true)
 	return err
 }
 
@@ -515,8 +517,8 @@ func (h *Connection) APPFifo(data string, lock bool) error {
 // <action application="fifo" data="myqueue out nowait /tmp/caller-found.wav /tmp/agent-music-on-hold.wav"/>
 //
 // https://freeswitch.org/confluence/display/FREESWITCH/mod_fifo
-func (h *Connection) APPAcd(data string, lock bool) error {
-	_, err := h.ExecuteDptools("acd", data, lock)
+func (h *Connection) APPAcd(data string) error {
+	_, err := h.ExecuteDptools("acd", data, true)
 	return err
 }
 
