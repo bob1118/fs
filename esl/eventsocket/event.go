@@ -74,5 +74,5 @@ func (r *Event) LogPrint() {
 	if r.Body != "" {
 		log.Printf("BODY: %#v\n", r.Body)
 	}
-	log.Println("-----------------------------Event-Name:", r.Get("Event-Name"), "-----------------------------")
+	log.Println("-----------------------------", r.Get("Event-Name"), "-----------------------------")
 }

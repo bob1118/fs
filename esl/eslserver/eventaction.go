@@ -12,10 +12,13 @@ import (
 )
 
 // ChannelAction function
-func ChannelEventAction(c *eventsocket.Connection, e *eventsocket.Event) {
+func ChannelEventAction(c *eventsocket.Connection, e *eventsocket.Event) error {
 	//e.LogPrint()
+	//close connection while ReadEvent() receive "text/disconnect-notice"
+	//close connection here for reading more event .
 	if utils.IsEqual(e.Get("Content-Type"), "text/disconnect-notice") {
 		c.Close()
+		return errors.New("close connection.")
 	}
 	eventName := e.Get("Event-Name")
 	if len(eventName) > 0 {
@@ -34,12 +37,7 @@ func ChannelEventAction(c *eventsocket.Connection, e *eventsocket.Event) {
 			//nothing todo.
 		}
 	}
-}
-
-// channelparkAction function.
-func channelparkAction(c *eventsocket.Connection, e *eventsocket.Event) {
-	//ChannelDefaultAction(c, e)
-	//fmt.Println("Event-Name: CHANNEL_PARK")
+	return nil
 }
 
 // DefaultChannelAction
@@ -163,6 +161,9 @@ func channelInternalOutgoingProc(c *eventsocket.Connection, call *CALL) error { 
 // channelExternalOutgoingProc function.
 // http client post data ->http server receive data ->bgapi originate sofia/gatewayname/reomte &socket...
 func channelExternalOutgoingProc(c *eventsocket.Connection, call *CALL) error { return nil }
+
+// channelparkAction function.
+func channelparkAction(c *eventsocket.Connection, e *eventsocket.Event) {}
 
 // channelstateAction function.
 func channelstateAction(c *eventsocket.Connection, e *eventsocket.Event) {}
